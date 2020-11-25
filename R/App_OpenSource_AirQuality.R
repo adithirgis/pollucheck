@@ -65,8 +65,6 @@ ui <- fluidPage(
                                                              "Mean and 95% confidence intervals" = "mean"), 
                                                            selected = "mean"),
                                               actionButton("tv", "Time Variation graphs"),
-                                              tags$hr(),
-                                              actionButton("cp", "Calendar Plot"),
                                               tags$hr()),
                              conditionalPanel(condition = "input.tabs1 == 1",
                                               tags$hr(),
@@ -76,8 +74,7 @@ ui <- fluidPage(
                                                              HTML("<a href = 'https://www.airnow.gov/international/us-embassies-and-consulates/#India'>AirNow</a>"),
                                                              HTML("<a href = 'https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing'>Pollution Control Board</a>")),
                                                            choiceValues = list("oaq", "an", "cpcb"),
-                                                           selected = "cpcb")),
-
+                                                           selected = "cpcb"),
                                               tags$hr(),
                                               conditionalPanel(condition = "input.type == 'cpcb'",
                                               radioButtons("file", "Time resolution",
