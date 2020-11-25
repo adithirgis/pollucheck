@@ -53,7 +53,8 @@ ui <- fluidPage(
                                                             "Daily" = "day",
                                                             "Monthly" = "month"),
                                                           selected = "None"),
-                                              tags$hr()),
+                                              tags$hr(),
+                                              downloadButton('download_stats', "Download as csv")),
                              conditionalPanel(condition = "input.tabs1 == 4",
                                               tags$hr(),
                                               selectInput("palleInp1", "Plot this parameter",
@@ -400,6 +401,7 @@ server <- function(input, output, session) {
     data <- CPCB_f()
     return(data)
   })
+  
   observe({
     if (is.null(input$file1)) {
       NULL
@@ -411,6 +413,7 @@ server <- function(input, output, session) {
     updateSelectInput(session, "palleInp", choices = names(data_joined))
     updateSelectInput(session, "palleInp1", choices = names(data_joined))
   })
+  
   output$table1 <- DT::renderDataTable({
     data_joined <- data_joined() 
     cols <- names(data_joined)[3:ncol(data_joined)]
@@ -422,11 +425,13 @@ server <- function(input, output, session) {
   })
   
   output$download <- downloadHandler(
-    filename <- function() {"CPCB_data.csv"},
+    filename <- function() {"data.csv"},
     content <- function(fname) {
       data_joined <- data_joined()
       write.csv(data_joined, fname)
     })
+  
+  
   theme1 <- reactive({
     theme1 <- list(geom_line(size = 0.6, color = "seagreen"),
                    theme_minimal(),
@@ -517,7 +522,8 @@ server <- function(input, output, session) {
                             par.settings = list(fontsize = list(text = 15)))
     }
   })
-  output$table <- DT::renderDataTable({
+  
+  data_summary <- reactive({
     data <- data_joined()
     data <- data %>%
       select(everything(), - date)
@@ -582,11 +588,19 @@ server <- function(input, output, session) {
       data[, columns] <- lapply(columns, function(x) round(as.numeric(as.character(data[[x]])), digits = 2))
       tmp <- data
     } 
-    
+    tmp
+  })
+  output$table <- DT::renderDataTable({
+    tmp <- data_summary()
     datatable(tmp, options = list("pageLength" = 13))
   })
   
-  
+  output$download_stats <- downloadHandler(
+    filename <- function() {"stats_data.csv"},
+    content <- function(fname) {
+      data_summary <- data_summary()
+      write.csv(data_summary, fname)
+    })
 }
 ## Run app
 shinyApp(ui, server)
