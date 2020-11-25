@@ -21,7 +21,7 @@ library(xlsx)
 library(openxlsx)
 
 ui <- fluidPage(
-  h1("Analyse high resolution CPCB data"),
+  h1("Analyse open source air quality data"),
   tags$head(
     tags$style(HTML(".sidebar {
                     height : 10vh; overflow-y : auto; font-size : 14px;
@@ -37,6 +37,7 @@ ui <- fluidPage(
                                               selectInput("palleInp", "Plot this parameter",
                                                           "Select"),
                                               tags$hr(),
+                                              
                                               actionButton("ts", "Time Series"),
                                               tags$hr(),
                                               actionButton("diurnal", "Diurnal Plot"),
@@ -52,19 +53,40 @@ ui <- fluidPage(
                                                             "Monthly" = "month"),
                                                           selected = "None"),
                                               tags$hr()),
-                             conditionalPanel(condition = "input.tabs1 == 3",
+                             conditionalPanel(condition = "input.tabs1 == 4",
+                                              tags$hr(),
+                                              selectInput("palleInp1", "Plot this parameter",
+                                                          "Select"),
+                                              tags$hr(),
+                                              actionButton("cp", "Calendar Plot"),
+                                              tags$hr(),
+                                              radioButtons("stat_tv", "Statistic to plot the graph",
+                                                           c("Median and quantiles" = "median",
+                                                             "Mean and 95% confidence intervals" = "mean"), 
+                                                           selected = "mean"),
+                                              actionButton("tv", "Time Variation graphs"),
                                               tags$hr()),
                              conditionalPanel(condition = "input.tabs1 == 1",
                                               tags$hr(),
+                                              radioButtons("type", "Data downloaded from",
+                                                           choiceNames = list(
+                                                             HTML("<a href = 'https://openaq.org/#/countries/IN?_k=5ecycz'>OpenAQ</a>"), 
+                                                             HTML("<a href = 'https://www.airnow.gov/international/us-embassies-and-consulates/#India'>AirNow</a>"),
+                                                             HTML("<a href = 'https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing'>Pollution Control Board</a>")),
+                                                           choiceValues = list("oaq", "an", "cpcb"),
+                                                           selected = "cpcb"),
+                                              tags$hr(),
+                                              conditionalPanel(condition = "input.type == 'cpcb'",
                                               radioButtons("file", "Time resolution",
                                                            c("15 minutes" = "15 min",
                                                              "30 minutes" = "30 min",
-                                                             "60 minutes" = "60 min")),
+                                                             "60 minutes" = "60 min"), 
+                                                           selected = "60 min")),
                                               tags$hr(),
                                               fileInput("file1",
-                                                        "Add high resolution data",
+                                                        "Add data",
                                                         multiple = TRUE,
-                                                        accept = c('.xlsx')),
+                                                        accept = c('.xlsx', '.csv')),
                                               tags$hr(),
                                               checkboxInput('remove_9', 'Remove negative values'),
                                               tags$hr(),
@@ -108,9 +130,13 @@ ui <- fluidPage(
                                 title = "Plots",
                                 plotOutput("plot1", width = 800),
                                 plotOutput("plot2", width = 800),
-                                plotOutput("plot3", width = 800)
-                              )))
-  ))
+                                plotOutput("plot3", width = 800)),
+                              tabPanel(
+                                value = 4,
+                                title = "openair package plots",
+                                plotOutput("plot4", height = 600),
+                                plotOutput("plot5", height = 600)))
+  )))
 
 
 server <- function(input, output, session) {
@@ -154,6 +180,7 @@ server <- function(input, output, session) {
     if (is.null(input$file1)) {
       return(NULL)
     } else {
+      if(input$type == "cpcb") {
       trial <- read.xlsx2(input$file1$datapath, 1, startRow = 17)
       trial$date <- gsub(":00", ":00:00", trial$To.Date, fixed = TRUE)
       ### This folder contains files with different columns on below other so 
@@ -203,8 +230,29 @@ server <- function(input, output, session) {
       Beny <- make_df(dt_s$`4`, tseries_df)
       Bent <- make_df(dt_s$`6`, tseries_df)
       all <- list(site1_join, Ben, Beny, Bent) %>% reduce(left_join, by = "date")
-      
-      # data_list1 <- subset(data_list1, no_hour >= ((per / 100) * 24))
+      } else if(input$type == "an") {
+        trial <- read.csv(input$file1$datapath, header = TRUE, sep = ",", 
+                          row.names = NULL)
+        trial <- USEM %>%
+          select("date" = Date..LT., "PM2.5" = Raw.Conc., "Valid" = QC.Name) %>%
+          mutate(date  = as.POSIXct(date, format = '%Y-%m-%d %I:%M %p', tz = "Asia/Kolkata")) %>%
+          filter(Valid == "Valid")
+        trial$Valid <- NULL
+        ye <- format(trial[1, "date"], format = "%Y")
+        x1 <- as.POSIXct(paste0(ye, "-01-01 01:00:00"), 
+                         format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
+        ye <- format(tail(trial$date, n = 3)[1], format = "%Y")
+        x2 <- as.POSIXct(paste0(ye, "-12-31 23:00:00"), 
+                         format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
+        date <- seq(
+          from = as.POSIXct(x1, tz = "Asia/Kolkata"),
+          to = as.POSIXct(x2, tz = "Asia/Kolkata"),
+          by = "60 min"
+        ) 
+        tseries_df <- data.frame(date)
+        all <- left_join(tseries_df, trial, by = "date")
+      }
+      all
       if(input$remove_9) {
         col_interest <- 2:ncol(all)
         all[ , col_interest] <- sapply(X = all[ , col_interest], 
@@ -343,6 +391,14 @@ server <- function(input, output, session) {
     data <- CPCB_f()
     return(data)
   })
+  data_tv <- eventReactive(input$tv, {
+    data <- CPCB_f()
+    return(data)
+  })
+  data_cp <- eventReactive(input$cp, {
+    data <- CPCB_f()
+    return(data)
+  })
   observe({
     if (is.null(input$file1)) {
       NULL
@@ -352,6 +408,7 @@ server <- function(input, output, session) {
         select(- date, - day)
     }
     updateSelectInput(session, "palleInp", choices = names(data_joined))
+    updateSelectInput(session, "palleInp1", choices = names(data_joined))
   })
   output$table1 <- DT::renderDataTable({
     data_joined <- data_joined() 
@@ -390,6 +447,7 @@ server <- function(input, output, session) {
              x = "") + theme1()
     }
   })
+  
   output$plot2 <- renderPlot({
     if (is.null(input$file1)) { NULL }
     else {
@@ -430,6 +488,25 @@ server <- function(input, output, session) {
                                 axis.text.x = element_text(size = 10, face = "bold", angle = 90),
                                 panel.border = element_rect(colour = "black",
                                                             fill = NA, size = 1.2))
+    }
+  })
+  output$plot4 <- renderPlot({
+    if (is.null(input$file1)) { NULL }
+    else {
+      data <- data_tv()
+      y <- as.numeric(as.character(data[[input$palleInp1]]))
+      openair::timeVariation(data, pollutant = input$palleInp1, 
+                             par.settings = list(fontsize = list(text = 15)))
+    }
+  })
+  output$plot5 <- renderPlot({
+    if (is.null(input$file1)) { NULL }
+    else {
+      data <- data_cp()
+      y <- as.numeric(as.character(data[[input$palleInp1]]))
+      openair::calendarPlot(data, pollutant = input$palleInp1, main = input$palleInp1,
+                            cols = "Spectral",
+                            par.settings = list(fontsize = list(text = 15)))
     }
   })
   output$table <- DT::renderDataTable({
