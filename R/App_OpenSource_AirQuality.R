@@ -134,8 +134,8 @@ ui <- fluidPage(
                               tabPanel(
                                 value = 4,
                                 title = "openair package plots",
-                                plotOutput("plot4", height = 600),
-                                plotOutput("plot5", height = 600)))
+                                plotOutput("plot5", height = 600),
+                                plotOutput("plot4", height = 600)))
   )))
 
 
@@ -233,7 +233,7 @@ server <- function(input, output, session) {
       } else if(input$type == "an") {
         trial <- read.csv(input$file1$datapath, header = TRUE, sep = ",", 
                           row.names = NULL)
-        trial <- USEM %>%
+        trial <- trial %>%
           select("date" = Date..LT., "PM2.5" = Raw.Conc., "Valid" = QC.Name) %>%
           mutate(date  = as.POSIXct(date, format = '%Y-%m-%d %I:%M %p', tz = "Asia/Kolkata")) %>%
           filter(Valid == "Valid")
@@ -495,8 +495,15 @@ server <- function(input, output, session) {
     else {
       data <- data_tv()
       y <- as.numeric(as.character(data[[input$palleInp1]]))
-      openair::timeVariation(data, pollutant = input$palleInp1, 
-                             par.settings = list(fontsize = list(text = 15)))
+      if(input$stat_tv == "mean") {
+        openair::timeVariation(data, pollutant = input$palleInp1, 
+                               par.settings = list(fontsize = list(text = 15)))
+      } else if(input$stat_tv == "median") {
+        openair::timeVariation(data, pollutant = input$palleInp1, stati = "median", 
+                               conf.int = c(0.75, 0.99),
+                               par.settings = list(fontsize = list(text = 15)))
+      }
+      
     }
   })
   output$plot5 <- renderPlot({
@@ -505,7 +512,7 @@ server <- function(input, output, session) {
       data <- data_cp()
       y <- as.numeric(as.character(data[[input$palleInp1]]))
       openair::calendarPlot(data, pollutant = input$palleInp1, main = input$palleInp1,
-                            cols = "Spectral",
+                            cols = openColours(c("seagreen", "yellow", "red"), 10),
                             par.settings = list(fontsize = list(text = 15)))
     }
   })
