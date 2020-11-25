@@ -19,6 +19,7 @@ library(readr)
 library(openair)
 library(xlsx)
 library(openxlsx)
+library(rsconnect)
 
 ui <- fluidPage(
   h1("Analyse open source air quality data"),
@@ -590,11 +591,4 @@ server <- function(input, output, session) {
 ## Run app
 shinyApp(ui, server)
 
-
-# conditionalPanel(condition = "input.file == 'min'",
-# checkboxInput('percent', 'Completeness of data in a day'),
-# conditionalPanel(
-#   condition = "input.percent == true",
-#   numericInput("per", "Specify % of data completeness required",
-#                value = 75)))
 
