@@ -292,10 +292,6 @@ server <- function(input, output, session) {
         for(i in names(name)){
           data_list <- site1_join_f1 %>% 
             dplyr::select(date, - day, starts_with(i))
-          col_interest <- 2:ncol(data_list)
-          data_list[ , col_interest] <- sapply(X = data_list[ , col_interest], 
-                                                   FUN = function(x) 
-                                                     as.numeric(as.character(x)))
           ### Check if you have similar names matching eg - NO
           if(i == "NO") {
             data_list <- data_list %>%
@@ -314,12 +310,13 @@ server <- function(input, output, session) {
           z <- grep("_sd", colnames(data_list))
           z <- data_list[[z]]
           ### Apply the condition of removing values which are >< (Mean +- 3 * SD)
-          eyw <- input$ey
+          eyw <- as.numeric(as.character(input$ey))
           if(!nrow(data_list)){
             NULL 
           } else {
             data_list[[i]] <- mapply(LLD, x, y, z, eyw)
           }
+          tseries_df <- data.frame(date)
           tseries_df <- left_join(tseries_df, data_list, by = "date")
         }
         site1_join_f1 <- tseries_df %>%
