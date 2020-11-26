@@ -236,7 +236,7 @@ server <- function(input, output, session) {
         trial <- read.csv(input$file1$datapath, header = TRUE, sep = ",", 
                           row.names = NULL)
         trial <- trial %>%
-          select("date" = Date..LT., "PM2.5" = Raw.Conc., "Valid" = QC.Name) %>%
+          dplyr::select("date" = Date..LT., "PM2.5" = Raw.Conc., "Valid" = QC.Name) %>%
           mutate(date  = as.POSIXct(date, format = '%Y-%m-%d %I:%M %p', tz = "Asia/Kolkata")) %>%
           filter(Valid == "Valid")
         trial$Valid <- NULL
@@ -254,17 +254,19 @@ server <- function(input, output, session) {
         tseries_df <- data.frame(date)
         all <- left_join(tseries_df, trial, by = "date")
       }
-      all
-      if(input$remove_9) {
-        col_interest <- 2:ncol(all)
-        all[ , col_interest] <- sapply(X = all[ , col_interest], 
-                                       FUN = function(x) as.numeric(as.character(x)))
-        all[ , col_interest] <- sapply(X = all[ , col_interest], 
-                                       FUN = function(x) ifelse(x < 0, NA, x))
-      } else { all }  
       site1_join_f1 <- all %>%
         mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) %>%
-        select(date, day, everything())
+        dplyr::select(date, day, everything())
+      if(input$remove_9) {
+        col_interest <- 3:ncol(site1_join_f1)
+        site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
+                                       FUN = function(x) as.numeric(as.character(x)))
+        site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
+                                       FUN = function(x) ifelse(x < 0, NA, x))
+      } else { site1_join_f1 }  
+      site1_join_f1 <- site1_join_f1 %>%
+        mutate(ratio = NA) %>%
+        dplyr::select(date, day, everything())
       ### Check for consecutive repeated value and remove them using consecutive 
       # difference as 0
       if(input$repeated) {
@@ -286,14 +288,18 @@ server <- function(input, output, session) {
           group_by(day) %>%
           mutate_all(funs(mean, sd), na.rm = TRUE) %>%
           ungroup() %>%
-          select(everything(), -date_mean, -date_sd)
+          dplyr::select(date, day, everything(), -date_mean, -date_sd)
         for(i in names(name)){
           data_list <- site1_join_f1 %>% 
             dplyr::select(date, - day, starts_with(i))
+          col_interest <- 2:ncol(data_list)
+          data_list[ , col_interest] <- sapply(X = data_list[ , col_interest], 
+                                                   FUN = function(x) 
+                                                     as.numeric(as.character(x)))
           ### Check if you have similar names matching eg - NO
           if(i == "NO") {
             data_list <- data_list %>%
-              select(-contains(c("NO2", "NOx")))
+              dplyr::select(-contains(c("NO2", "NOx")))
             mean <- paste0(i, "_mean")
             sd <- paste0(i, "_sd")
           } else {
@@ -318,17 +324,21 @@ server <- function(input, output, session) {
         }
         site1_join_f1 <- tseries_df %>%
           mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) %>%
-          select(-contains(c("_sd", "_mean")))
+          dplyr::select(date, day, everything(), -contains(c("_sd", "_mean")))
       } else { site1_join_f1 }  
       if(input$percent) {
         tseries_df <- data.frame(date)
         for(i in names(name)){
           data_list <- site1_join_f1 %>% 
             dplyr::select(date, day, starts_with(i))
+          col_interest <- 3:ncol(data_list)
+          data_list[ , col_interest] <- sapply(X = data_list[ , col_interest], 
+                                               FUN = function(x) 
+                                                 as.numeric(as.character(x)))
           ### Check if you have similar names matching eg - NO
           if(i == "NO") {
             data_list <- data_list %>%
-              select(-contains(c("NO2", "NOx")))
+              dplyr::select(-contains(c("NO2", "NOx")))
           } else {
             NULL
           }
@@ -338,7 +348,7 @@ server <- function(input, output, session) {
           data_list <- data_list %>% 
             group_by(day) %>%
             mutate_at(vars(contains(i)), list(no_hour = ~ sum(!is.na(.)))) %>%
-            select(-contains(c("_sd_no_hour", "_mean_no_hour")))
+            dplyr::select(-contains(c("_sd_no_hour", "_mean_no_hour")))
           old_no <- paste0(i, "_no_hour")
           names(data_list)[names(data_list) == old_no] <- 'no_hour'
           if(input$file == "15 min") {
@@ -354,7 +364,8 @@ server <- function(input, output, session) {
         }
         site1_join_f1 <- tseries_df %>%
           mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) 
-      } else { site1_join_f1 }  
+      } else { site1_join_f1 }
+      
       ### PM2.5 and PM10 ratio
       if("PM2.5" %in% colnames(site1_join_f1))
       {
@@ -373,7 +384,8 @@ server <- function(input, output, session) {
           site1_join_f1$ratio <- NA
         }
       } else { site1_join_f1 }
-      site1_join_f1
+      site1_join_f1 <- site1_join_f1 %>%
+        dplyr::select(date, day, everything())
     }
   })
   
@@ -408,7 +420,7 @@ server <- function(input, output, session) {
     } else {
       data_joined <- data_joined()
       data_joined <- data_joined %>%
-        select(- date, - day)
+        dplyr::select(- date, - day)
     }
     updateSelectInput(session, "palleInp", choices = names(data_joined))
     updateSelectInput(session, "palleInp1", choices = names(data_joined))
@@ -422,6 +434,7 @@ server <- function(input, output, session) {
     setDT(data_joined)
     data_joined[,(cols) := round(.SD, 2), .SDcols = cols]
     datatable(data_joined, options = list("pageLength" = 25)) %>% formatDate(1, "toLocaleString") 
+     
   })
   
   output$download <- downloadHandler(
@@ -526,10 +539,10 @@ server <- function(input, output, session) {
   data_summary <- reactive({
     data <- data_joined()
     data <- data %>%
-      select(everything(), - date)
+      dplyr::select(day, everything(), - date)
     if(input$avg == "no") {
       data <- data %>%
-        select(everything(), - day)
+        dplyr::select(everything(), - day)
       columns <- 1:ncol(data)
       data[, columns] <- lapply(columns, function(x) as.numeric(as.character(data[[x]])))
       tmp1 <- do.call(data.frame,
@@ -574,7 +587,7 @@ server <- function(input, output, session) {
     } else {
       data <- data %>%
         mutate(month  = format(day, "%b %Y")) %>%
-        select(day, month, everything())
+        dplyr::select(day, month, everything())
       data$group <- data[[input$avg]]
       data <- data %>%
         group_by(group) %>%
