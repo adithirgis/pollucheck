@@ -72,9 +72,9 @@ ui <- fluidPage(
                                               tags$hr(),
                                               radioButtons("type", "Data downloaded from",
                                                            choiceNames = list(
-                                                             HTML("<a href = 'https://openaq.org/#/countries/IN?_k=5ecycz'>OpenAQ</a>"), 
-                                                             HTML("<a href = 'https://www.airnow.gov/international/us-embassies-and-consulates/#India'>AirNow</a>"),
-                                                             HTML("<a href = 'https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing'>Pollution Control Board</a>")),
+                                                             HTML("<a href = 'https://openaq.org/#/countries/IN?_k=5ecycz' target = '_blank'>OpenAQ</a>"), 
+                                                             HTML("<a href = 'https://www.airnow.gov/international/us-embassies-and-consulates/#India' target = '_blank'>AirNow - US Embassies</a>"),
+                                                             HTML("<a href = 'https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing' target = '_blank'>Pollution Control Board</a>")),
                                                            choiceValues = list("oaq", "an", "cpcb"),
                                                            selected = "cpcb"),
                                               tags$hr(),
