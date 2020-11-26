@@ -264,9 +264,6 @@ server <- function(input, output, session) {
         site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
                                        FUN = function(x) ifelse(x < 0, NA, x))
       } else { site1_join_f1 }  
-      site1_join_f1 <- site1_join_f1 %>%
-        mutate(ratio = NA) %>%
-        dplyr::select(date, day, everything())
       ### Check for consecutive repeated value and remove them using consecutive 
       # difference as 0
       if(input$repeated) {
@@ -281,6 +278,10 @@ server <- function(input, output, session) {
       } else { site1_join_f1 }  
       name <- site1_join_f1 %>%
         dplyr::select(everything(), -day, -date)
+      site1_join_f1 <- site1_join_f1 %>%
+        mutate(ratio = NA) %>%
+        dplyr::select(date, day, everything())
+      
       if(input$exclude) {
         ### Now calculate the Mean and SD for all parameters to check for some 
         # conditions
@@ -289,6 +290,7 @@ server <- function(input, output, session) {
           mutate_all(funs(mean, sd), na.rm = TRUE) %>%
           ungroup() %>%
           dplyr::select(date, day, everything(), -date_mean, -date_sd)
+        tseries_df <- data.frame(date)
         for(i in names(name)){
           data_list <- site1_join_f1 %>% 
             dplyr::select(date, - day, starts_with(i))
@@ -310,19 +312,19 @@ server <- function(input, output, session) {
           z <- grep("_sd", colnames(data_list))
           z <- data_list[[z]]
           ### Apply the condition of removing values which are >< (Mean +- 3 * SD)
-          eyw <- as.numeric(as.character(input$ey))
           if(!nrow(data_list)){
             NULL 
           } else {
-            data_list[[i]] <- mapply(LLD, x, y, z, eyw)
+            data_list[[i]] <- mapply(LLD, x, y, z, as.numeric(as.character(input$ey)))
           }
-          tseries_df <- data.frame(date)
           tseries_df <- left_join(tseries_df, data_list, by = "date")
+          
         }
         site1_join_f1 <- tseries_df %>%
           mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) %>%
           dplyr::select(date, day, everything(), -contains(c("_sd", "_mean")))
       } else { site1_join_f1 }  
+      
       if(input$percent) {
         tseries_df <- data.frame(date)
         for(i in names(name)){
@@ -332,7 +334,6 @@ server <- function(input, output, session) {
           data_list[ , col_interest] <- sapply(X = data_list[ , col_interest], 
                                                FUN = function(x) 
                                                  as.numeric(as.character(x)))
-          ### Check if you have similar names matching eg - NO
           if(i == "NO") {
             data_list <- data_list %>%
               dplyr::select(-contains(c("NO2", "NOx")))
@@ -366,8 +367,9 @@ server <- function(input, output, session) {
       ### PM2.5 and PM10 ratio
       if("PM2.5" %in% colnames(site1_join_f1))
       {
-        a <- (site1_join_f1$PM2.5) > input$high_number
-        site1_join_f1$PM2.5 <- ifelse(a, NA, site1_join_f1$PM2.5)
+        site1_join_f1$PM2.5 <- ifelse(as.numeric(as.character(site1_join_f1$PM2.5)) > input$high_number, 
+                                      as.numeric(as.character(NA)), as.numeric(as.character(site1_join_f1$PM2.5)))
+        
         ### If PM10 values exist then check the rario of PM2.5 / PM10 and if it is 
         # greater than 1 then remove those values
         if("PM10" %in% colnames(site1_join_f1))
