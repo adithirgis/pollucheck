@@ -19,7 +19,7 @@ library(readr)
 library(openair)
 library(xlsx)
 library(openxlsx)
-library(rsconnect)
+library(janitor)
 
 ui <- fluidPage(
   h1("Analyse open source air quality data"),
