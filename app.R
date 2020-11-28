@@ -253,6 +253,55 @@ server <- function(input, output, session) {
         ) 
         tseries_df <- data.frame(date)
         all <- left_join(tseries_df, trial, by = "date")
+      } else if (input$type == "oaq") {
+        trial <- read.csv(input$file1$datapath, header = TRUE, sep = ",", 
+                          row.names = NULL)
+        trial <- trial %>%
+          dplyr::select("date" = local, "parameter" = parameter, "value" = value) %>%
+          mutate(date  = as.POSIXct(date, format = '%Y-%m-%dT%H:%M:%S+05:30', tz = "Asia/Kolkata"))
+        
+        ye <- format(trial[1, "date"], format = "%Y")
+        x1 <- as.POSIXct(paste0(ye, "-01-01 01:00:00"), 
+                         format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
+        ye <- format(tail(trial$date, n = 3)[1], format = "%Y")
+        x2 <- as.POSIXct(paste0(ye, "-12-31 23:00:00"), 
+                         format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
+        date <- seq(
+          from = as.POSIXct(x1, tz = "Asia/Kolkata"),
+          to = as.POSIXct(x2, tz = "Asia/Kolkata"),
+          by = "15 min"
+        ) 
+        tseries_df <- data.frame(date)
+        trial <- trial %>%
+          pivot_wider(names_from = parameter, values_from = value)
+        trial <- trial[order(trial$date), ]
+        all <- left_join(tseries_df, trial, by = "date") 
+        all$hour <- lubridate::ceiling_date(all$date, "hour")
+        all <- all %>%
+          group_by(hour) %>%
+          summarise_all(funs(mean), na.rm = TRUE) %>%
+          select(everything(), - date) %>%
+          select("date" = hour, everything())
+        if("pm25" %in% colnames(all))
+        {
+          all <- all %>%
+            select(date, everything(), "PM2.5" = pm25)
+        }
+        if("nox" %in% colnames(all))
+        {
+          all <- all %>%
+            select(date, everything(), "NOx" = nox)
+        }
+        if("no2" %in% colnames(all))
+        {
+          all <- all %>%
+            select(date, everything(), "NO2" = no2)
+        }
+        if("no" %in% colnames(all))
+        {
+          all <- all %>%
+            select(date, everything(), "NO" = no)
+        }
       }
       site1_join_f1 <- all %>%
         mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) %>%
@@ -618,3 +667,52 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 
 
+# ggplot(Ref2, aes(x = SE_median)) + 
+# geom_histogram(aes(y = ..count..), fill = "deepskyblue", 
+#                color = "black", bins = 30) +
+#   labs(y = "count", x = "CO???- SE of the  medians / Median (using the drive pass means)") +
+#   facet_grid(Road_type ~ Area) + theme_minimal() + 
+#   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
+#         axis.title = element_text(size = 16, colour = "black", face = "bold"),
+#         axis.text = element_text(size = 14, colour = "black", face = "bold"),
+#         strip.text = element_text(size = 14, colour = "black", face = "bold")) +
+#   scale_y_continuous() + scale_x_continuous(limits = c(0, 1.25), breaks = c (0, 0.5, 1)) +
+#   geom_text(aes(label = paste0("n = ", name)), x = 1.0, y = 900, colour = "black", size = 4)
+
+
+# fin_df_all$Road_type <- factor(fin_df_all$Road_type, levels = c("Highway", "Arterial",
+#                                                                 "Residential"))
+# cols <- c("Highway" = "maroon", "Arterial" = "orange", "Residential" = "steelblue")
+# ticks <- qnorm(c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99))
+# labels <- c(1, 5, 10, 25, 50, 75, 90, 95, 99) 
+# p2 <- ggplot(fin_df_all, aes(sample = log10(BC_c), color = Road_type)) + 
+#   stat_qq(size = 2, geom = 'point') + 
+#   stat_qq_line(size = 1, linetype = 2) + scale_color_manual(values = cols) + 
+#   scale_x_continuous(breaks = ticks, labels = labels) + 
+#   labs(x = "Emperical percentile",
+#        y = expression(paste("BC" ," (", mu, "g",~m^{-3}, ")"))) + theme_ARU +
+#   theme(legend.text = element_blank())
+
+
+
+# reg_eqn <- function(x) {
+#   R_sq <- round(as.numeric(x$adj.r.squared), digits = 2)
+#   int <- round(coef(x)[1], digits = 2)
+#   slope <- round(coef(x)[2], digits = 2)
+#   eqn <- paste("y = ", slope, "x + (", int, ")")
+#   return(eqn)
+# }
+# m <- lm(PM2.5_02 ~ PM2.5_03, Final)
+# s <- summary(m)
+# r <- round(s$adj.r.squared, digits = 2)
+# Final$diffSq <- (Final$PM2.5_02 - Final$PM2.5_03) ^ 2 
+# mean_diff_sqr <- mean(Final$diffSq, na.rm = TRUE)
+# rmse <- round(sqrt(mean_diff_sqr), digits = 2)
+# 
+# ggplot(data = Final, aes(x = PM2.5_03, y = PM2.5_02)) +
+#   geom_abline(slope = 1, intercept = 0, color = "black", size = 0.8, linetype = "dashed") + geom_point(alpha = 0.3, color = "red") + annotate("text", label = reg_eqn(s), x = 30,  y = 80, size = 5) + scale_x_continuous(limits = c(0, 100)) +
+#   scale_y_continuous(limits = c(0, 100)) +
+#   geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x) +
+#   labs(x = "PM 2.5 - 603",
+#        y = "PM 2.5 - 602",
+#        subtitle = paste0("1 min measurements; N = 1090 ", "; RMSE:  ", rmse, " (µg/m³); R square: ", r)) + theme_minimal() + theme1 + theme(plot.subtitle = element_text(size = 12, face = "bold"),)
