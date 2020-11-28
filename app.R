@@ -60,7 +60,8 @@ ui <- fluidPage(
                                                           label = "Averaging period",
                                                           c("None" = "no",
                                                             "Daily" = "day",
-                                                            "Monthly" = "month"),
+                                                            "Monthly" = "month",
+                                                            "Month" = "monthly"),
                                                           multiple = FALSE, 
                                                           selected = "None"),
                                               tags$hr(),
@@ -75,6 +76,7 @@ ui <- fluidPage(
                                                           multiple = FALSE, "Select"),
                                               tags$hr(),
                                               actionButton("reg", "Linear Regression Plot")),
+                             conditionalPanel(condition = "input.tabs1 == 7"),
                              conditionalPanel(condition = "input.tabs1 == 4",
                                               tags$hr(),
                                               selectInput("palleInp1", "Plot this parameter",
@@ -166,7 +168,11 @@ ui <- fluidPage(
                                 value = 4,
                                 title = "openair package plots",
                                 plotOutput("plot5", height = 600),
-                                plotOutput("plot4", height = 600)))
+                                plotOutput("plot4", height = 600)),
+                              tabPanel(
+                                value = 7,
+                                title = "Read Me",
+                                textOutput("text")))
   )))
 
 
@@ -537,7 +543,7 @@ server <- function(input, output, session) {
       write.csv(data_joined, fname)
     })
   
-  
+  output$text <- renderText({ "This app helps in Analysing all open source air quality data in India.Please follow this project here - https://github.com/adithirgis/OpenSourceAirQualityApp and suggests features or changes or report errors to adithiru095@gmail.com" })
   theme1 <- reactive({
     theme1 <- list(geom_line(size = 0.6, color = "seagreen"),
                    theme_minimal(),
@@ -603,7 +609,7 @@ server <- function(input, output, session) {
         labs(y = input$palleInp, x = "") + 
         stat_summary(aes(y = y), fun.y = "mean", colour = "seagreen", 
                      geom = "point", size = 4)  +
-        theme2()
+        theme2() + theme(axis.text.x = element_text(size = 10, face = "bold", angle = 90))
     }
   })
   output$plot4 <- renderPlot({
@@ -674,16 +680,13 @@ server <- function(input, output, session) {
       m <- lm(y ~ x, data)
       s <- summary(m)
       r <- round(s$adj.r.squared, digits = 2)
-      diffSq <- (data[[input$DepVar]] - data[[input$InDepVar]]) ^ 2
-      mean_diff_sqr <- mean(diffSq, na.rm = TRUE)
-      rmse <- round(sqrt(mean_diff_sqr), digits = 2)
       ggplot(data = data, aes(x = x, y = y)) +
         geom_abline(slope = 1, intercept = 0, color = "black", size = 0.8, linetype = "dashed") + 
         geom_point(alpha = 0.5, color = "red") + 
         geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x, color = "deepskyblue") +
         labs(x = input$InDepVar,
              y = input$DepVar,
-             subtitle = paste0("RMSE: ", rmse, "; R square: ", r, "; Equation: ", reg_eqn(s))) + 
+             subtitle = paste0("R square: ", r, "; Equation: ", reg_eqn(s))) + 
         theme2()
     }
   })
@@ -738,8 +741,9 @@ server <- function(input, output, session) {
       tmp <- t(tmp)
     } else {
       data <- data %>%
-        mutate(month  = format(day, "%b %Y")) %>%
-        dplyr::select(day, month, everything())
+        mutate(month  = format(day, "%b %Y"),
+               monthly = format(day, "%b")) %>%
+        dplyr::select(day, month, monthly, everything())
       data$group <- data[[input$avg]]
       data <- data %>%
         group_by(group) %>%
