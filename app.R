@@ -36,9 +36,9 @@ ui <- fluidPage(
                              conditionalPanel(condition = "input.tabs1 == 3",
                                               tags$hr(),
                                               selectInput("palleInp", "Plot this parameter",
+                                                          multiple = FALSE, 
                                                           "Select"),
                                               tags$hr(),
-                                              
                                               actionButton("ts", "Time Series"),
                                               tags$hr(),
                                               actionButton("diurnal", "Diurnal Plot"),
@@ -48,7 +48,7 @@ ui <- fluidPage(
                              conditionalPanel(condition = "input.tabs1 == 5",
                                               tags$hr(),
                                               selectInput("palleInp2", "Plot this parameter",
-                                                          "Select"),
+                                                          multiple = FALSE, "Select"),
                                               tags$hr(),
                                               actionButton("freq", "Frequency Distribution Plot"),
                                               tags$hr(),
@@ -61,13 +61,24 @@ ui <- fluidPage(
                                                           c("None" = "no",
                                                             "Daily" = "day",
                                                             "Monthly" = "month"),
+                                                          multiple = FALSE, 
                                                           selected = "None"),
                                               tags$hr(),
                                               downloadButton('download_stats', "Download as csv")),
+                             conditionalPanel(condition = "input.tabs1 == 6",
+                                              tags$hr(),
+                                              selectInput("DepVar", 
+                                                          "Dependent Variable", 
+                                                          multiple = FALSE, "Select"),
+                                              selectInput("InDepVar", 
+                                                          "Independent Variable", 
+                                                          multiple = FALSE, "Select"),
+                                              tags$hr(),
+                                              actionButton("reg", "Linear Regression Plot")),
                              conditionalPanel(condition = "input.tabs1 == 4",
                                               tags$hr(),
                                               selectInput("palleInp1", "Plot this parameter",
-                                                          "Select"),
+                                                          multiple = FALSE, "Select"),
                                               tags$hr(),
                                               actionButton("cp", "Calendar Plot"),
                                               tags$hr(),
@@ -147,6 +158,10 @@ ui <- fluidPage(
                                 title = "Statistics Plots",
                                 plotOutput("plot6", width = 800),
                                 plotOutput("plot7", width = 800)),
+                              tabPanel(
+                                value = 6,
+                                title = "Linear Regression",
+                                plotOutput("plot8", width = 800)),
                               tabPanel(
                                 value = 4,
                                 title = "openair package plots",
@@ -447,7 +462,8 @@ server <- function(input, output, session) {
         }
       } else { site1_join_f1 }
       site1_join_f1 <- site1_join_f1 %>%
-        dplyr::select(date, day, everything())
+        dplyr::select(date, day, everything()) %>%
+        janitor::remove_empty("cols")
     }
   })
   
@@ -483,6 +499,10 @@ server <- function(input, output, session) {
     data <- CPCB_f()
     return(data)
   })
+  data_reg <- eventReactive(input$reg, {
+    data <- CPCB_f()
+    return(data)
+  })
   
   observe({
     if (is.null(input$file1)) {
@@ -495,6 +515,8 @@ server <- function(input, output, session) {
     updateSelectInput(session, "palleInp", choices = names(data_joined))
     updateSelectInput(session, "palleInp1", choices = names(data_joined))
     updateSelectInput(session, "palleInp2", choices = names(data_joined))
+    updateSelectInput(session, "DepVar", choices = names(data_joined))
+    updateSelectInput(session, "InDepVar", choices = names(data_joined))
   })
   
   output$table1 <- DT::renderDataTable({
@@ -526,6 +548,16 @@ server <- function(input, output, session) {
                          panel.border = element_rect(colour = "black",
                                                      fill = NA, size = 1.2)))
   })
+  theme2 <- reactive({
+    theme2 <- list(theme_minimal(),
+                   theme(legend.text = element_text(size = 18),
+                         plot.title = element_text(size = 14, face = "bold"),
+                         plot.subtitle = element_text(size = 16, face = "bold"),
+                         axis.title = element_text(size = 20, face = "bold"),
+                         axis.text = element_text(size = 18, face = "bold"),
+                         panel.border = element_rect(colour = "black",
+                                                     fill = NA, size = 1.2)))
+  })
   
   output$plot1 <- renderPlot({
     if (is.null(input$file1)) { NULL }
@@ -537,7 +569,6 @@ server <- function(input, output, session) {
              x = "") + theme1()
     }
   })
-  
   output$plot2 <- renderPlot({
     if (is.null(input$file1)) { NULL }
     else {
@@ -572,12 +603,7 @@ server <- function(input, output, session) {
         labs(y = input$palleInp, x = "") + 
         stat_summary(aes(y = y), fun.y = "mean", colour = "seagreen", 
                      geom = "point", size = 4)  +
-        theme_minimal() + theme(legend.text = element_text(size = 18),
-                                axis.title = element_text(size = 20, face = "bold"),
-                                axis.text.y = element_text(size = 18, face = "bold"),
-                                axis.text.x = element_text(size = 10, face = "bold", angle = 90),
-                                panel.border = element_rect(colour = "black",
-                                                            fill = NA, size = 1.2))
+        theme2()
     }
   })
   output$plot4 <- renderPlot({
@@ -614,12 +640,7 @@ server <- function(input, output, session) {
       ggplot(data, aes(x = y)) +
         geom_histogram(aes(y = ..count..), fill = "deepskyblue",
                        color = "black", bins = 30) +
-        labs(y = "count", x = input$palleInp2) + theme_minimal() + 
-        theme(legend.text = element_text(size = 18),
-              plot.title = element_text(size = 14, face = "bold"),
-              axis.title = element_text(size = 20, face = "bold"),
-              axis.text = element_text(size = 18, face = "bold"),
-              panel.border = element_rect(colour = "black", fill = NA, size = 1.2))
+        labs(y = "count", x = input$palleInp2) + theme2()
     }
   })
   output$plot7 <- renderPlot({
@@ -630,19 +651,42 @@ server <- function(input, output, session) {
       ticks <- qnorm(c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99))
       labels <- c(1, 5, 10, 25, 50, 75, 90, 95, 99)
       ggplot(data, aes(sample = log10(y))) +
-        stat_qq(size = 2, geom = 'point') +
+        stat_qq(size = 2, geom = 'point', color = "deepskyblue") +
         stat_qq_line(size = 1, linetype = 2) + 
         scale_x_continuous(breaks = ticks, labels = labels) +
         labs(x = "Emperical percentile",
-             y = input$palleInp2) + theme_minimal() + 
-        theme(legend.text = element_text(size = 18),
-              plot.title = element_text(size = 14, face = "bold"),
-              axis.title = element_text(size = 20, face = "bold"),
-              axis.text = element_text(size = 18, face = "bold"),
-              panel.border = element_rect(colour = "black", fill = NA, size = 1.2))
+             y = input$palleInp2) + theme2()
     }
   })
-  
+  output$plot8 <- renderPlot({
+    if (is.null(input$file1)) { NULL }
+    else {
+      data <- data_reg()
+      y <- as.numeric(as.character(data[[input$DepVar]]))
+      x <- as.numeric(as.character(data[[input$InDepVar]]))
+      reg_eqn <- function(x) {
+        R_sq <- round(as.numeric(x$adj.r.squared), digits = 2)
+        int <- round(coef(x)[1], digits = 2)
+        slope <- round(coef(x)[2], digits = 2)
+        eqn <- paste("y = ", slope, "x + (", int, ")")
+        return(eqn)
+      }
+      m <- lm(y ~ x, data)
+      s <- summary(m)
+      r <- round(s$adj.r.squared, digits = 2)
+      diffSq <- (data[[input$DepVar]] - data[[input$InDepVar]]) ^ 2
+      mean_diff_sqr <- mean(diffSq, na.rm = TRUE)
+      rmse <- round(sqrt(mean_diff_sqr), digits = 2)
+      ggplot(data = data, aes(x = x, y = y)) +
+        geom_abline(slope = 1, intercept = 0, color = "black", size = 0.8, linetype = "dashed") + 
+        geom_point(alpha = 0.5, color = "red") + 
+        geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x, color = "deepskyblue") +
+        labs(x = input$InDepVar,
+             y = input$DepVar,
+             subtitle = paste0("RMSE: ", rmse, "; R square: ", r, "; Equation: ", reg_eqn(s))) + 
+        theme2()
+    }
+  })
   
   data_summary <- reactive({
     data <- data_joined()
@@ -730,24 +774,3 @@ shinyApp(ui, server)
 
 
 
-# reg_eqn <- function(x) {
-#   R_sq <- round(as.numeric(x$adj.r.squared), digits = 2)
-#   int <- round(coef(x)[1], digits = 2)
-#   slope <- round(coef(x)[2], digits = 2)
-#   eqn <- paste("y = ", slope, "x + (", int, ")")
-#   return(eqn)
-# }
-# m <- lm(PM2.5_02 ~ PM2.5_03, Final)
-# s <- summary(m)
-# r <- round(s$adj.r.squared, digits = 2)
-# Final$diffSq <- (Final$PM2.5_02 - Final$PM2.5_03) ^ 2 
-# mean_diff_sqr <- mean(Final$diffSq, na.rm = TRUE)
-# rmse <- round(sqrt(mean_diff_sqr), digits = 2)
-# 
-# ggplot(data = Final, aes(x = PM2.5_03, y = PM2.5_02)) +
-#   geom_abline(slope = 1, intercept = 0, color = "black", size = 0.8, linetype = "dashed") + geom_point(alpha = 0.3, color = "red") + annotate("text", label = reg_eqn(s), x = 30,  y = 80, size = 5) + scale_x_continuous(limits = c(0, 100)) +
-#   scale_y_continuous(limits = c(0, 100)) +
-#   geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x) +
-#   labs(x = "PM 2.5 - 603",
-#        y = "PM 2.5 - 602",
-#        subtitle = paste0("1 min measurements; N = 1090 ", "; RMSE:  ", rmse, " (µg/m³); R square: ", r)) + theme_minimal() + theme1 + theme(plot.subtitle = element_text(size = 12, face = "bold"),)
