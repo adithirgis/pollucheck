@@ -45,6 +45,15 @@ ui <- fluidPage(
                                               tags$hr(),
                                               actionButton("box", "Monthly Box Plot"),
                                               tags$hr()),
+                             conditionalPanel(condition = "input.tabs1 == 5",
+                                              tags$hr(),
+                                              selectInput("palleInp2", "Plot this parameter",
+                                                          "Select"),
+                                              tags$hr(),
+                                              actionButton("freq", "Frequency Distribution Plot"),
+                                              tags$hr(),
+                                              actionButton("qq", "QQ Plot"),
+                                              tags$hr()),
                              conditionalPanel(condition = "input.tabs1 == 2",
                                               tags$hr(),
                                               selectInput("avg",
@@ -133,6 +142,11 @@ ui <- fluidPage(
                                 plotOutput("plot1", width = 800),
                                 plotOutput("plot2", width = 800),
                                 plotOutput("plot3", width = 800)),
+                              tabPanel(
+                                value = 5,
+                                title = "Statistics Plots",
+                                plotOutput("plot6", width = 800),
+                                plotOutput("plot7", width = 800)),
                               tabPanel(
                                 value = 4,
                                 title = "openair package plots",
@@ -461,6 +475,14 @@ server <- function(input, output, session) {
     data <- CPCB_f()
     return(data)
   })
+  data_qq <- eventReactive(input$qq, {
+    data <- CPCB_f()
+    return(data)
+  })
+  data_freq <- eventReactive(input$freq, {
+    data <- CPCB_f()
+    return(data)
+  })
   
   observe({
     if (is.null(input$file1)) {
@@ -472,6 +494,7 @@ server <- function(input, output, session) {
     }
     updateSelectInput(session, "palleInp", choices = names(data_joined))
     updateSelectInput(session, "palleInp1", choices = names(data_joined))
+    updateSelectInput(session, "palleInp2", choices = names(data_joined))
   })
   
   output$table1 <- DT::renderDataTable({
@@ -583,6 +606,43 @@ server <- function(input, output, session) {
                             par.settings = list(fontsize = list(text = 15)))
     }
   })
+  output$plot6 <- renderPlot({
+    if (is.null(input$file1)) { NULL }
+    else {
+      data <- data_freq()
+      y <- as.numeric(as.character(data[[input$palleInp2]]))
+      ggplot(data, aes(x = y)) +
+        geom_histogram(aes(y = ..count..), fill = "deepskyblue",
+                       color = "black", bins = 30) +
+        labs(y = "count", x = input$palleInp2) + theme_minimal() + 
+        theme(legend.text = element_text(size = 18),
+              plot.title = element_text(size = 14, face = "bold"),
+              axis.title = element_text(size = 20, face = "bold"),
+              axis.text = element_text(size = 18, face = "bold"),
+              panel.border = element_rect(colour = "black", fill = NA, size = 1.2))
+    }
+  })
+  output$plot7 <- renderPlot({
+    if (is.null(input$file1)) { NULL }
+    else {
+      data <- data_qq()
+      y <- as.numeric(as.character(data[[input$palleInp2]]))
+      ticks <- qnorm(c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99))
+      labels <- c(1, 5, 10, 25, 50, 75, 90, 95, 99)
+      ggplot(data, aes(sample = log10(y))) +
+        stat_qq(size = 2, geom = 'point') +
+        stat_qq_line(size = 1, linetype = 2) + 
+        scale_x_continuous(breaks = ticks, labels = labels) +
+        labs(x = "Emperical percentile",
+             y = input$palleInp2) + theme_minimal() + 
+        theme(legend.text = element_text(size = 18),
+              plot.title = element_text(size = 14, face = "bold"),
+              axis.title = element_text(size = 20, face = "bold"),
+              axis.text = element_text(size = 18, face = "bold"),
+              panel.border = element_rect(colour = "black", fill = NA, size = 1.2))
+    }
+  })
+  
   
   data_summary <- reactive({
     data <- data_joined()
@@ -667,31 +727,6 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 
 
-# ggplot(Ref2, aes(x = SE_median)) + 
-# geom_histogram(aes(y = ..count..), fill = "deepskyblue", 
-#                color = "black", bins = 30) +
-#   labs(y = "count", x = "CO???- SE of the  medians / Median (using the drive pass means)") +
-#   facet_grid(Road_type ~ Area) + theme_minimal() + 
-#   theme(panel.border = element_rect(colour = "black", fill = NA, size = 1),
-#         axis.title = element_text(size = 16, colour = "black", face = "bold"),
-#         axis.text = element_text(size = 14, colour = "black", face = "bold"),
-#         strip.text = element_text(size = 14, colour = "black", face = "bold")) +
-#   scale_y_continuous() + scale_x_continuous(limits = c(0, 1.25), breaks = c (0, 0.5, 1)) +
-#   geom_text(aes(label = paste0("n = ", name)), x = 1.0, y = 900, colour = "black", size = 4)
-
-
-# fin_df_all$Road_type <- factor(fin_df_all$Road_type, levels = c("Highway", "Arterial",
-#                                                                 "Residential"))
-# cols <- c("Highway" = "maroon", "Arterial" = "orange", "Residential" = "steelblue")
-# ticks <- qnorm(c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99))
-# labels <- c(1, 5, 10, 25, 50, 75, 90, 95, 99) 
-# p2 <- ggplot(fin_df_all, aes(sample = log10(BC_c), color = Road_type)) + 
-#   stat_qq(size = 2, geom = 'point') + 
-#   stat_qq_line(size = 1, linetype = 2) + scale_color_manual(values = cols) + 
-#   scale_x_continuous(breaks = ticks, labels = labels) + 
-#   labs(x = "Emperical percentile",
-#        y = expression(paste("BC" ," (", mu, "g",~m^{-3}, ")"))) + theme_ARU +
-#   theme(legend.text = element_blank())
 
 
 
