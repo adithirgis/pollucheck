@@ -9,8 +9,7 @@ Hi there! 👋
 
 ⚡ Fun fact: Its a tidy code!
 
+Works for Indian Air Quality Data!
 
-
-
-PR for suggestions and feedback!
+PR for suggestions and feedback! 
  
