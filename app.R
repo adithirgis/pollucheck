@@ -14,6 +14,7 @@ library(readr)
 library(openair)
 library(xlsx)
 library(janitor)
+library(patchwork)
 
 
 ui <- fluidPage(
@@ -111,7 +112,7 @@ ui <- fluidPage(
                                               tags$hr(),
                                               checkboxInput('repeated', 'Remove consecutive repeated measurements'),
                                               tags$hr(),
-                                              checkboxInput('exclude', 'Cleaning based on Mean and Std Dev'),
+                                              checkboxInput('exclude', 'Remove outliers based on Mean and Std Dev'),
                                               conditionalPanel(
                                                 condition = "input.exclude == true",
                                                 numericInput("ey", "Specify a multiple for removing outliers (Mean + X*Std Dev)",
@@ -126,6 +127,11 @@ ui <- fluidPage(
                                               numericInput("high_number",
                                                            "Remove PM2.5 and PM10 values above",
                                                            value = 9999),
+                                              tags$hr(),
+                                              radioButtons("avg_hour", "Which values",
+                                                           c("Hourly" = "hour",
+                                                             "Daily" = "daily"), 
+                                                           selected = "daily"),
                                               tags$hr(),
                                               actionButton("hourly", "Show Data"),
                                               downloadButton('download', "Download as csv"),
@@ -441,6 +447,9 @@ server <- function(input, output, session) {
       site1_join_f1 <- site1_join_f1 %>%
         dplyr::select(date, day, everything()) %>%
         janitor::remove_empty("cols")
+      if(input$avg_hour == "daily") {
+        site1_join_f1 <- openair::timeAverage(site1_join_f1, avg.time = "day")
+      } else { site1_join_f1 }
     }
   })
   
@@ -448,11 +457,6 @@ server <- function(input, output, session) {
     data <- CPCB_f()
     return(data)
   })
-  # data_joined_daily <- eventReactive(input$daily, {
-  #   data <- CPCB_f()
-  #   data <- openair::timeAverage(data, avg.time = "day")
-  #   return(data)
-  # })
   data_plot <- eventReactive(input$ts, {
     data <- CPCB_f()
     return(data)
@@ -508,8 +512,10 @@ server <- function(input, output, session) {
                                    FUN = function(x) as.numeric(as.character(x)))
     setDT(data_joined)
     data_joined[,(cols) := round(.SD, 2), .SDcols = cols]
-    datatable(data_joined, options = list("pageLength" = 25)) %>% formatDate(1, "toLocaleString") 
-     
+    if(input$avg_hour == "daily") {
+      data_joined$day <- NULL
+      datatable(data_joined, options = list("pageLength" = 25)) 
+    } else { datatable(data_joined, options = list("pageLength" = 25)) %>% formatDate(1, "toLocaleString") }
   })
   
   output$download <- downloadHandler(
@@ -563,10 +569,14 @@ server <- function(input, output, session) {
         group_by(hour) %>%
         summarise_all(funs(mean, sd), na.rm = TRUE)
       data$hour <- as.numeric(as.character(data$hour))
-      ggplot(data, aes(hour, mean)) + geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), 
-                                                    color = "seagreen") + 
-        scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
-        labs(y = input$palleInp, x = "hour of the day") + theme1()
+      if(input$avg_hour == "daily") {
+        NULL
+      } else { 
+        ggplot(data, aes(hour, mean)) + geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), 
+                                                      color = "seagreen") + 
+          scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
+          labs(y = input$palleInp, x = "hour of the day") + theme1()
+        }
     }
   })
   output$plot3 <- renderPlot({
@@ -594,12 +604,29 @@ server <- function(input, output, session) {
       data <- data_tv()
       y <- as.numeric(as.character(data[[input$palleInp1]]))
       if(input$stat_tv == "mean") {
+        if(input$avg_hour == "daily") {
+          plot_my <- openair::timeVariation(data, pollutant = input$palleInp1, 
+                                            par.settings = list(fontsize = list(text = 15)))
+          p1 <- plot(plot_my, subset = "day")
+          p2 <- plot(plot_my, subset = "month")
+          p1 + p2
+        } else { 
         openair::timeVariation(data, pollutant = input$palleInp1, 
                                par.settings = list(fontsize = list(text = 15)))
+        }
       } else if(input$stat_tv == "median") {
+        if(input$avg_hour == "daily") {
+          plot_my <- openair::timeVariation(data, pollutant = input$palleInp1, stati = "median", 
+                                            conf.int = c(0.75, 0.99),
+                                            par.settings = list(fontsize = list(text = 15)))
+          p1 <- plot(plot_my, subset = "day")
+          p2 <- plot(plot_my, subset = "month")
+          p1 + p2
+        } else { 
         openair::timeVariation(data, pollutant = input$palleInp1, stati = "median", 
                                conf.int = c(0.75, 0.99),
                                par.settings = list(fontsize = list(text = 15)))
+        }
       }
       
     }
