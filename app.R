@@ -604,29 +604,12 @@ server <- function(input, output, session) {
       data <- data_tv()
       y <- as.numeric(as.character(data[[input$palleInp1]]))
       if(input$stat_tv == "mean") {
-        if(input$avg_hour == "daily") {
-          plot_my <- openair::timeVariation(data, pollutant = input$palleInp1, 
-                                            par.settings = list(fontsize = list(text = 15)))
-          p1 <- plot(plot_my, subset = "day")
-          p2 <- plot(plot_my, subset = "month")
-          p1 + p2
-        } else { 
         openair::timeVariation(data, pollutant = input$palleInp1, 
                                par.settings = list(fontsize = list(text = 15)))
-        }
       } else if(input$stat_tv == "median") {
-        if(input$avg_hour == "daily") {
-          plot_my <- openair::timeVariation(data, pollutant = input$palleInp1, stati = "median", 
-                                            conf.int = c(0.75, 0.99),
-                                            par.settings = list(fontsize = list(text = 15)))
-          p1 <- plot(plot_my, subset = "day")
-          p2 <- plot(plot_my, subset = "month")
-          p1 + p2
-        } else { 
         openair::timeVariation(data, pollutant = input$palleInp1, stati = "median", 
                                conf.int = c(0.75, 0.99),
                                par.settings = list(fontsize = list(text = 15)))
-        }
       }
       
     }
