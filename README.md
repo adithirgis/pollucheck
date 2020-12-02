@@ -9,6 +9,8 @@ Hi there! 👋
 
 ⚡ Fun fact: Its a tidy code!
 
+The link for this app is this - https://aruapps.shinyapps.io/OpenSourceAirQualityApp/.
+
 Works for Indian Air Quality Data!
 
 PR for suggestions and feedback! 
