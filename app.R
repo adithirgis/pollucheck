@@ -197,7 +197,21 @@ server <- function(input, output, session) {
       }
     }
     per1 <- input$per
-    
+    date_ts <- function(file, time_period) {
+      ye <- format(file[1, "date"], format = "%Y")
+      x1 <- as.POSIXct(paste0(ye, "-01-01 01:00:00"), 
+                       format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
+      ye <- format(tail(file$date, n = 3)[1], format = "%Y")
+      x2 <- as.POSIXct(paste0(ye, "-12-31 23:00:00"), 
+                       format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
+      date <- seq(
+        from = as.POSIXct(x1, tz = "Asia/Kolkata"),
+        to = as.POSIXct(x2, tz = "Asia/Kolkata"),
+        by = time_period
+      ) 
+      date
+      return(date)
+    }
     if (is.null(input$file1)) {
       return(NULL)
     } else {
@@ -212,22 +226,11 @@ server <- function(input, output, session) {
       dt_s <- split(trial[, -ncol(trial)], trial$tbl_id)
       
       ### Three dataframes representing different parameters; Also the start and 
-      # the end date was used from each fiel to create a time series dataframe
+      # the end date was used from each file to create a time series dataframe
       PM <- data.frame(dt_s$`0`) %>%
         mutate(date = as.POSIXct(date, format = '%d-%m-%Y %H:%M:%S', tz = "Asia/Kolkata"))
-      ye <- format(PM[1, "date"], format = "%Y")
-      x1 <- as.POSIXct(paste0(ye, "-01-01 01:00:00"), 
-                       format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
-      ye <- format(tail(PM$date, n = 3)[1], format = "%Y")
-      x2 <- as.POSIXct(paste0(ye, "-12-31 23:00:00"), 
-                       format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
-      date <- seq(
-        from = as.POSIXct(x1, tz = "Asia/Kolkata"),
-        to = as.POSIXct(x2, tz = "Asia/Kolkata"),
-        by = input$file
-      ) 
+      date <- date_ts(PM, input$file)
       tseries_df <- data.frame(date)
-      
       ### Join the three idfferent dataframe into a single one
       site1_join <- left_join(tseries_df, PM, by = "date")
       
@@ -259,17 +262,7 @@ server <- function(input, output, session) {
           mutate(date  = as.POSIXct(date, format = '%Y-%m-%d %I:%M %p', tz = "Asia/Kolkata")) %>%
           filter(Valid == "Valid")
         trial$Valid <- NULL
-        ye <- format(trial[1, "date"], format = "%Y")
-        x1 <- as.POSIXct(paste0(ye, "-01-01 01:00:00"), 
-                         format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
-        ye <- format(tail(trial$date, n = 3)[1], format = "%Y")
-        x2 <- as.POSIXct(paste0(ye, "-12-31 23:00:00"), 
-                         format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
-        date <- seq(
-          from = as.POSIXct(x1, tz = "Asia/Kolkata"),
-          to = as.POSIXct(x2, tz = "Asia/Kolkata"),
-          by = "60 min"
-        ) 
+        date <- date_ts(trial, "60 min")
         tseries_df <- data.frame(date)
         all <- left_join(tseries_df, trial, by = "date")
       } else if (input$type == "oaq") {
@@ -279,17 +272,7 @@ server <- function(input, output, session) {
           dplyr::select("date" = local, "parameter" = parameter, "value" = value) %>%
           mutate(date  = as.POSIXct(date, format = '%Y-%m-%dT%H:%M:%S+05:30', tz = "Asia/Kolkata"))
         
-        ye <- format(trial[1, "date"], format = "%Y")
-        x1 <- as.POSIXct(paste0(ye, "-01-01 01:00:00"), 
-                         format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
-        ye <- format(tail(trial$date, n = 3)[1], format = "%Y")
-        x2 <- as.POSIXct(paste0(ye, "-12-31 23:00:00"), 
-                         format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
-        date <- seq(
-          from = as.POSIXct(x1, tz = "Asia/Kolkata"),
-          to = as.POSIXct(x2, tz = "Asia/Kolkata"),
-          by = "15 min"
-        ) 
+        date <- date_ts(trial, "15 min")
         tseries_df <- data.frame(date)
         trial <- trial %>%
           pivot_wider(names_from = parameter, values_from = value)
@@ -299,27 +282,27 @@ server <- function(input, output, session) {
         all <- all %>%
           group_by(hour) %>%
           summarise_all(funs(mean), na.rm = TRUE) %>%
-          select(everything(), - date) %>%
-          select("date" = hour, everything())
+          dplyr::select(everything(), - date) %>%
+          dplyr::select("date" = hour, everything())
         if("pm25" %in% colnames(all))
         {
           all <- all %>%
-            select(date, everything(), "PM2.5" = pm25)
+            dplyr::select(date, everything(), "PM2.5" = pm25)
         }
         if("nox" %in% colnames(all))
         {
           all <- all %>%
-            select(date, everything(), "NOx" = nox)
+            dplyr::select(date, everything(), "NOx" = nox)
         }
         if("no2" %in% colnames(all))
         {
           all <- all %>%
-            select(date, everything(), "NO2" = no2)
+            dplyr::select(date, everything(), "NO2" = no2)
         }
         if("no" %in% colnames(all))
         {
           all <- all %>%
-            select(date, everything(), "NO" = no)
+            dplyr::select(date, everything(), "NO" = no)
         }
       }
       site1_join_f1 <- all %>%
@@ -385,6 +368,10 @@ server <- function(input, output, session) {
           } else {
             data_list[[i]] <- mapply(LLD, x, y, z, as.numeric(as.character(input$ey)))
           }
+          col_interest <- 2:ncol(data_list)
+          data_list[ , col_interest] <- sapply(X = data_list[ , col_interest],
+                                               FUN = function(x)
+                                                 as.numeric(as.character(x)))
           tseries_df <- left_join(tseries_df, data_list, by = "date")
           
         }
@@ -433,8 +420,8 @@ server <- function(input, output, session) {
       } else { site1_join_f1 }
       
       ### PM2.5 and PM10 ratio
-      if("PM2.5" %in% colnames(site1_join_f1))
-      {
+      if("PM2.5" %in% colnames(site1_join_f1)) {
+        
         site1_join_f1$PM2.5 <- ifelse(as.numeric(as.character(site1_join_f1$PM2.5)) > input$high_number, 
                                       as.numeric(as.character(NA)), as.numeric(as.character(site1_join_f1$PM2.5)))
         
