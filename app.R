@@ -1,16 +1,11 @@
 library(shiny)
 library(Cairo)
 library(DT)
-library(plotly)
 library(data.table)
-library(stringr)
 library(dplyr)
 library(ggplot2)
 library(htmltools)
 library(tidyverse)
-library(leaflet)
-library(XML)
-library(shinyjs)
 library(lubridate)
 library(zoo)
 library(caTools)
@@ -18,7 +13,6 @@ library(xts)
 library(readr)
 library(openair)
 library(xlsx)
-library(openxlsx)
 library(janitor)
 
 
@@ -181,18 +175,7 @@ server <- function(input, output, session) {
   
   options(shiny.maxRequestSize = 30*1024^2, shiny.launch.browser = TRUE)
   
-  file_name_CPCB <- reactive({
-    inFile <- input$file1
-    if (is.null(inFile)) {
-      return(NULL)
-    }else {
-      name_CPCB <- gsub(".xlsx$", "", basename(input$file1$name))
-      return(name_CPCB)
-    }
-  })
-  
   CPCB_f <- reactive({
-    name_CPCB <- file_name_CPCB()
     completeFun <- function(data, desiredCols) {
       completeVec <- complete.cases(data[, desiredCols])
       return(data[completeVec, ])
