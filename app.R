@@ -448,6 +448,11 @@ server <- function(input, output, session) {
     data <- CPCB_f()
     return(data)
   })
+  # data_joined_daily <- eventReactive(input$daily, {
+  #   data <- CPCB_f()
+  #   data <- openair::timeAverage(data, avg.time = "day")
+  #   return(data)
+  # })
   data_plot <- eventReactive(input$ts, {
     data <- CPCB_f()
     return(data)
