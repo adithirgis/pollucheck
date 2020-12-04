@@ -35,6 +35,11 @@ ui <- fluidPage(
                                                           multiple = FALSE, 
                                                           "Select"),
                                               tags$hr(),
+                                              radioButtons("avg_hour3", "Which values",
+                                                           c("Hourly" = "hour3",
+                                                             "Daily" = "daily3"), 
+                                                           selected = "hour1"),
+                                              tags$hr(),
                                               actionButton("ts", "Time Series"),
                                               tags$hr(),
                                               actionButton("box", "Monthly Box Plot"),
@@ -46,6 +51,11 @@ ui <- fluidPage(
                                               selectInput("palleInp2", "Plot this parameter",
                                                           multiple = FALSE, "Select"),
                                               tags$hr(),
+                                              radioButtons("avg_hour2", "Which values",
+                                                           c("Hourly" = "hour2",
+                                                             "Daily" = "daily2"), 
+                                                           selected = "hour1"),
+                                              tags$hr(),
                                               actionButton("freq", "Frequency Distribution Plot"),
                                               tags$hr(),
                                               actionButton("qq", "QQ Plot"),
@@ -55,9 +65,9 @@ ui <- fluidPage(
                                               selectInput("avg",
                                                           label = "Averaging period",
                                                           c("None" = "no",
-                                                            "Daily" = "day",
-                                                            "Monthly" = "month",
-                                                            "Month" = "monthly"),
+                                                            "Daily Statistics" = "day",
+                                                            "Month-Year Statistics" = "month",
+                                                            "Monthly Statistics" = "monthly"),
                                                           multiple = FALSE, 
                                                           selected = "None"),
                                               tags$hr(),
@@ -71,12 +81,22 @@ ui <- fluidPage(
                                                           "Independent Variable", 
                                                           multiple = FALSE, "Select"),
                                               tags$hr(),
+                                              radioButtons("avg_hour1", "Which values",
+                                                           c("Hourly" = "hour1",
+                                                             "Daily" = "daily1"), 
+                                                           selected = "hour1"),
+                                              tags$hr(),
                                               actionButton("reg", "Linear Regression Plot")),
                              conditionalPanel(condition = "input.tabs1 == 7"),
                              conditionalPanel(condition = "input.tabs1 == 4",
                                               tags$hr(),
                                               selectInput("palleInp1", "Plot this parameter",
                                                           multiple = FALSE, "Select"),
+                                              tags$hr(),
+                                              radioButtons("avg_hour4", "Which values",
+                                                           c("Hourly" = "hour4",
+                                                             "Daily" = "daily4"), 
+                                                           selected = "hour1"),
                                               tags$hr(),
                                               actionButton("cp", "Calendar Plot"),
                                               tags$hr(),
@@ -295,6 +315,11 @@ server <- function(input, output, session) {
           all <- all %>%
             dplyr::select(date, everything(), "PM2.5" = pm25)
         }
+        if("pm10" %in% colnames(all))
+        {
+          all <- all %>%
+            dplyr::select(date, everything(), "PM10" = pm10)
+        }
         if("nox" %in% colnames(all))
         {
           all <- all %>%
@@ -447,46 +472,71 @@ server <- function(input, output, session) {
       site1_join_f1 <- site1_join_f1 %>%
         dplyr::select(date, day, everything()) %>%
         janitor::remove_empty("cols")
-      if(input$avg_hour == "daily") {
-        site1_join_f1 <- openair::timeAverage(site1_join_f1, avg.time = "day")
-      } else { site1_join_f1 }
+      site1_join_f1
     }
   })
   
   data_joined <- eventReactive(input$hourly, {
     data <- CPCB_f()
+    if(input$avg_hour == "daily") {
+      data <- openair::timeAverage(data, avg.time = "day")
+    } else { data }
     return(data)
   })
   data_plot <- eventReactive(input$ts, {
     data <- CPCB_f()
+    if(input$avg_hour3 == "daily3") {
+      data <- openair::timeAverage(data, avg.time = "day")
+    } else { data }
     return(data)
   })
   data_diurnal <- eventReactive(input$diurnal, {
     data <- CPCB_f()
+    if(input$avg_hour3 == "daily3") {
+      data <- openair::timeAverage(data, avg.time = "day")
+    } else { data }
     return(data)
   })
   data_box <- eventReactive(input$box, {
     data <- CPCB_f()
+    if(input$avg_hour3 == "daily3") {
+      data <- openair::timeAverage(data, avg.time = "day")
+    } else { data }
     return(data)
   })
   data_tv <- eventReactive(input$tv, {
     data <- CPCB_f()
+    if(input$avg_hour4 == "daily4") {
+      data <- openair::timeAverage(data, avg.time = "day")
+    } else { data }
     return(data)
   })
   data_cp <- eventReactive(input$cp, {
     data <- CPCB_f()
+    if(input$avg_hour4 == "daily4") {
+      data <- openair::timeAverage(data, avg.time = "day")
+    } else { data }
     return(data)
   })
   data_qq <- eventReactive(input$qq, {
     data <- CPCB_f()
+    if(input$avg_hour2 == "daily2") {
+      data <- openair::timeAverage(data, avg.time = "day")
+    } else { data }
     return(data)
   })
   data_freq <- eventReactive(input$freq, {
     data <- CPCB_f()
+    if(input$avg_hour2 == "daily2") {
+      data <- openair::timeAverage(data, avg.time = "day")
+    } else { data }
     return(data)
   })
   data_reg <- eventReactive(input$reg, {
     data <- CPCB_f()
+    if(input$avg_hour1 == "daily1") {
+      data <- openair::timeAverage(data, avg.time = "day")
+    } else { data }
     return(data)
   })
   
@@ -513,8 +563,10 @@ server <- function(input, output, session) {
     setDT(data_joined)
     data_joined[,(cols) := round(.SD, 2), .SDcols = cols]
     if(input$avg_hour == "daily") {
-      data_joined$day <- NULL
-      datatable(data_joined, options = list("pageLength" = 25)) 
+      data_joined <- data_joined %>%
+        mutate(date = as.Date(date, tz = "Asia/Kolkata")) %>%
+        dplyr::select(date, everything(), - day)
+      datatable(data_joined, options = list("pageLength" = 25)) %>% formatDate(1, "toLocaleDateString")
     } else { datatable(data_joined, options = list("pageLength" = 25)) %>% formatDate(1, "toLocaleString") }
   })
   
@@ -569,7 +621,7 @@ server <- function(input, output, session) {
         group_by(hour) %>%
         summarise_all(funs(mean, sd), na.rm = TRUE)
       data$hour <- as.numeric(as.character(data$hour))
-      if(input$avg_hour == "daily") {
+      if(input$avg_hour3 == "daily3") {
         NULL
       } else { 
         ggplot(data, aes(hour, mean)) + geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), 
