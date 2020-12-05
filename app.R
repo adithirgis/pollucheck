@@ -13,6 +13,7 @@ library(xts)
 library(readr)
 library(openair)
 library(xlsx)
+library(nortest)
 library(janitor)
 library(patchwork)
 
@@ -56,7 +57,12 @@ ui <- fluidPage(
                                                              "Daily" = "daily2"), 
                                                            selected = "hour1"),
                                               tags$hr(),
-                                              actionButton("freq", "Frequency Distribution Plot"),
+                                              radioButtons("normality", "Normality Test",
+                                                           c("Anderson-Darling" = "ad",
+                                                             "Shapiro-Wilk" = "sh"), 
+                                                           selected = "ad"),
+                                              tags$hr(),
+                                              actionButton("freq", "Density Plot"),
                                               tags$hr(),
                                               actionButton("qq", "QQ Plot"),
                                               tags$hr()),
@@ -179,6 +185,7 @@ ui <- fluidPage(
                               tabPanel(
                                 value = 5,
                                 title = "Statistics Plots",
+                                verbatimTextOutput("normality_test"),
                                 plotOutput("plot6", width = 800),
                                 plotOutput("plot7", width = 800)),
                               tabPanel(
@@ -599,6 +606,22 @@ server <- function(input, output, session) {
                                                      fill = NA, size = 1.2)))
   })
   
+  normalilty_t <- reactive({
+    data <- data_freq()
+    y <- as.numeric(as.character(data[[input$palleInp2]]))
+    if(input$normality == "sh") {
+      x <- shapiro.test(y)
+    } else {
+      x <- ad.test(y)
+    }
+    x
+  })
+  output$normality_test <- renderPrint({
+    if (is.null(input$file1)) { "No file" }
+    else {
+      normalilty_t()
+    }
+  })
   output$plot1 <- renderPlot({
     if (is.null(input$file1)) { NULL }
     else {
@@ -682,9 +705,8 @@ server <- function(input, output, session) {
       data <- data_freq()
       y <- as.numeric(as.character(data[[input$palleInp2]]))
       ggplot(data, aes(x = y)) +
-        geom_histogram(aes(y = ..count..), fill = "deepskyblue",
-                       color = "black", bins = 30) +
-        labs(y = "count", x = input$palleInp2) + theme2()
+        geom_density(color="deepskyblue", fill="lightblue") +
+        labs(y = "density", x = input$palleInp2) + theme2()
     }
   })
   output$plot7 <- renderPlot({
@@ -813,6 +835,6 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 
 
-
+# runApp(display.mode = "showcase")
 
 
