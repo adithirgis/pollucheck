@@ -42,10 +42,22 @@ ui <- fluidPage(
                                                            selected = "hour1"),
                                               tags$hr(),
                                               actionButton("ts", "Time Series"),
+                                              textInput("ts_mt", label = "Edit time series title", 
+                                                        value = "Title"),
+                                              textInput("ts_y", label = "Edit time series y axis", 
+                                                        value = "Pollutant"),
                                               tags$hr(),
                                               actionButton("box", "Monthly Box Plot"),
+                                              textInput("box_mt", label = "Edit title", 
+                                                        value = "Title"),
+                                              textInput("box_y", label = "Edit y axis", 
+                                                        value = "Pollutant"),
                                               tags$hr(),
                                               actionButton("diurnal", "Diurnal Plot"),
+                                              textInput("diurnal_mt", label = "Edit Diurnal pattern title", 
+                                                        value = "Title"),
+                                              textInput("diurnal_y", label = "Edit Diurnal pattern y axis", 
+                                                        value = "Pollutant"),
                                               tags$hr()),
                              conditionalPanel(condition = "input.tabs1 == 5",
                                               tags$hr(),
@@ -628,7 +640,7 @@ server <- function(input, output, session) {
       data <- data_plot()
       y <- as.numeric(as.character(data[[input$palleInp]]))
       ggplot(data, aes(as.POSIXct(date), y)) +
-        labs(y = input$palleInp,
+        labs(y = input$ts_y, title = input$ts_mt,
              x = "") + theme1()
     }
   })
@@ -650,7 +662,8 @@ server <- function(input, output, session) {
         ggplot(data, aes(hour, mean)) + geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), 
                                                       color = "seagreen") + 
           scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
-          labs(y = input$palleInp, x = "hour of the day") + theme1()
+          labs(y = input$diurnal_y, x = "hour of the day", title = input$diurnal_mt) + 
+          theme1()
         }
     }
   })
@@ -667,7 +680,7 @@ server <- function(input, output, session) {
       ggplot(data, aes(x = reorder(format(date,'%b %Y'), date), y)) + 
         stat_summary(fun.data = f, colour = "seagreen", geom = "boxplot", 
                      width = 0.4, size = 1) + 
-        labs(y = input$palleInp, x = "") + 
+        labs(y = input$box_y, x = "", title = input$box_mt) + 
         stat_summary(aes(y = y), fun.y = "mean", colour = "seagreen", 
                      geom = "point", size = 4)  +
         theme2() + theme(axis.text.x = element_text(size = 10, face = "bold", angle = 90))
