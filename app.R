@@ -75,8 +75,16 @@ ui <- fluidPage(
                                                            selected = "ad"),
                                               tags$hr(),
                                               actionButton("freq", "Density Plot"),
+                                              textInput("freq_mt", label = "Edit Density plot title", 
+                                                        value = "Title"),
+                                              textInput("freq_x", label = "Edit Density plot x axis", 
+                                                        value = "Pollutant"),
                                               tags$hr(),
                                               actionButton("qq", "QQ Plot"),
+                                              textInput("qq_mt", label = "Edit QQ plot title", 
+                                                        value = "Title"),
+                                              textInput("qq_y", label = "Edit QQ plot y axis", 
+                                                        value = "Pollutant"),
                                               tags$hr()),
                              conditionalPanel(condition = "input.tabs1 == 2",
                                               tags$hr(),
@@ -104,7 +112,13 @@ ui <- fluidPage(
                                                              "Daily" = "daily1"), 
                                                            selected = "hour1"),
                                               tags$hr(),
-                                              actionButton("reg", "Linear Regression Plot")),
+                                              actionButton("reg", "Linear Regression Plot"),
+                                              textInput("reg_mt", label = "Edit regression title", 
+                                                        value = "Title"),
+                                              textInput("reg_x", label = "Edit regression x axis", 
+                                                        value = "Pollutant"),
+                                              textInput("reg_y", label = "Edit regression y axis", 
+                                                        value = "Pollutant")),
                              conditionalPanel(condition = "input.tabs1 == 7"),
                              conditionalPanel(condition = "input.tabs1 == 4",
                                               tags$hr(),
@@ -117,6 +131,8 @@ ui <- fluidPage(
                                                            selected = "hour1"),
                                               tags$hr(),
                                               actionButton("cp", "Calendar Plot"),
+                                              textInput("cp_mt", label = "Edit Calendar plot title", 
+                                                        value = "Title"),
                                               tags$hr(),
                                               radioButtons("stat_tv", "Statistic to plot the graph",
                                                            c("Median and quantiles" = "median",
@@ -597,21 +613,11 @@ server <- function(input, output, session) {
     })
   
   output$text <- renderText({ "This app helps in Analysing all open source air quality data in India.Please follow this project here - https://github.com/adithirgis/OpenSourceAirQualityApp and suggests features or changes or report errors to adithiru095@gmail.com" })
-  theme1 <- reactive({
-    theme1 <- list(geom_line(size = 0.6, color = "seagreen"),
-                   theme_minimal(),
-                   theme(legend.text = element_text(size = 18),
-                         plot.title = element_text(size = 14, face = "bold"),
-                         axis.title = element_text(size = 20, face = "bold"),
-                         axis.text = element_text(size = 18, face = "bold"),
-                         panel.border = element_rect(colour = "black",
-                                                     fill = NA, size = 1.2)))
-  })
+ 
   theme2 <- reactive({
     theme2 <- list(theme_minimal(),
                    theme(legend.text = element_text(size = 18),
                          plot.title = element_text(size = 14, face = "bold"),
-                         plot.subtitle = element_text(size = 16, face = "bold"),
                          axis.title = element_text(size = 20, face = "bold"),
                          axis.text = element_text(size = 18, face = "bold"),
                          panel.border = element_rect(colour = "black",
@@ -641,7 +647,7 @@ server <- function(input, output, session) {
       y <- as.numeric(as.character(data[[input$palleInp]]))
       ggplot(data, aes(as.POSIXct(date), y)) +
         labs(y = input$ts_y, title = input$ts_mt,
-             x = "") + theme1()
+             x = "") + theme2() + geom_line(size = 0.6, color = "seagreen")
     }
   })
   output$plot2 <- renderPlot({
@@ -663,7 +669,7 @@ server <- function(input, output, session) {
                                                       color = "seagreen") + 
           scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
           labs(y = input$diurnal_y, x = "hour of the day", title = input$diurnal_mt) + 
-          theme1()
+          theme2() + geom_line(size = 0.6, color = "seagreen")
         }
     }
   })
@@ -707,7 +713,7 @@ server <- function(input, output, session) {
     else {
       data <- data_cp()
       y <- as.numeric(as.character(data[[input$palleInp1]]))
-      openair::calendarPlot(data, pollutant = input$palleInp1, main = input$palleInp1,
+      openair::calendarPlot(data, pollutant = input$palleInp1, main = input$cp_mt,
                             cols = openColours(c("seagreen", "yellow", "red"), 10),
                             par.settings = list(fontsize = list(text = 15)))
     }
@@ -718,8 +724,8 @@ server <- function(input, output, session) {
       data <- data_freq()
       y <- as.numeric(as.character(data[[input$palleInp2]]))
       ggplot(data, aes(x = y)) +
-        geom_density(color="deepskyblue", fill="lightblue") +
-        labs(y = "density", x = input$palleInp2) + theme2()
+        geom_density(color = "deepskyblue", fill = "lightblue") +
+        labs(y = "density", x = input$freq_x, title = input$freq_mt) + theme2()
     }
   })
   output$plot7 <- renderPlot({
@@ -734,7 +740,7 @@ server <- function(input, output, session) {
         stat_qq_line(size = 1, linetype = 2) + 
         scale_x_continuous(breaks = ticks, labels = labels) +
         labs(x = "Emperical percentile",
-             y = input$palleInp2) + theme2()
+             y =  input$qq_y, title = input$qq_mt) + theme2()
     }
   })
   output$plot8 <- renderPlot({
@@ -757,8 +763,8 @@ server <- function(input, output, session) {
         geom_abline(slope = 1, intercept = 0, color = "black", size = 0.8, linetype = "dashed") + 
         geom_point(alpha = 0.5, color = "red") + 
         geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x, color = "deepskyblue") +
-        labs(x = input$InDepVar,
-             y = input$DepVar,
+        labs(x = input$reg_x,
+             y = input$reg_y, title = input$reg_mt,
              subtitle = paste0("R square: ", r, "; Equation: ", reg_eqn(s))) + 
         theme2()
     }
