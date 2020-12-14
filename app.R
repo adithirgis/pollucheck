@@ -16,6 +16,7 @@ library(openair)
 library(xlsx)
 library(nortest)
 library(janitor)
+library(recipes)
 library(patchwork)
 
 
@@ -230,7 +231,9 @@ ui <- fluidPage(
                                 value = 6,
                                 title = "Linear Regression",
                                 plotOutput("plot8", width = 800), 
-                                verbatimTextOutput("RegOut")),
+                                verbatimTextOutput("RegOut"),
+                                verbatimTextOutput(outputId = "IndPrint"),
+                                verbatimTextOutput(outputId = "DepPrint")),
                               tabPanel(
                                 value = 4,
                                 title = "openair package plots",
@@ -792,11 +795,13 @@ server <- function(input, output, session) {
   
   lm_reg <- reactive({
     data <- data_mreg()
-    y <- as.numeric(as.character(data[[input$DepVar1]]))
-    lm(as.formula(paste(y, " ~ ", paste(input$InDepVar1, collapse = "+"))), data)
+    lm(as.formula(paste(input$DepVar1, " ~ ", paste(input$InDepVar1, collapse = "+"))), data)
+    
   })
   
   output$RegOut <- renderPrint({summary(lm_reg())})
+  output$DepPrint <- renderPrint({paste("Dependent variable:", input$DepVar1)})
+  output$IndPrint <- renderPrint({paste("Independent variables:", input$InDepVar1)})
   
   data_summary <- reactive({
     data <- data_joined()
