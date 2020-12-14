@@ -10,6 +10,7 @@ library(lubridate)
 library(zoo)
 library(caTools)
 library(xts)
+library(gt)
 library(readr)
 library(openair)
 library(xlsx)
@@ -118,7 +119,16 @@ ui <- fluidPage(
                                               textInput("reg_x", label = "Edit regression x axis", 
                                                         value = "Pollutant"),
                                               textInput("reg_y", label = "Edit regression y axis", 
-                                                        value = "Pollutant")),
+                                                        value = "Pollutant"),
+                                              tags$hr(),
+                                              selectInput("DepVar1", 
+                                                          "Dependent Variable", 
+                                                          multiple = FALSE, "Select"),
+                                              selectInput("InDepVar1", 
+                                                          "Independent Variable(s)", 
+                                                          multiple = TRUE, "Select"),
+                                              tags$hr(),
+                                              actionButton("mulreg", "Multiple Regression"),),
                              conditionalPanel(condition = "input.tabs1 == 7"),
                              conditionalPanel(condition = "input.tabs1 == 4",
                                               tags$hr(),
@@ -219,7 +229,8 @@ ui <- fluidPage(
                               tabPanel(
                                 value = 6,
                                 title = "Linear Regression",
-                                plotOutput("plot8", width = 800)),
+                                plotOutput("plot8", width = 800), 
+                                verbatimTextOutput("RegOut")),
                               tabPanel(
                                 value = 4,
                                 title = "openair package plots",
@@ -574,6 +585,13 @@ server <- function(input, output, session) {
     } else { data }
     return(data)
   })
+  data_mreg <- eventReactive(input$mulreg, {
+    data <- CPCB_f()
+    if(input$avg_hour1 == "daily1") {
+      data <- openair::timeAverage(data, avg.time = "day")
+    } else { data }
+    return(data)
+  })
   
   observe({
     if (is.null(input$file1)) {
@@ -588,6 +606,8 @@ server <- function(input, output, session) {
     updateSelectInput(session, "palleInp2", choices = names(data_joined))
     updateSelectInput(session, "DepVar", choices = names(data_joined))
     updateSelectInput(session, "InDepVar", choices = names(data_joined))
+    updateSelectInput(session, "DepVar1", choices = names(data_joined))
+    updateSelectInput(session, "InDepVar1", choices = names(data_joined))
   })
   
   output$table1 <- DT::renderDataTable({
@@ -769,6 +789,14 @@ server <- function(input, output, session) {
         theme2()
     }
   })
+  
+  lm_reg <- reactive({
+    data <- data_mreg()
+    y <- as.numeric(as.character(data[[input$DepVar1]]))
+    lm(as.formula(paste(y, " ~ ", paste(input$InDepVar1, collapse = "+"))), data)
+  })
+  
+  output$RegOut <- renderPrint({summary(lm_reg())})
   
   data_summary <- reactive({
     data <- data_joined()
