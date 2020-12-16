@@ -1,7 +1,7 @@
 # Open Source Air Quality App
 This application helps exploring the open source air quality data.
 
-Hi there! 👋
+Hi there! 
 
 🔭 This is an app for exploring data from OpenAQ, CPCB and AirNow platform.
 
@@ -13,5 +13,5 @@ The link for this app is this - https://aruapps.shinyapps.io/OpenSourceAirQualit
 
 Works for Indian Air Quality Data!
 
-PR for suggestions and feedback! 
+PR for suggestions, features and feedback! 
  
