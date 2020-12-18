@@ -202,6 +202,9 @@ ui <- fluidPage(
                                               downloadButton('download', "Download as csv"),
                                               tags$hr())),
                 mainPanel(
+                  tags$a(img(src = 'logo.png', align = "right", height = 90,
+                             width = 140),
+                         href = "https://www.ilklabs.com/", target = "_blank"),
                   tags$head(
                     tags$style(type = 'text/css',
                                ".nav-tabs {
