@@ -10,28 +10,28 @@ library(lubridate)
 library(zoo)
 library(caTools)
 library(xts)
-library(gt)
 library(readr)
 library(openair)
 library(xlsx)
 library(nortest)
 library(janitor)
 library(recipes)
-library(patchwork)
-
 
 ui <- fluidPage(
-  h1("Analyse open source air quality data"),
+  tags$style('.container-fluid {
+                             background-color: #ffece9;
+              }'),
+  h1("PolluCheck - Analyse open source air quality data"),
   tags$head(
-    tags$style(HTML(".sidebar {
-                    height : 10vh; overflow-y : auto; font-size : 14px;
+    tags$style(HTML(".well {
+                    height : 10vh; overflow-y : auto; font-size : 13px; 
+                    background-color: #ffece9;
                     }" ,
                     ".shiny-output-error-validation {
                     color : red; font-size : 14px;
                     }"
     ))),
-  sidebarLayout(position = "left",
-                sidebarPanel(width = 3,
+  sidebarLayout(absolutePanel(fixed = TRUE, draggable = TRUE,
                              conditionalPanel(condition = "input.tabs1 == 3",
                                               tags$hr(),
                                               selectInput("palleInp", "Plot this parameter",
@@ -202,13 +202,13 @@ ui <- fluidPage(
                                               downloadButton('download', "Download as csv"),
                                               tags$hr())),
                 mainPanel(
-                  tags$a(img(src = 'logo.png', align = "right", height = 90,
-                             width = 140),
+                  tags$a(img(src = 'logo.png', align = "right", height = 70,
+                             width = 70),
                          href = "https://www.ilklabs.com/", target = "_blank"),
                   tags$head(
                     tags$style(type = 'text/css',
                                ".nav-tabs {
-                               font-size: 18px
+                               font-size: 17px
                                } ")),
                   tabsetPanel(id = "tabs1",
                               tabPanel(value = 1,
