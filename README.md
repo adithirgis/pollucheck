@@ -11,7 +11,7 @@ Hi there!
 
 The link for this app is this - https://aruapps.shinyapps.io/OpenSourceAirQualityApp/.
 
-Works for Indian Air Quality Data!
+Works for Indian Air Quality Data as of now!
 
 PR for suggestions, features and feedback! 
  
