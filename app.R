@@ -512,11 +512,11 @@ server <- function(input, output, session) {
         # greater than 1 then remove those values
         if("PM10" %in% colnames(site1_join_f1))
         {
-          b <- (site1_join_f1$PM10) > input$high_number
-          site1_join_f1$PM10 <- ifelse(b, NA, site1_join_f1$PM10)
-          site1_join_f1$ratio <- site1_join_f1$PM2.5 / site1_join_f1$PM10
-          site1_join_f1$PM2.5 <- ifelse(site1_join_f1$ratio >= 1, NA, site1_join_f1$PM2.5)
-          site1_join_f1$PM10 <- ifelse(site1_join_f1$ratio >= 1, NA, site1_join_f1$PM10)
+          b <- as.numeric(as.character(site1_join_f1$PM10)) > input$high_number
+          site1_join_f1$PM10 <- ifelse(b, as.numeric(as.character(NA)), as.numeric(as.character(site1_join_f1$PM10)))
+          site1_join_f1$ratio <- as.numeric(as.character(site1_join_f1$PM2.5)) / as.numeric(as.character(site1_join_f1$PM10))
+          site1_join_f1$PM2.5 <- ifelse(site1_join_f1$ratio >= 1, as.numeric(as.character(NA)), as.numeric(as.character(site1_join_f1$PM2.5)))
+          site1_join_f1$PM10 <- ifelse(site1_join_f1$ratio >= 1, as.numeric(as.character(NA)), as.numeric(as.character(site1_join_f1$PM10)))
         } else {
           site1_join_f1$ratio <- NA
         }
