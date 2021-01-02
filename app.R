@@ -16,14 +16,12 @@ library(xlsx)
 library(nortest)
 library(janitor)
 library(recipes)
+library(leaflet)
 
 ui <- fluidPage(
-  tags$style('.container-fluid {
-                             background-color: #ffece9;
-              }'),
   h1("PolluCheck - Analyse open source air quality data"),
   tags$head(
-    tags$style(HTML(".well {
+    tags$style(HTML(".sidebar {
                     height : 10vh; overflow-y : auto; font-size : 13px; 
                     background-color: #ffece9;
                     }" ,
@@ -31,8 +29,9 @@ ui <- fluidPage(
                     color : red; font-size : 14px;
                     }"
     ))),
-  sidebarLayout(absolutePanel(fixed = TRUE, draggable = TRUE,
-                              conditionalPanel(condition = "input.tabs1 == 3",
+  sidebarLayout(position = "left",
+                sidebarPanel(width = 3,
+                             conditionalPanel(condition = "input.tabs1 == 3",
                                                tags$hr(),
                                                selectInput("palleInp", "Plot this parameter",
                                                            multiple = FALSE, 
@@ -49,18 +48,29 @@ ui <- fluidPage(
                                                textInput("ts_y", label = "Edit time series y axis", 
                                                          value = "Pollutant"),
                                                tags$hr(),
-                                               actionButton("box", "Monthly Box Plot"),
+                                               actionButton("box", "Monthly-yearly Box Plot"),
                                                textInput("box_mt", label = "Edit title", 
                                                          value = "Title"),
                                                textInput("box_y", label = "Edit y axis", 
                                                          value = "Pollutant"),
+                                              tags$hr(),
+                                              actionButton("mbox", "Monthly Box Plot"),
+                                              textInput("box_mmt", label = "Edit title", 
+                                                        value = "Title"),
+                                              textInput("box_my", label = "Edit y axis", 
+                                                        value = "Pollutant"),
                                                tags$hr(),
-                                               actionButton("diurnal", "Diurnal Plot"),
-                                               textInput("diurnal_mt", label = "Edit Diurnal pattern title", 
-                                                         value = "Title"),
-                                               textInput("diurnal_y", label = "Edit Diurnal pattern y axis", 
-                                                         value = "Pollutant"),
-                                               tags$hr()),
+                                               radioButtons("diur", "Plot",
+                                                            c("Mean and Std Dev" = "mesd",
+                                                              "Median and IQR" = "mediq"), 
+                                                           selected = "mesd"),
+                                              actionButton("diurnal", "Diurnal Plot"),
+                                              downloadButton('download_diurnal', "Download as csv"),
+                                              textInput("diurnal_mt", label = "Edit Diurnal pattern title", 
+                                                       value = "Title"),
+                                              textInput("diurnal_y", label = "Edit Diurnal pattern y axis", 
+                                                       value = "Pollutant"),
+                                              tags$hr()),
                               conditionalPanel(condition = "input.tabs1 == 5",
                                                tags$hr(),
                                                selectInput("palleInp2", "Plot this parameter",
@@ -151,7 +161,12 @@ ui <- fluidPage(
                                                             selected = "mean"),
                                                actionButton("tv", "Time Variation graphs"),
                                                tags$hr()),
-                              conditionalPanel(condition = "input.tabs1 == 1",
+                             conditionalPanel(condition = "input.tabs1 == 8",
+                                              tags$hr(),
+                                              selectInput("poll", "Locate",
+                                                          "Select"),
+                                              tags$hr()),
+                             conditionalPanel(condition = "input.tabs1 == 1",
                                                tags$hr(),
                                                radioButtons("type", "Data downloaded from",
                                                             choiceNames = list(
@@ -223,6 +238,7 @@ ui <- fluidPage(
                                 title = "Plots",
                                 plotOutput("plot1", width = 800),
                                 plotOutput("plot3", width = 800),
+                                plotOutput("plot9", width = 800),
                                 plotOutput("plot2", width = 800)),
                               tabPanel(
                                 value = 5,
@@ -243,9 +259,10 @@ ui <- fluidPage(
                                 plotOutput("plot5", height = 600),
                                 plotOutput("plot4", height = 600)),
                               tabPanel(
-                                value = 7,
-                                title = "Read Me",
-                                textOutput("text")))
+                                value = 8,
+                                title = "Map",
+                                leafletOutput("map", width = "100%",
+                                              height = 800)))
                 )))
 
 
@@ -321,7 +338,7 @@ server <- function(input, output, session) {
             names(df) <- as.matrix(df[1, ])
             df <- df[-1, ]
             df[] <- lapply(df, function(x) type.convert(as.character(x)))
-            df <- Filter(function(x)! all(is.na(x)), df)
+            df <- base::Filter(function(x)! all(is.na(x)), df)
             df <- df %>%
               dplyr::select("date" = `To Date`, everything()) %>%
               mutate(date = as.POSIXct(date, format = '%d-%m-%Y %H:%M:%S', 
@@ -338,7 +355,7 @@ server <- function(input, output, session) {
         trial <- trial %>%
           dplyr::select("date" = Date..LT., "PM2.5" = Raw.Conc., "Valid" = QC.Name) %>%
           mutate(date  = as.POSIXct(date, format = '%Y-%m-%d %I:%M %p', tz = "Asia/Kolkata")) %>%
-          filter(Valid == "Valid")
+          dplyr::filter(Valid == "Valid")
         trial$Valid <- NULL
         date <- date_ts(trial, "60 min")
         tseries_df <- data.frame(date)
@@ -542,14 +559,14 @@ server <- function(input, output, session) {
     } else { data }
     return(data)
   })
-  data_diurnal <- eventReactive(input$diurnal, {
+  data_box <- eventReactive(input$box, {
     data <- CPCB_f()
     if(input$avg_hour3 == "daily3") {
       data <- openair::timeAverage(data, avg.time = "day")
     } else { data }
     return(data)
   })
-  data_box <- eventReactive(input$box, {
+  data_mbox <- eventReactive(input$mbox, {
     data <- CPCB_f()
     if(input$avg_hour3 == "daily3") {
       data <- openair::timeAverage(data, avg.time = "day")
@@ -598,7 +615,48 @@ server <- function(input, output, session) {
     } else { data }
     return(data)
   })
-  
+  data_diurnal <- eventReactive(input$diurnal, {
+    data <- CPCB_f()
+    if(input$avg_hour3 == "daily3") {
+      data <- openair::timeAverage(data, avg.time = "day")
+    } else { 
+      data <- data %>%
+        mutate(hour = format(date, "%H")) 
+      data <- data %>%
+        dplyr::select(hour, "y" = input$palleInp) 
+      if(input$diur == "mesd") {
+        data <- data %>%
+          group_by(hour) %>%
+          summarise_all(funs(mean, sd), na.rm = TRUE)
+        names(data) <- c("hour", "mean", "sd")
+      } else if(input$diur == "mediq") {
+        data <- data %>%
+          group_by(hour) %>%
+          summarise_all(funs(median, IQR), na.rm = TRUE)
+        names(data) <- c("hour", "mean", "sd")
+       }
+      }
+    return(data)
+  })
+  output$download_diurnal <- downloadHandler(
+    filename <- function() {"diurnal_data.csv"},
+    content <- function(fname) {
+      data <- CPCB_f()
+      data <- data %>%
+        mutate(hour = format(date, "%H")) 
+      data <- data %>%
+        dplyr::select(hour, "y" = input$palleInp) 
+      if(input$diur == "mesd") {
+        data <- data %>%
+          group_by(hour) %>%
+          summarise_all(funs(mean, sd), na.rm = TRUE)
+      } else if(input$diur == "mediq") {
+        data <- data %>%
+          group_by(hour) %>%
+          summarise_all(funs(median, IQR), na.rm = TRUE)
+      }
+      write.csv(data, fname)
+    })
   observe({
     if (is.null(input$file1)) {
       NULL
@@ -638,7 +696,6 @@ server <- function(input, output, session) {
       write.csv(data_joined, fname)
     })
   
-  output$text <- renderText({ "This app helps in Analysing all open source air quality data in India.Please follow this project here - https://github.com/adithirgis/OpenSourceAirQualityApp and suggests features or changes or report errors to adithiru095@gmail.com" })
   
   theme2 <- reactive({
     theme2 <- list(theme_minimal(),
@@ -649,7 +706,12 @@ server <- function(input, output, session) {
                          panel.border = element_rect(colour = "black",
                                                      fill = NA, size = 1.2)))
   })
-  
+  f <- reactive({
+    f <- function(x) {
+    r <- quantile(x, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
+    names(r) <- c("ymin", "lower", "middle", "upper", "ymax")
+    r
+  }})
   normalilty_t <- reactive({
     data <- data_freq()
     y <- as.numeric(as.character(data[[input$palleInp2]]))
@@ -680,17 +742,10 @@ server <- function(input, output, session) {
     if (is.null(input$file1)) { NULL }
     else {
       data <- data_diurnal()
-      data <- data %>%
-        mutate(hour = format(date, "%H")) 
-      data <- data %>%
-        dplyr::select(hour, "y" = input$palleInp) 
-      data <- data %>%
-        group_by(hour) %>%
-        summarise_all(funs(mean, sd), na.rm = TRUE)
-      data$hour <- as.numeric(as.character(data$hour))
       if(input$avg_hour3 == "daily3") {
         NULL
       } else { 
+        data$hour <- as.numeric(as.character(data$hour))
         ggplot(data, aes(hour, mean)) + geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), 
                                                       color = "seagreen") + 
           scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
@@ -703,19 +758,29 @@ server <- function(input, output, session) {
     if (is.null(input$file1)) { NULL }
     else {
       data <- data_box()
-      f <- function(x) {
-        r <- quantile(x, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
-        names(r) <- c("ymin", "lower", "middle", "upper", "ymax")
-        r
-      }
+      
       y <- as.numeric(as.character(data[[input$palleInp]]))
       ggplot(data, aes(x = reorder(format(date,'%b %Y'), date), y)) + 
-        stat_summary(fun.data = f, colour = "seagreen", geom = "boxplot", 
+        stat_summary(fun.data = f(), colour = "seagreen", geom = "boxplot", 
                      width = 0.4, size = 1) + 
         labs(y = input$box_y, x = "", title = input$box_mt) + 
         stat_summary(aes(y = y), fun.y = "mean", colour = "seagreen", 
                      geom = "point", size = 4)  +
         theme2() + theme(axis.text.x = element_text(size = 10, face = "bold", angle = 90))
+    }
+  })
+  output$plot9 <- renderPlot({
+    if (is.null(input$file1)) { NULL }
+    else {
+      data <- data_mbox()
+      y <- as.numeric(as.character(data[[input$palleInp]]))
+      ggplot(data, aes(x = reorder(format(date,'%b'), date), y)) +
+        stat_summary(fun.data = f(), colour = "seagreen", geom = "boxplot",
+                     width = 0.4, size = 1) +
+        labs(y = input$box_my, x = "", title = input$box_mmt) +
+        stat_summary(aes(y = y), fun.y = "mean", colour = "seagreen",
+                     geom = "point", size = 4)  +
+        theme2() + theme(axis.text.x = element_text(size = 13, face = "bold"))
     }
   })
   output$plot4 <- renderPlot({
@@ -885,6 +950,23 @@ server <- function(input, output, session) {
       data_summary <- data_summary()
       write.csv(data_summary, fname)
     })
+  # output$map <- renderLeaflet({
+  #   if (is.null(input$file1)) { NULL } else {
+  #     data <- data_joined()
+  #   }
+  #   leaflet(data) %>%
+  #     addProviderTiles(providers$Stamen.TonerLite) %>%
+  #     addCircles(data = data,
+  #                lng = ~ Longitude,
+  #                lat = ~ Latitude,
+  #                popup =  paste("Date:", data$date, "<br>",
+  #                               "CO2:", round(as.numeric(data$CO2),digits = 2)),
+  #                weight = 3, radius = 8, stroke = TRUE,
+  #                fillOpacity = 0.8) %>%
+  #     leaflet::addLegend("bottomright", 
+  #                        values = ~ data[[input$poll]],
+  #                        title = paste(input$poll))
+  # })
 }
 ## Run app
 shinyApp(ui, server)
