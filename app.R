@@ -60,6 +60,12 @@ ui <- fluidPage(
                                               textInput("box_my", label = "Edit y axis", 
                                                         value = "Pollutant"),
                                               tags$hr(),
+                                              actionButton("boxt", "Vertical Box Plot"),
+                                              textInput("box_mtt", label = "Edit title", 
+                                                        value = "Title"),
+                                              textInput("box_yt", label = "Edit y axis", 
+                                                        value = "Pollutant"),
+                                              tags$hr(),
                                               radioButtons("diurn", "Which one?",
                                                            c("All of it" = "all",
                                                              "Monthly" = "mon"), 
@@ -243,6 +249,7 @@ ui <- fluidPage(
                                 plotOutput("plot1", width = 800),
                                 plotOutput("plot3", width = 800),
                                 plotOutput("plot9", width = 800),
+                                plotOutput("plot10", width = 800),
                                 plotOutput("plot2", width = 800)),
                               tabPanel(
                                 value = 5,
@@ -560,6 +567,13 @@ server <- function(input, output, session) {
     return(data)
   })
   data_box <- eventReactive(input$box, {
+    data <- CPCB_f()
+    if(input$avg_hour3 == "daily3") {
+      data <- openair::timeAverage(data, avg.time = "day")
+    } else { data }
+    return(data)
+  })
+  data_boxt <- eventReactive(input$boxt, {
     data <- CPCB_f()
     if(input$avg_hour3 == "daily3") {
       data <- openair::timeAverage(data, avg.time = "day")
@@ -906,6 +920,24 @@ server <- function(input, output, session) {
              y = input$reg_y, title = input$reg_mt,
              subtitle = paste0("R square: ", r, "; Equation: ", reg_eqn(s))) + 
         theme2()
+    }
+  })
+  output$plot10 <- renderPlot({
+    if (is.null(input$file1)) { NULL }
+    else {
+      data <- data_boxt()
+      data <- data %>%
+        mutate(month = format(date, "%b")) %>%
+        select(month, "y" = input$palleInp) %>%
+        group_by(month) %>%
+        summarise_all(funs(mean, sd), na.rm = TRUE)
+      ggplot(data, aes(x = month, mean)) + 
+        geom_bar(position = position_dodge(), stat = "identity", colour = 'lightblue', 
+                 fill  = 'lightblue') + 
+        labs(y = input$box_yt, x = "", title = input$box_mtt) + 
+        geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = .2, position = 
+                        position_dodge(.9), color = 'deepskyblue') +
+        theme2() + theme(axis.text.x = element_text(size = 12, face = "bold"))
     }
   })
   
