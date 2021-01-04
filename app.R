@@ -16,7 +16,7 @@ library(xlsx)
 library(nortest)
 library(janitor)
 library(recipes)
-library(leaflet)
+library(Kendall)
 
 ui <- fluidPage(
   h1("PolluCheck - Analyse open source air quality data"),
@@ -59,10 +59,14 @@ ui <- fluidPage(
                                                         value = "Title"),
                                               textInput("box_my", label = "Edit y axis", 
                                                         value = "Pollutant"),
-                                               tags$hr(),
-                                               radioButtons("diur", "Plot",
-                                                            c("Mean and Std Dev" = "mesd",
-                                                              "Median and IQR" = "mediq"), 
+                                              tags$hr(),
+                                              radioButtons("diurn", "Which one?",
+                                                           c("All of it" = "all",
+                                                             "Monthly" = "mon"), 
+                                                           selected = "all"),
+                                              radioButtons("diur", "Plot",
+                                                           c("Mean and Std Dev" = "mesd",
+                                                             "Median and IQR" = "mediq"), 
                                                            selected = "mesd"),
                                               actionButton("diurnal", "Diurnal Plot"),
                                               downloadButton('download_diurnal', "Download as csv"),
@@ -244,6 +248,7 @@ ui <- fluidPage(
                                 value = 5,
                                 title = "Statistics Plots",
                                 verbatimTextOutput("normality_test"),
+                                # verbatimTextOutput("kendal_test"),
                                 plotOutput("plot6", width = 800),
                                 plotOutput("plot7", width = 800)),
                               tabPanel(
@@ -257,12 +262,7 @@ ui <- fluidPage(
                                 value = 4,
                                 title = "openair package plots",
                                 plotOutput("plot5", height = 600),
-                                plotOutput("plot4", height = 600)),
-                              tabPanel(
-                                value = 8,
-                                title = "Map",
-                                leafletOutput("map", width = "100%",
-                                              height = 800)))
+                                plotOutput("plot4", height = 600)))
                 )))
 
 
@@ -621,40 +621,36 @@ server <- function(input, output, session) {
       data <- openair::timeAverage(data, avg.time = "day")
     } else { 
       data <- data %>%
-        mutate(hour = format(date, "%H")) 
+        mutate(hour = format(date, "%H"),
+               month = format(date, "%b"))
       data <- data %>%
-        dplyr::select(hour, "y" = input$palleInp) 
-      if(input$diur == "mesd") {
+        dplyr::select(hour, month, "y" = input$palleInp) 
+      if(input$diur == "mesd" && input$diurn == "all") {
         data <- data %>%
+          select(hour, y) %>%
           group_by(hour) %>%
           summarise_all(funs(mean, sd), na.rm = TRUE)
-        names(data) <- c("hour", "mean", "sd")
-      } else if(input$diur == "mediq") {
+      } else if(input$diur == "mediq" && input$diurn == "all") {
         data <- data %>%
+          select(hour, y) %>%
           group_by(hour) %>%
-          summarise_all(funs(median, IQR), na.rm = TRUE)
-        names(data) <- c("hour", "mean", "sd")
-       }
+          summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
+      } else if (input$diur == "mediq" && input$diurn == "mon") {
+        data <- data %>%
+          group_by(month, hour) %>%
+          summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
+      } else if (input$diur == "mesd" && input$diurn == "mon") {
+        data <- data %>%
+          group_by(month, hour) %>%
+          summarise_all(funs(mean, sd), na.rm = TRUE)
+      } 
       }
     return(data)
   })
   output$download_diurnal <- downloadHandler(
     filename <- function() {"diurnal_data.csv"},
     content <- function(fname) {
-      data <- CPCB_f()
-      data <- data %>%
-        mutate(hour = format(date, "%H")) 
-      data <- data %>%
-        dplyr::select(hour, "y" = input$palleInp) 
-      if(input$diur == "mesd") {
-        data <- data %>%
-          group_by(hour) %>%
-          summarise_all(funs(mean, sd), na.rm = TRUE)
-      } else if(input$diur == "mediq") {
-        data <- data %>%
-          group_by(hour) %>%
-          summarise_all(funs(median, IQR), na.rm = TRUE)
-      }
+      data <- data_diurnal()
       write.csv(data, fname)
     })
   observe({
@@ -695,8 +691,7 @@ server <- function(input, output, session) {
       data_joined <- data_joined()
       write.csv(data_joined, fname)
     })
-  
-  
+
   theme2 <- reactive({
     theme2 <- list(theme_minimal(),
                    theme(legend.text = element_text(size = 18),
@@ -722,12 +717,26 @@ server <- function(input, output, session) {
     }
     x
   })
+  # kenda <- reactive({
+  #   data <- data_freq()
+  #   y <- as.numeric(as.character(data[[input$palleInp2]]))
+  #   y <- as.ts(y)
+  #   c <- trend::mk.test(y)
+  #   c
+  # })
+  
   output$normality_test <- renderPrint({
     if (is.null(input$file1)) { "No file" }
     else {
       normalilty_t()
     }
   })
+  # output$kendal_test <- renderPrint({
+  #   if (is.null(input$file1)) { "No file" }
+  #   else {
+  #     kenda()
+  #   }
+  # })
   output$plot1 <- renderPlot({
     if (is.null(input$file1)) { NULL }
     else {
@@ -741,16 +750,55 @@ server <- function(input, output, session) {
   output$plot2 <- renderPlot({
     if (is.null(input$file1)) { NULL }
     else {
-      data <- data_diurnal()
+      data <- CPCB_f()
+      data <- data %>%
+        mutate(hour = format(date, "%H"),
+               month = format(date, "%b"))
+      data <- data %>%
+        dplyr::select(hour, month, "y" = input$palleInp) 
+      data$hour <- as.numeric(as.character(data$hour))
       if(input$avg_hour3 == "daily3") {
         NULL
-      } else { 
-        data$hour <- as.numeric(as.character(data$hour))
+      } else if (input$diur == "mesd" && input$diurn == "all") { 
+        data <- data %>%
+          select(hour, y) %>%
+          group_by(hour) %>%
+          summarise_all(funs(mean, sd), na.rm = TRUE)
         ggplot(data, aes(hour, mean)) + geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), 
                                                       color = "seagreen") + 
           scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
           labs(y = input$diurnal_y, x = "hour of the day", title = input$diurnal_mt) + 
           theme2() + geom_line(size = 0.6, color = "seagreen")
+      } else if (input$diur == "mediq" && input$diurn == "all") {
+        data <- data %>%
+          select(hour, y) %>%
+          group_by(hour) %>%
+          summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
+        ggplot(data, aes(hour, median)) + geom_errorbar(aes(ymin = p25, ymax = p75), 
+                                                      color = "seagreen") + 
+          scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
+          labs(y = input$diurnal_y, x = "hour of the day", title = input$diurnal_mt) + 
+          theme2() + geom_line(size = 0.6, color = "seagreen")
+      } else if (input$diur == "mediq" && input$diurn == "mon") {
+        data <- data %>%
+          group_by(month, hour) %>%
+          summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
+        ggplot(data, aes(hour, median)) + geom_errorbar(aes(ymin = p25, ymax = p75), 
+                                                      color = "seagreen") + 
+          scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
+          labs(y = input$diurnal_y, x = "hour of the day", title = input$diurnal_mt) + 
+          theme2() + geom_line(size = 0.6, color = "seagreen")  + facet_wrap(.~month, nrow = 3) + 
+          theme(axis.text.y = element_text(size = 12))
+      } else if (input$diur == "mesd" && input$diurn == "mon") { 
+        data <- data %>%
+          group_by(month, hour) %>%
+          summarise_all(funs(mean, sd), na.rm = TRUE)
+        ggplot(data, aes(hour, mean)) + geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), 
+                                                      color = "seagreen") + 
+          scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
+          labs(y = input$diurnal_y, x = "hour of the day", title = input$diurnal_mt) + 
+          theme2() + geom_line(size = 0.6, color = "seagreen") + facet_wrap(.~month, nrow = 3) + 
+          theme(axis.text.y = element_text(size = 12))
       }
     }
   })
@@ -861,6 +909,8 @@ server <- function(input, output, session) {
     }
   })
   
+  # acf(z, lag.max = ((nrow(TimeSerie))/2), na.action = na.pass)
+  
   lm_reg <- reactive({
     data <- data_mreg()
     lm(as.formula(paste(input$DepVar1, " ~ ", paste(input$InDepVar1, collapse = "+"))), data)
@@ -950,23 +1000,7 @@ server <- function(input, output, session) {
       data_summary <- data_summary()
       write.csv(data_summary, fname)
     })
-  # output$map <- renderLeaflet({
-  #   if (is.null(input$file1)) { NULL } else {
-  #     data <- data_joined()
-  #   }
-  #   leaflet(data) %>%
-  #     addProviderTiles(providers$Stamen.TonerLite) %>%
-  #     addCircles(data = data,
-  #                lng = ~ Longitude,
-  #                lat = ~ Latitude,
-  #                popup =  paste("Date:", data$date, "<br>",
-  #                               "CO2:", round(as.numeric(data$CO2),digits = 2)),
-  #                weight = 3, radius = 8, stroke = TRUE,
-  #                fillOpacity = 0.8) %>%
-  #     leaflet::addLegend("bottomright", 
-  #                        values = ~ data[[input$poll]],
-  #                        title = paste(input$poll))
-  # })
+  
 }
 ## Run app
 shinyApp(ui, server)
