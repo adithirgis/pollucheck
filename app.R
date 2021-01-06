@@ -263,6 +263,7 @@ ui <- fluidPage(
                                 title = "Linear Regression",
                                 plotOutput("plot8", width = 800), 
                                 verbatimTextOutput("RegOut"),
+                                plotOutput("plot11", width = 800), 
                                 verbatimTextOutput(outputId = "IndPrint"),
                                 verbatimTextOutput(outputId = "DepPrint")),
                               tabPanel(
@@ -945,10 +946,21 @@ server <- function(input, output, session) {
   
   lm_reg <- reactive({
     data <- data_mreg()
-    lm(as.formula(paste(input$DepVar1, " ~ ", paste(input$InDepVar1, collapse = "+"))), data)
-    
+    y <- lm(as.formula(paste(input$DepVar1, " ~ ", paste(input$InDepVar1, collapse = "+"))), data)
+    y
   })
-  
+  output$plot11 <- renderPlot({
+    if (is.null(input$file1)) { NULL }
+    else {
+      data <- fortify(lm_reg())
+      y <- as.numeric(as.character(data[[input$DepVar1]]))
+      ggplot(data = data, aes(x = .fitted, y = y)) +
+        geom_abline(slope = 1, intercept = 0, color = "black", size = 0.8, linetype = "dashed") + 
+        geom_point(alpha = 0.5, color = "red") + 
+        geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x, color = "deepskyblue") +
+        labs(x = "Fitted", y = input$DepVar1) + theme2()
+    }
+  })
   output$RegOut <- renderPrint({summary(lm_reg())})
   output$DepPrint <- renderPrint({paste("Dependent variable:", input$DepVar1)})
   output$IndPrint <- renderPrint({paste("Independent variables:", input$InDepVar1)})
