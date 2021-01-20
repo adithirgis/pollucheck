@@ -285,19 +285,22 @@ server <- function(input, output, session) {
     }
     ### Function to check for Mean+3SD and Mean-3SD; caution needs to have all 
     # the columns without NA values
+    # LLD <- function(x, y, z, ey) {
+    #   if (is.na(x) || is.nan(x) || is.nan(y) || is.na(y) || is.na(z) || is.nan(z)) {
+    #     return (NA)
+    #   }
+    #   else if (x > (y + (ey * z)) || x < (y - (ey * z))) {
+    #     return (NA)
+    #   }
+    #   else if (is.null(x) || x == '' || is.null(y) || y == '' || is.null(z) || z == '') {
+    #     return (NA)
+    #   } else if(x < (y + (ey * z)) || x > (y - (ey * z)))
+    #   {
+    #     return (x)
+    #   }
+    # }
     LLD <- function(x, y, z, ey) {
-      if (is.na(x) || is.nan(x) || is.nan(y) || is.na(y) || is.na(z) || is.nan(z)) {
-        return (NA)
-      }
-      else if (x > (y + (ey * z)) || x < (y - (ey * z))) {
-        return (NA)
-      }
-      else if (is.null(x) || x == '' || is.null(y) || y == '' || is.null(z) || z == '') {
-        return (NA)
-      } else if(x < (y + (ey * z)) || x > (y - (ey * z)))
-      {
-        return (x)
-      }
+      ifelse(x < (y + (ey * z)) || x > (y - (ey * z)), x, NA)
     }
     per1 <- input$per
     date_ts <- function(file, time_period) {
@@ -492,11 +495,6 @@ server <- function(input, output, session) {
         for(i in names(name)){
           data_list <- site1_join_f1 %>% 
             dplyr::select(date, day, starts_with(i))
-          data_list <- data.frame(data_list)
-          col_interest <- 3:ncol(data_list)
-          data_list[ , col_interest] <- sapply(X = data_list[ , col_interest], 
-                                               FUN = function(x) 
-                                                 as.numeric(as.character(x)))
           if(i == "NO") {
             data_list <- data_list %>%
               dplyr::select(-contains(c("NO2", "NOx")))
