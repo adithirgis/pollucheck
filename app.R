@@ -489,7 +489,11 @@ server <- function(input, output, session) {
         tseries_df <- data.frame(date)
         site1_join_f1 <- left_join(tseries_df, site1_join_f1, by = "date")
       } else { site1_join_f1 }  
-      
+      site1_join_f1 <- site1_join_f1 %>%
+        dplyr::select(date, day, everything())
+      col_interest <- 3:ncol(site1_join_f1)
+      site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
+                                               FUN = function(x) as.numeric(as.character(x)))
       if(input$percent) {
         tseries_df <- data.frame(date)
         for(i in names(name)){
