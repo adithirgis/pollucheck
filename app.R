@@ -300,7 +300,7 @@ server <- function(input, output, session) {
     #   }
     # }
     LLD <- function(x, y, z, ey) {
-      ifelse(x < (y + (ey * z)) || x > (y - (ey * z)), x, NA)
+      ifelse(x < (y + (ey * z)) && x > (y - (ey * z)), x, NA)
     }
     per1 <- input$per
     date_ts <- function(file, time_period) {
@@ -462,6 +462,11 @@ server <- function(input, output, session) {
               dplyr::select(- contains(c("NO2", "NOx")))
             mean <- paste0(i, "_mean")
             sd <- paste0(i, "_sd")
+          } else if (i == "O") {
+            data_list <- data_list %>%
+              dplyr::select(- contains(c("Ozone")))
+            mean <- paste0(i, "_mean")
+            sd <- paste0(i, "_sd")
           } else {
             mean <- paste0(i, "_mean")
             sd <- paste0(i, "_sd")
@@ -502,6 +507,9 @@ server <- function(input, output, session) {
           if(i == "NO") {
             data_list <- data_list %>%
               dplyr::select(-contains(c("NO2", "NOx")))
+          } else if(i == "O") {
+            data_list <- data_list %>%
+              dplyr::select(-contains(c("Ozone")))
           } else {
             NULL
           }
@@ -536,7 +544,7 @@ server <- function(input, output, session) {
                                       as.numeric(as.character(NA)), 
                                       as.numeric(as.character(site1_join_f1$PM2.5)))
         
-        ### If PM10 values exist then check the rario of PM2.5 / PM10 and if it is 
+        ### If PM10 values exist then check the ratio of PM2.5 / PM10 and if it is 
         # greater than 1 then remove those values
         if("PM10" %in% colnames(site1_join_f1))
         {
