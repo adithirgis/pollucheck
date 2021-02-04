@@ -222,8 +222,8 @@ ui <- fluidPage(
                                                checkboxInput('percent', 'Completeness of data in a day'),
                                                conditionalPanel(
                                                  condition = "input.percent == true",
-                                                 numericInput("per", "Specify % of data completeness required in a day",
-                                                              value = 75)),
+                                                 sliderInput("per", "Specify % of data completeness required in a day",
+                                                              value = 75,  min = 35, max = 100)),
                                                tags$hr(),
                                                numericInput("high_number",
                                                             "Remove PM2.5 and PM10 values above",

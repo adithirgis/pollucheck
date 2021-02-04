@@ -10,7 +10,7 @@ A walk through to use this app for everyone -
     (because they have a reliable best sensor).
   - Download that data.
   - Upload the data and check all boxes / conditions with default
-    settings (trust us, that will be a good approach :wink:)
+    settings (trust us, that will be a good approach)
   - Look at the time-series plot on what days it is high and at what
     time and what day its high, look at the diurnal pattern and the
     general way on how Air pollution varies. And don’t look at
