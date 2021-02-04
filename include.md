@@ -1,10 +1,8 @@
-PolluCheck is here for you
-================
 Adithi R. Upadhya, ILK Labs
 
-## We are in this together\!
+### We are in this together\!
 
-A walk through to use this app for general public -
+A walk through to use this app for everyone -
 
   - Example - Where do you live in India?
   - Find the nearest [CPCB
@@ -12,7 +10,7 @@ A walk through to use this app for general public -
     (because they have a reliable best sensor).
   - Download that data.
   - Upload the data and check all boxes / conditions with default
-    settings (trust us, that will be a good approach :wink: )
+    settings (trust us, that will be a good approach :wink:)
   - Look at the time-series plot on what days it is high and at what
     time and what day its high, look at the diurnal pattern and the
     general way on how Air pollution varies. And don’t look at
@@ -22,6 +20,6 @@ A walk through to use this app for general public -
     write back to us on what you see.
   - What more do you want from us?
   - You want to explore more and have an idea, contact us
-    @adithi@ilklabs.
+    <adithi@ilklabs.com>.
   - You have feature request - open an issue
     [here](https://github.com/adithirgis/OpenSourceAirQualityApp).
