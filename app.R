@@ -298,22 +298,6 @@ server <- function(input, output, session) {
       completeVec <- complete.cases(data[, desiredCols])
       return(data[completeVec, ])
     }
-    ### Function to check for Mean+3SD and Mean-3SD; caution needs to have all 
-    # the columns without NA values
-    # LLD <- function(x, y, z, ey) {
-    #   if (is.na(x) || is.nan(x) || is.nan(y) || is.na(y) || is.na(z) || is.nan(z)) {
-    #     return (NA)
-    #   }
-    #   else if (x > (y + (ey * z)) || x < (y - (ey * z))) {
-    #     return (NA)
-    #   }
-    #   else if (is.null(x) || x == '' || is.null(y) || y == '' || is.null(z) || z == '') {
-    #     return (NA)
-    #   } else if(x < (y + (ey * z)) || x > (y - (ey * z)))
-    #   {
-    #     return (x)
-    #   }
-    # }
     LLD <- function(x, y, z, ey) {
       ifelse(x < (y + (ey * z)) && x > (y - (ey * z)), x, NA)
     }
