@@ -20,7 +20,7 @@ library(recipes)
 
 
 ui <- fluidPage(
-  h1("PolluCheck - Analyse open source air quality Indian data"),
+  h1("PolluCheck - Analyse open source air quality data of India"),
   tags$head(
     tags$style(HTML(".sidebar {
                     height : 10vh; overflow-y : auto; font-size : 13px; 
@@ -70,7 +70,7 @@ ui <- fluidPage(
                                                         value = "Title"),
                                               textInput("box_yt", label = "Edit Y axis title", 
                                                         value = "Pollutant"),
-                                              actionButton("boxt", "Vertical Box Plot"),
+                                              actionButton("boxt", "Vertical Bar Plot"),
                                               tags$hr(),
                                               tags$hr(),
                                               radioButtons("diurn", "Show Diurnal plot for",
