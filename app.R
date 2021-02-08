@@ -17,9 +17,11 @@ library(markdown)
 library(nortest)
 library(janitor)
 library(recipes)
-
+library(thematic)
+library(bslib)
 
 ui <- fluidPage(
+  theme = bslib::bs_theme(), 
   h1("PolluCheck - Analyse open source air quality data of India"),
   tags$head(
     tags$style(HTML(".sidebar {
@@ -238,6 +240,7 @@ ui <- fluidPage(
                                                downloadButton('download', "Download as csv"),
                                                tags$hr())),
                 mainPanel(
+                  theme = bslib::bs_theme(), 
                   tags$a(img(src = 'logo.png', align = "right", height = 70,
                              width = 70),
                          href = "https://www.ilklabs.com/", target = "_blank"),
@@ -290,7 +293,7 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
-  
+  bs_themer()
   options(shiny.maxRequestSize = 30*1024^2, shiny.launch.browser = TRUE)
   
   CPCB_f <- reactive({
