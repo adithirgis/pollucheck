@@ -21,7 +21,7 @@ library(thematic)
 library(bslib)
 
 ui <- fluidPage(
-  theme = bslib::bs_theme(), 
+  theme = bslib::bs_theme(bootswatch = "pulse"), 
   h1("PolluCheck - Analyse open source air quality data of India"),
   tags$head(
     tags$style(HTML(".sidebar {
@@ -293,208 +293,260 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
-  bs_themer()
+  # bs_themer()
   options(shiny.maxRequestSize = 30*1024^2, shiny.launch.browser = TRUE)
-  
+  LLD <- function(x, y, z, ey) {
+    ifelse(x < (y + (ey * z)) && x > (y - (ey * z)), x, NA)
+  }
+  date_ts <- function(file, time_period) {
+    ye <- format(file[1, "date"], format = "%Y")
+    x1 <- as.POSIXct(paste0(ye, "-01-01 01:00:00"), 
+                     format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
+    ye <- format(tail(file$date, n = 3)[1], format = "%Y")
+    x2 <- as.POSIXct(paste0(ye, "-12-31 23:00:00"), 
+                     format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
+    date <- seq(
+      from = as.POSIXct(x1, tz = "Asia/Kolkata"),
+      to = as.POSIXct(x2, tz = "Asia/Kolkata"),
+      by = time_period
+    ) 
+    date
+    return(date)
+  }
+  make_df <- function(y, tseries_df) {
+    df <- data.frame(y)
+    if(!nrow(df))
+    {
+      df <- tseries_df
+    } else {
+      names(df) <- as.matrix(df[1, ])
+      df <- df[-1, ]
+      df[] <- lapply(df, function(x) type.convert(as.character(x)))
+      df <- base::Filter(function(x)! all(is.na(x)), df)
+      df <- df %>%
+        dplyr::select("date" = `To Date`, everything()) %>%
+        mutate(date = as.POSIXct(date, format = '%d-%m-%Y %H:%M:%S', 
+                                 tz = "Asia/Kolkata"))
+    }
+  }
+  ':=' <- function(lhs, rhs) {
+    frame <- parent.frame()
+    lhs <- as.list(substitute(lhs))
+    if (length(lhs) > 1)
+      lhs <- lhs[-1]
+    if (length(lhs) == 1) {
+      do.call(`=`, list(lhs[[1]], rhs), envir=frame)
+      return(invisible(NULL)) 
+    }
+    if (is.function(rhs) || is(rhs, 'formula'))
+      rhs <- list(rhs)
+    if (length(lhs) > length(rhs))
+      rhs <- c(rhs, rep(list(NULL), length(lhs) - length(rhs)))
+    for (i in 1:length(lhs))
+      do.call(`=`, list(lhs[[i]], rhs[[i]]), envir=frame)
+    return(invisible(NULL)) 
+  }
+  cpcb <- function(sf, sfd) {
+    trial <- read.xlsx2(sf, 1, startRow = 17)
+    trial$date <- gsub(":00", ":00:00", trial$To.Date, fixed = TRUE)
+    trial$tbl_id <- cumsum(!nzchar(trial$date))
+    trial <- trial[nzchar(trial$date), ]
+    trial[ , c('From.Date', 'To.Date')] <- list(NULL)
+    dt_s <- split(trial[, -ncol(trial)], trial$tbl_id)
+    PM <- data.frame(dt_s$`0`) %>%
+      mutate(date = as.POSIXct(date, format = '%d-%m-%Y %H:%M:%S', tz = "Asia/Kolkata"))
+    date <- date_ts(PM, sfd)
+    tseries_df <- data.frame(date)
+    site1_join <- left_join(tseries_df, PM, by = "date")
+    Ben <- make_df(dt_s$`2`, tseries_df)
+    Beny <- make_df(dt_s$`4`, tseries_df)
+    Bent <- make_df(dt_s$`6`, tseries_df)
+    all <- list(site1_join, Ben, Beny, Bent) %>% reduce(left_join, by = "date")
+    return(list(all, date))
+  }
+  an <- function(sdw) {
+    trial <- read.csv(sdw, header = TRUE, sep = ",", 
+                      row.names = NULL)
+    trial <- trial %>%
+      dplyr::select("date" = Date..LT., "PM2.5" = Raw.Conc., "Valid" = QC.Name) %>%
+      mutate(date  = as.POSIXct(date, format = '%Y-%m-%d %I:%M %p', tz = "Asia/Kolkata")) %>%
+      dplyr::filter(Valid == "Valid")
+    trial$Valid <- NULL
+    date <- date_ts(trial, "60 min")
+    tseries_df <- data.frame(date)
+    all <- left_join(tseries_df, trial, by = "date")
+    return(list(all, date))
+  }
+  openaq <- function(sgf) {
+    trial <- read.csv(sgf, header = TRUE, sep = ",", 
+                      row.names = NULL)
+    trial <- trial %>%
+      dplyr::select("date" = local, "parameter" = parameter, "value" = value) %>%
+      mutate(date  = as.POSIXct(date, format = '%Y-%m-%dT%H:%M:%S+05:30', tz = "Asia/Kolkata"))
+    date <- date_ts(trial, "15 min")
+    tseries_df <- data.frame(date)
+    trial <- trial %>%
+      pivot_wider(names_from = parameter, values_from = value)
+    trial <- trial[order(trial$date), ]
+    all <- left_join(tseries_df, trial, by = "date") 
+    all$hour <- lubridate::ceiling_date(all$date, "hour")
+    all <- all %>%
+      group_by(hour) %>%
+      summarise_all(funs(mean), na.rm = TRUE) %>%
+      dplyr::select(everything(), - date) %>%
+      dplyr::select("date" = hour, everything())
+    if("pm25" %in% colnames(all))
+    {
+      all <- all %>%
+        dplyr::select(date, everything(), "PM2.5" = pm25)
+    }
+    if("pm10" %in% colnames(all))
+    {
+      all <- all %>%
+        dplyr::select(date, everything(), "PM10" = pm10)
+    }
+    if("nox" %in% colnames(all))
+    {
+      all <- all %>%
+        dplyr::select(date, everything(), "NOx" = nox)
+    }
+    if("no2" %in% colnames(all))
+    {
+      all <- all %>%
+        dplyr::select(date, everything(), "NO2" = no2)
+    }
+    if("no" %in% colnames(all))
+    {
+      all <- all %>%
+        dplyr::select(date, everything(), "NO" = no)
+    }
+    return(list(all, date))
+  }
+  neg <- function(site1_join_f1) {
+    col_interest <- 3:ncol(site1_join_f1)
+    site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
+                                             FUN = function(x) as.numeric(as.character(x)))
+    site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
+                                             FUN = function(x) ifelse(x < 0, NA, x))
+    site1_join_f1
+  }
+  rep <- function(site1_join_f1) {
+    col_interest <- 3:ncol(site1_join_f1)
+    site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[, col_interest], 
+                                             FUN = function(j)
+                                               ifelse(c(FALSE, diff(as.numeric(j), 1, 1) == 0), 
+                                                      NA, j))
+    site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
+                                             FUN = function(x) 
+                                               as.numeric(as.character(x)))
+    site1_join_f1
+  }
+  remov_99 <- function(site1_join_f1, high_number) {
+    site1_join_f1$PM2.5 <- ifelse(as.numeric(as.character(site1_join_f1$PM2.5)) > 
+                                    as.numeric(as.character(high_number)), 
+                                  as.numeric(as.character(NA)), 
+                                  as.numeric(as.character(site1_join_f1$PM2.5)))
+    site1_join_f1
+  }
+  ratio <- function(site1_join_f1, high_number) {
+    b <- as.numeric(as.character(site1_join_f1$PM10)) > as.numeric(as.character(high_number))
+    site1_join_f1$PM10 <- ifelse(b, as.numeric(as.character(NA)), 
+                                 as.numeric(as.character(site1_join_f1$PM10)))
+    site1_join_f1$ratio <- as.numeric(as.character(site1_join_f1$PM2.5)) / 
+      as.numeric(as.character(site1_join_f1$PM10))
+    site1_join_f1$PM2.5 <- ifelse(site1_join_f1$ratio >= 1, 
+                                  as.numeric(as.character(NA)), 
+                                  as.numeric(as.character(site1_join_f1$PM2.5)))
+    site1_join_f1$PM10 <- ifelse(site1_join_f1$ratio >= 1, 
+                                 as.numeric(as.character(NA)), 
+                                 as.numeric(as.character(site1_join_f1$PM10)))
+    site1_join_f1
+  }
+  outlier <- function(site1_join_f1, name, date, eq) {
+    site1_join_f1 <- site1_join_f1 %>%
+      group_by(day) %>%
+      mutate_all(funs(mean, sd), na.rm = TRUE) %>%
+      ungroup() %>%
+      dplyr::select(date, day, everything(), -date_mean, -date_sd)
+    tseries_df <- site1_join_f1 %>%
+      select(date)
+    for(i in names(name)) {
+      data_list <- site1_join_f1 %>% 
+        dplyr::select(starts_with(i))
+      if(i == "NO") {
+        data_list <- data_list %>%
+          dplyr::select(- contains(c("NO2", "NOx")))
+        mean <- paste0(i, "_mean")
+        sd <- paste0(i, "_sd")
+      } else if (i == "O") {
+        data_list <- data_list %>%
+          dplyr::select(- contains(c("Ozone")))
+        mean <- paste0(i, "_mean")
+        sd <- paste0(i, "_sd")
+      } else {
+        mean <- paste0(i, "_mean")
+        sd <- paste0(i, "_sd")
+      }
+      x <- as.numeric(as.character(data_list[[i]]))
+      x[!is.finite(x)] <- NA
+      y <- grep("_mean", colnames(data_list))
+      y <- as.numeric(as.character(data_list[[y]]))
+      y[!is.finite(y)] <- NA
+      z <- grep("_sd", colnames(data_list))
+      z <- as.numeric(as.character(data_list[[z]]))
+      z[!is.finite(z)] <- NA
+      if(!nrow(data_list)){
+        NULL 
+      } else {
+        data_list[[i]] <- mapply(LLD, x, y, z, as.numeric(as.character(eq)))
+      }
+      tseries_df <- bind_cols(tseries_df, data_list)
+    }
+    site1_join_f1 <- tseries_df %>%
+      mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) %>%
+      dplyr::select(date, day, everything(), -contains(c("_sd", "_mean")))
+    tseries_df <- data.frame(date)
+    site1_join_f1 <- left_join(tseries_df, site1_join_f1, by = "date")
+    site1_join_f1
+  }
   CPCB_f <- reactive({
-    completeFun <- function(data, desiredCols) {
-      completeVec <- complete.cases(data[, desiredCols])
-      return(data[completeVec, ])
-    }
-    LLD <- function(x, y, z, ey) {
-      ifelse(x < (y + (ey * z)) && x > (y - (ey * z)), x, NA)
-    }
     per1 <- input$per
-    date_ts <- function(file, time_period) {
-      ye <- format(file[1, "date"], format = "%Y")
-      x1 <- as.POSIXct(paste0(ye, "-01-01 01:00:00"), 
-                       format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
-      ye <- format(tail(file$date, n = 3)[1], format = "%Y")
-      x2 <- as.POSIXct(paste0(ye, "-12-31 23:00:00"), 
-                       format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
-      date <- seq(
-        from = as.POSIXct(x1, tz = "Asia/Kolkata"),
-        to = as.POSIXct(x2, tz = "Asia/Kolkata"),
-        by = time_period
-      ) 
-      date
-      return(date)
-    }
     if (is.null(input$file1)) {
       return(NULL)
     } else {
       if(input$type == "cpcb") {
-        trial <- read.xlsx2(input$file1$datapath, 1, startRow = 17)
-        trial$date <- gsub(":00", ":00:00", trial$To.Date, fixed = TRUE)
-        ### This folder contains files with different columns on below other so 
-        # splitting it based on empty rows after a set of parameters
-        trial$tbl_id <- cumsum(!nzchar(trial$date))
-        trial <- trial[nzchar(trial$date), ]
-        trial[ , c('From.Date', 'To.Date')] <- list(NULL)
-        dt_s <- split(trial[, -ncol(trial)], trial$tbl_id)
-        
-        ### Three dataframes representing different parameters; Also the start and 
-        # the end date was used from each file to create a time series dataframe
-        PM <- data.frame(dt_s$`0`) %>%
-          mutate(date = as.POSIXct(date, format = '%d-%m-%Y %H:%M:%S', tz = "Asia/Kolkata"))
-        date <- date_ts(PM, input$file)
-        tseries_df <- data.frame(date)
-        ### Join the three idfferent dataframe into a single one
-        site1_join <- left_join(tseries_df, PM, by = "date")
-        
-        make_df <- function(y, tseries_df) {
-          df <- data.frame(y)
-          if(!nrow(df))
-          {
-            df <- tseries_df
-          } else {
-            names(df) <- as.matrix(df[1, ])
-            df <- df[-1, ]
-            df[] <- lapply(df, function(x) type.convert(as.character(x)))
-            df <- base::Filter(function(x)! all(is.na(x)), df)
-            df <- df %>%
-              dplyr::select("date" = `To Date`, everything()) %>%
-              mutate(date = as.POSIXct(date, format = '%d-%m-%Y %H:%M:%S', 
-                                       tz = "Asia/Kolkata"))
-          }
-        }
-        Ben <- make_df(dt_s$`2`, tseries_df)
-        Beny <- make_df(dt_s$`4`, tseries_df)
-        Bent <- make_df(dt_s$`6`, tseries_df)
-        all <- list(site1_join, Ben, Beny, Bent) %>% reduce(left_join, by = "date")
+        c(all, date) := cpcb(input$file1$datapath, input$file)
+        all <- data.frame(all) 
+        date <- data.frame(date)
       } else if(input$type == "an") {
-        trial <- read.csv(input$file1$datapath, header = TRUE, sep = ",", 
-                          row.names = NULL)
-        trial <- trial %>%
-          dplyr::select("date" = Date..LT., "PM2.5" = Raw.Conc., "Valid" = QC.Name) %>%
-          mutate(date  = as.POSIXct(date, format = '%Y-%m-%d %I:%M %p', tz = "Asia/Kolkata")) %>%
-          dplyr::filter(Valid == "Valid")
-        trial$Valid <- NULL
-        date <- date_ts(trial, "60 min")
-        tseries_df <- data.frame(date)
-        all <- left_join(tseries_df, trial, by = "date")
+        c(all, date) := an(input$file1$datapath)
+        all <- data.frame(all) 
+        date <- data.frame(date)
       } else if (input$type == "oaq") {
-        trial <- read.csv(input$file1$datapath, header = TRUE, sep = ",", 
-                          row.names = NULL)
-        trial <- trial %>%
-          dplyr::select("date" = local, "parameter" = parameter, "value" = value) %>%
-          mutate(date  = as.POSIXct(date, format = '%Y-%m-%dT%H:%M:%S+05:30', tz = "Asia/Kolkata"))
-        
-        date <- date_ts(trial, "15 min")
-        tseries_df <- data.frame(date)
-        trial <- trial %>%
-          pivot_wider(names_from = parameter, values_from = value)
-        trial <- trial[order(trial$date), ]
-        all <- left_join(tseries_df, trial, by = "date") 
-        all$hour <- lubridate::ceiling_date(all$date, "hour")
-        all <- all %>%
-          group_by(hour) %>%
-          summarise_all(funs(mean), na.rm = TRUE) %>%
-          dplyr::select(everything(), - date) %>%
-          dplyr::select("date" = hour, everything())
-        if("pm25" %in% colnames(all))
-        {
-          all <- all %>%
-            dplyr::select(date, everything(), "PM2.5" = pm25)
-        }
-        if("pm10" %in% colnames(all))
-        {
-          all <- all %>%
-            dplyr::select(date, everything(), "PM10" = pm10)
-        }
-        if("nox" %in% colnames(all))
-        {
-          all <- all %>%
-            dplyr::select(date, everything(), "NOx" = nox)
-        }
-        if("no2" %in% colnames(all))
-        {
-          all <- all %>%
-            dplyr::select(date, everything(), "NO2" = no2)
-        }
-        if("no" %in% colnames(all))
-        {
-          all <- all %>%
-            dplyr::select(date, everything(), "NO" = no)
-        }
+        c(all, date) := openaq(input$file1$datapath)
+        all <- data.frame(all) 
+        date <- data.frame(date)
       }
+      
       site1_join_f1 <- all %>%
         mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) %>%
         dplyr::select(date, day, everything())
+      
       if(input$remove_9) {
-        col_interest <- 3:ncol(site1_join_f1)
-        site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
-                                                 FUN = function(x) as.numeric(as.character(x)))
-        site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
-                                                 FUN = function(x) ifelse(x < 0, NA, x))
+        site1_join_f1 <- neg(site1_join_f1)
       } else { site1_join_f1 }  
-      ### Check for consecutive repeated value and remove them using consecutive 
-      # difference as 0
+      
       if(input$repeated) {
-        col_interest <- 3:ncol(site1_join_f1)
-        site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[, col_interest], 
-                                                 FUN = function(j)
-                                                   ifelse(c(FALSE, diff(as.numeric(j), 1, 1) == 0), 
-                                                          NA, j))
-        site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
-                                                 FUN = function(x) 
-                                                   as.numeric(as.character(x)))
+        site1_join_f1 <- rep(site1_join_f1)
       } else { site1_join_f1 }  
+      
       name <- site1_join_f1 %>%
         dplyr::select(everything(), -day, -date)
       site1_join_f1 <- site1_join_f1 %>%
         mutate(ratio = NA) %>%
         dplyr::select(date, day, everything())
       if(input$exclude) {
-        ### Now calculate the Mean and SD for all parameters to check for some 
-        # conditions
-        site1_join_f1 <- site1_join_f1 %>%
-          group_by(day) %>%
-          mutate_all(funs(mean, sd), na.rm = TRUE) %>%
-          ungroup() %>%
-          dplyr::select(date, day, everything(), -date_mean, -date_sd)
-        tseries_df <- site1_join_f1 %>%
-          select(date)
-        for(i in names(name)) {
-          data_list <- site1_join_f1 %>% 
-            dplyr::select(starts_with(i))
-          ### Check if you have similar names matching eg - NO
-          if(i == "NO") {
-            data_list <- data_list %>%
-              dplyr::select(- contains(c("NO2", "NOx")))
-            mean <- paste0(i, "_mean")
-            sd <- paste0(i, "_sd")
-          } else if (i == "O") {
-            data_list <- data_list %>%
-              dplyr::select(- contains(c("Ozone")))
-            mean <- paste0(i, "_mean")
-            sd <- paste0(i, "_sd")
-          } else {
-            mean <- paste0(i, "_mean")
-            sd <- paste0(i, "_sd")
-          }
-          ### Remove empty rows
-          x <- as.numeric(as.character(data_list[[i]]))
-          x[!is.finite(x)] <- NA
-          y <- grep("_mean", colnames(data_list))
-          y <- as.numeric(as.character(data_list[[y]]))
-          y[!is.finite(y)] <- NA
-          z <- grep("_sd", colnames(data_list))
-          z <- as.numeric(as.character(data_list[[z]]))
-          z[!is.finite(z)] <- NA
-          ### Apply the condition of removing values which are >< (Mean +- 3 * SD)
-          if(!nrow(data_list)){
-            NULL 
-          } else {
-            data_list[[i]] <- mapply(LLD, x, y, z, as.numeric(as.character(input$ey)))
-          }
-          tseries_df <- bind_cols(tseries_df, data_list)
-        }
-        site1_join_f1 <- tseries_df %>%
-          mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) %>%
-          dplyr::select(date, day, everything(), -contains(c("_sd", "_mean")))
-        tseries_df <- data.frame(date)
-        site1_join_f1 <- left_join(tseries_df, site1_join_f1, by = "date")
+        site1_join_f1 <- outlier(site1_join_f1, name, date, input$ey)
       } else { site1_join_f1 }  
       site1_join_f1 <- site1_join_f1 %>%
         dplyr::select(date, day, everything())
@@ -515,9 +567,6 @@ server <- function(input, output, session) {
           } else {
             NULL
           }
-          ### Remove empty rows
-          # data_list <- completeFun(data_list, c(i))
-          ### Apply the condition of removing values which are >< (Mean +- 3 * SD)
           data_list <- data_list %>% 
             group_by(day) %>%
             mutate_at(vars(contains(i)), list(no_hour = ~ sum(!is.na(.)))) %>%
@@ -539,28 +588,11 @@ server <- function(input, output, session) {
           mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) 
       } else { site1_join_f1 }
       
-      ### PM2.5 and PM10 ratio
       if("PM2.5" %in% colnames(site1_join_f1)) {
-        
-        site1_join_f1$PM2.5 <- ifelse(as.numeric(as.character(site1_join_f1$PM2.5)) > input$high_number, 
-                                      as.numeric(as.character(NA)), 
-                                      as.numeric(as.character(site1_join_f1$PM2.5)))
-        
-        ### If PM10 values exist then check the ratio of PM2.5 / PM10 and if it is 
-        # greater than 1 then remove those values
+        site1_join_f1 <- remov_99(site1_join_f1, input$high_number)
         if("PM10" %in% colnames(site1_join_f1))
         {
-          b <- as.numeric(as.character(site1_join_f1$PM10)) > input$high_number
-          site1_join_f1$PM10 <- ifelse(b, as.numeric(as.character(NA)), 
-                                       as.numeric(as.character(site1_join_f1$PM10)))
-          site1_join_f1$ratio <- as.numeric(as.character(site1_join_f1$PM2.5)) / 
-            as.numeric(as.character(site1_join_f1$PM10))
-          site1_join_f1$PM2.5 <- ifelse(site1_join_f1$ratio >= 1, 
-                                        as.numeric(as.character(NA)), 
-                                        as.numeric(as.character(site1_join_f1$PM2.5)))
-          site1_join_f1$PM10 <- ifelse(site1_join_f1$ratio >= 1, 
-                                       as.numeric(as.character(NA)), 
-                                       as.numeric(as.character(site1_join_f1$PM10)))
+          site1_join_f1 <- ratio(site1_join_f1, input$high_number)
         } else {
           site1_join_f1$ratio <- NA
         }
