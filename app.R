@@ -44,7 +44,7 @@ ui <- fluidPage(
                                                radioButtons("avg_hour3", "Average to",
                                                             c("Hourly" = "hour3",
                                                               "Daily" = "daily3"), 
-                                                            selected = "hour1"),
+                                                            selected = "hour3"),
                                                tags$hr(),
                                                tags$hr(),
                                                textInput("ts_mt", label = "Edit title of plot", 
@@ -99,7 +99,7 @@ ui <- fluidPage(
                                                radioButtons("avg_hour2", "Average to",
                                                             c("Hourly" = "hour2",
                                                               "Daily" = "daily2"), 
-                                                            selected = "hour1"),
+                                                            selected = "hour2"),
                                                tags$hr(),
                                                tags$hr(),
                                                radioButtons("normality", "Normality Test",
@@ -165,7 +165,67 @@ ui <- fluidPage(
                                                            multiple = TRUE, "Select"),
                                                actionButton("mulreg", "Multiple Regression"),
                                                tags$hr()),
-                              conditionalPanel(condition = "input.tabs1 == 7"),
+                              conditionalPanel(condition = "input.tabs1 == 7",
+                                               tags$hr(),
+                                               radioButtons("type2", "Data downloaded from",
+                                                            choiceNames = list(
+                                                              HTML("<a href = 'https://openaq.org/#/countries/IN?_k=5ecycz' target = '_blank'>OpenAQ</a>"), 
+                                                              HTML("<a href = 'https://www.airnow.gov/international/us-embassies-and-consulates/#India' target = '_blank'>AirNow - US Embassies</a>"),
+                                                              HTML("<a href = 'https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing' target = '_blank'>Pollution Control Board</a>")),
+                                                            choiceValues = list("oaq2", "an2", "cpcb2"),
+                                                            selected = "cpcb2"),
+                                               tags$hr(),
+                                               conditionalPanel(condition = "input.type2 == 'cpcb2'",
+                                                                radioButtons("file12", "Time resolution of downloaded data",
+                                                                             c("15 minutes" = "15 min",
+                                                                               "30 minutes" = "30 min",
+                                                                               "60 minutes" = "60 min"), 
+                                                                             selected = "60 min")),
+                                               tags$hr(),
+                                               fileInput("file2",
+                                                         "Upload comparision data",
+                                                         multiple = TRUE,
+                                                         accept = c('.xlsx', '.csv')),
+                                               tags$hr(),
+                                               checkboxInput('remove_92', 'Remove negative values'),
+                                               tags$hr(),
+                                               checkboxInput('repeated2', 'Remove consecutive measurements'),
+                                               tags$hr(),
+                                               checkboxInput('exclude2', 'Remove outliers based on Mean and Std Dev'),
+                                               conditionalPanel(
+                                                 condition = "input.exclude2 == true",
+                                                 numericInput("ey2", "Specify a multiple for removing outliers (Mean + X*Std Dev)",
+                                                              value = 3)),
+                                               tags$hr(),
+                                               checkboxInput('percent2', 'Completeness of data in a day'),
+                                               conditionalPanel(
+                                                 condition = "input.percent2 == true",
+                                                 sliderInput("per2", "Specify % of data completeness required in a day",
+                                                             value = 75,  min = 35, max = 100)),
+                                               tags$hr(),
+                                               numericInput("high_number2",
+                                                            "Remove PM2.5 and PM10 values above",
+                                                            value = 9999),
+                                               tags$hr(),
+                                               selectInput("Para", 
+                                                           "Paramter to plot in orginal data", 
+                                                           multiple = FALSE, "Select"),
+                                               selectInput("Para1", 
+                                                           "Paramter to plot in comparision data", 
+                                                           multiple = FALSE, "Select"),
+                                               tags$hr(),
+                                               radioButtons("avg_hour12", "Average to",
+                                                            c("Hourly" = "hour12",
+                                                              "Daily" = "daily12"), 
+                                                            selected = "hour12"),
+                                               tags$hr(),
+                                               actionButton("ploer1", "Join tables"),
+                                               tags$hr(),
+                                               textInput("comp_mt", label = "Edit title of plot", 
+                                                         value = "Title"),
+                                               textInput("comp_y", label = "Edit Y axis title", 
+                                                         value = "Pollutant"),
+                                               actionButton("ploer", "Plot time series")),
                               conditionalPanel(condition = "input.tabs1 == 4",
                                                tags$hr(),
                                                selectInput("palleInp1", "Select parameter to plot",
@@ -175,7 +235,7 @@ ui <- fluidPage(
                                                radioButtons("avg_hour4", "Average to",
                                                             c("Hourly" = "hour4",
                                                               "Daily" = "daily4"), 
-                                                            selected = "hour1"),
+                                                            selected = "hour4"),
                                                tags$hr(),
                                                tags$hr(),
                                                textInput("cp_mt", label = "Edit title of plot", 
@@ -280,6 +340,9 @@ ui <- fluidPage(
                                 plotOutput("plot11", width = 800), 
                                 verbatimTextOutput(outputId = "IndPrint"),
                                 verbatimTextOutput(outputId = "DepPrint")),
+                              tabPanel(value = 7,
+                                       title = "Compare",
+                                       plotOutput("plot12", height = 600)),
                               tabPanel(
                                 value = 4,
                                 title = "openair package plots",
@@ -509,6 +572,41 @@ server <- function(input, output, session) {
     site1_join_f1 <- left_join(tseries_df, site1_join_f1, by = "date")
     site1_join_f1
   }
+  compl <- function(name, site1_join_f1, date, fi, per1) {
+    tseries_df <- data.frame(date)
+    for(i in names(name)){
+      data_list <- site1_join_f1 %>% 
+        dplyr::select(date, day, starts_with(i))
+      if(i == "NO") {
+        data_list <- data_list %>%
+          dplyr::select(-contains(c("NO2", "NOx")))
+      } else if(i == "O") {
+        data_list <- data_list %>%
+          dplyr::select(-contains(c("Ozone")))
+      } else {
+        NULL
+      }
+      data_list <- data_list %>% 
+        group_by(day) %>%
+        mutate_at(vars(contains(i)), list(no_hour = ~ sum(!is.na(.)))) %>%
+        dplyr::select(-contains(c("_sd_no_hour", "_mean_no_hour")))
+      old_no <- paste0(i, "_no_hour")
+      names(data_list)[names(data_list) == old_no] <- 'no_hour'
+      if(fi == "15 min") {
+        time_avg = 96
+      } else if(fi == "30 min") {
+        time_avg = 48
+      } else if(fi == "60 min") {
+        time_avg = 24
+      }
+      data_list <- subset(data_list, no_hour >= ((per1 / 100) * time_avg))
+      data_list[ , c('day', 'no_hour')] <- list(NULL)
+      tseries_df <- left_join(tseries_df, data_list, by = "date")
+    }
+    site1_join_f1 <- tseries_df %>%
+      mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) 
+  }
+  
   CPCB_f <- reactive({
     per1 <- input$per
     if (is.null(input$file1)) {
@@ -547,45 +645,15 @@ server <- function(input, output, session) {
         dplyr::select(date, day, everything())
       if(input$exclude) {
         site1_join_f1 <- outlier(site1_join_f1, name, date, input$ey)
-      } else { site1_join_f1 }  
+      } else { site1_join_f1 } 
+      
       site1_join_f1 <- site1_join_f1 %>%
         dplyr::select(date, day, everything())
       col_interest <- 3:ncol(site1_join_f1)
       site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
                                                FUN = function(x) as.numeric(as.character(x)))
       if(input$percent) {
-        tseries_df <- data.frame(date)
-        for(i in names(name)){
-          data_list <- site1_join_f1 %>% 
-            dplyr::select(date, day, starts_with(i))
-          if(i == "NO") {
-            data_list <- data_list %>%
-              dplyr::select(-contains(c("NO2", "NOx")))
-          } else if(i == "O") {
-            data_list <- data_list %>%
-              dplyr::select(-contains(c("Ozone")))
-          } else {
-            NULL
-          }
-          data_list <- data_list %>% 
-            group_by(day) %>%
-            mutate_at(vars(contains(i)), list(no_hour = ~ sum(!is.na(.)))) %>%
-            dplyr::select(-contains(c("_sd_no_hour", "_mean_no_hour")))
-          old_no <- paste0(i, "_no_hour")
-          names(data_list)[names(data_list) == old_no] <- 'no_hour'
-          if(input$file == "15 min") {
-            time_avg = 96
-          } else if(input$file == "30 min") {
-            time_avg = 48
-          } else if(input$file == "60 min") {
-            time_avg = 24
-          }
-          data_list <- subset(data_list, no_hour >= ((per1 / 100) * time_avg))
-          data_list[ , c('day', 'no_hour')] <- list(NULL)
-          tseries_df <- left_join(tseries_df, data_list, by = "date")
-        }
-        site1_join_f1 <- tseries_df %>%
-          mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) 
+        site1_join_f1 <- compl(name, site1_join_f1, date, input$file, per1)
       } else { site1_join_f1 }
       
       if("PM2.5" %in% colnames(site1_join_f1)) {
@@ -604,25 +672,102 @@ server <- function(input, output, session) {
     }
   })
   
-  data_joined <- eventReactive(input$hourly, {
+  Comp_f <- reactive({
+    per2 <- input$per2
+    if (is.null(input$file2)) {
+      return(NULL)
+    } else {
+      if(input$type2 == "cpcb2") {
+        c(all, date) := cpcb(input$file2$datapath, input$file12)
+        all <- data.frame(all) 
+        date <- data.frame(date)
+      } else if(input$type2 == "an2") {
+        c(all, date) := an(input$file2$datapath)
+        all <- data.frame(all) 
+        date <- data.frame(date)
+      } else if (input$type2 == "oaq2") {
+        c(all, date) := openaq(input$file2$datapath)
+        all <- data.frame(all) 
+        date <- data.frame(date)
+      }
+      
+      site1_join_f1 <- all %>%
+        mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) %>%
+        dplyr::select(date, day, everything())
+      
+      if(input$remove_92) {
+        site1_join_f1 <- neg(site1_join_f1)
+      } else { site1_join_f1 }  
+      
+      if(input$repeated2) {
+        site1_join_f1 <- rep(site1_join_f1)
+      } else { site1_join_f1 }  
+      
+      name <- site1_join_f1 %>%
+        dplyr::select(everything(), -day, -date)
+      site1_join_f1 <- site1_join_f1 %>%
+        mutate(ratio = NA) %>%
+        dplyr::select(date, day, everything())
+      if(input$exclude2) {
+        site1_join_f1 <- outlier(site1_join_f1, name, date, input$ey2)
+      } else { site1_join_f1 } 
+      
+      site1_join_f1 <- site1_join_f1 %>%
+        dplyr::select(date, day, everything())
+      col_interest <- 3:ncol(site1_join_f1)
+      site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
+                                               FUN = function(x) as.numeric(as.character(x)))
+      if(input$percent2) {
+        site1_join_f1 <- compl(name, site1_join_f1, date, input$file12, per2)
+      } else { site1_join_f1 }
+      
+      if("PM2.5" %in% colnames(site1_join_f1)) {
+        site1_join_f1 <- remov_99(site1_join_f1, input$high_number2)
+        if("PM10" %in% colnames(site1_join_f1))
+        {
+          site1_join_f1 <- ratio(site1_join_f1, input$high_number2)
+        } else {
+          site1_join_f1$ratio <- NA
+        }
+      } else { site1_join_f1 }
+      site1_join_f1 <- site1_join_f1 %>%
+        dplyr::select(date, day, everything()) %>%
+        janitor::remove_empty("cols")
+      site1_join_f1
+    }
+  })
+  
+  mess <- function(button, da) {
     data <- CPCB_f()
-    if(input$avg_hour == "daily") {
+    if(button == da) {
+      data <- openair::timeAverage(data, avg.time = "day")
+    } else { data }
+  }
+  
+  data_joined <- eventReactive(input$hourly, {
+    data <- mess(input$avg_hour, "daily")
+    return(data)
+  })
+  data_joined_comp <- eventReactive(input$ploer, {
+    data <- Comp_f()
+    if(input$avg_hour12 == "daily12") {
+      data <- openair::timeAverage(data, avg.time = "day")
+    } else { data }
+    return(data)
+  })
+  data_joined_comp1 <- eventReactive(input$ploer1, {
+    data <- CPCB_f()
+    if(input$avg_hour12 == "daily12") {
       data <- openair::timeAverage(data, avg.time = "day")
     } else { data }
     return(data)
   })
   data_plot <- eventReactive(input$ts, {
-    data <- CPCB_f()
-    if(input$avg_hour3 == "daily3") {
-      data <- openair::timeAverage(data, avg.time = "day")
-    } else { data }
+    data <- mess(input$avg_hour3, "daily3")
     return(data)
   })
   data_box <- eventReactive(input$box, {
-    data <- CPCB_f()
-    if(input$avg_hour3 == "daily3") {
-      data <- openair::timeAverage(data, avg.time = "day")
-    } else { data }
+    data <- mess(input$avg_hour3, "daily3")
     return(data)
   })
   data_boxt <- eventReactive(input$boxt, {
@@ -633,52 +778,31 @@ server <- function(input, output, session) {
     return(data)
   })
   data_mbox <- eventReactive(input$mbox, {
-    data <- CPCB_f()
-    if(input$avg_hour3 == "daily3") {
-      data <- openair::timeAverage(data, avg.time = "day")
-    } else { data }
+    data <- mess(input$avg_hour3, "daily3")
     return(data)
   })
   data_tv <- eventReactive(input$tv, {
-    data <- CPCB_f()
-    if(input$avg_hour4 == "daily4") {
-      data <- openair::timeAverage(data, avg.time = "day")
-    } else { data }
+    data <- mess(input$avg_hour4, "daily4")
     return(data)
   })
   data_cp <- eventReactive(input$cp, {
-    data <- CPCB_f()
-    if(input$avg_hour4 == "daily4") {
-      data <- openair::timeAverage(data, avg.time = "day")
-    } else { data }
+    data <- mess(input$avg_hour4, "daily4")
     return(data)
   })
   data_qq <- eventReactive(input$qq, {
-    data <- CPCB_f()
-    if(input$avg_hour2 == "daily2") {
-      data <- openair::timeAverage(data, avg.time = "day")
-    } else { data }
+    data <- mess(input$avg_hour2, "daily2")
     return(data)
   })
   data_freq <- eventReactive(input$freq, {
-    data <- CPCB_f()
-    if(input$avg_hour2 == "daily2") {
-      data <- openair::timeAverage(data, avg.time = "day")
-    } else { data }
+    data <- mess(input$avg_hour2, "daily2")
     return(data)
   })
   data_reg <- eventReactive(input$reg, {
-    data <- CPCB_f()
-    if(input$avg_hour1 == "daily1") {
-      data <- openair::timeAverage(data, avg.time = "day")
-    } else { data }
+    data <- mess(input$avg_hour1, "daily1")
     return(data)
   })
   data_mreg <- eventReactive(input$mulreg, {
-    data <- CPCB_f()
-    if(input$avg_hour1 == "daily1") {
-      data <- openair::timeAverage(data, avg.time = "day")
-    } else { data }
+    data <- mess(input$avg_hour1, "daily1")
     return(data)
   })
   data_diurnal <- eventReactive(input$diurnal, {
@@ -726,6 +850,12 @@ server <- function(input, output, session) {
       data_joined <- data_joined()
       data_joined <- data_joined %>%
         dplyr::select(- date, - day)
+      data_joined_comp1 <- data_joined_comp1()
+      data_joined_comp1 <- data_joined_comp1 %>%
+        dplyr::select(- date, - day)
+      data_joined_comp <- data_joined_comp()
+      data_joined_comp <- data_joined_comp %>%
+        dplyr::select(- date, - day)
     }
     updateSelectInput(session, "palleInp", choices = names(data_joined))
     updateSelectInput(session, "palleInp1", choices = names(data_joined))
@@ -734,6 +864,8 @@ server <- function(input, output, session) {
     updateSelectInput(session, "InDepVar", choices = names(data_joined))
     updateSelectInput(session, "DepVar1", choices = names(data_joined))
     updateSelectInput(session, "InDepVar1", choices = names(data_joined))
+    updateSelectInput(session, "Para", choices = names(data_joined_comp1))
+    updateSelectInput(session, "Para1", choices = names(data_joined_comp))
   })
   
   output$table1 <- DT::renderDataTable({
@@ -811,6 +943,23 @@ server <- function(input, output, session) {
       ggplot(data, aes(as.POSIXct(date), y)) +
         labs(y = input$ts_y, title = input$ts_mt,
              x = "") + theme2() + geom_line(size = 0.6, color = "seagreen")
+    }
+  })
+  output$plot12 <- renderPlot({
+    if (is.null(input$file1) | is.null(input$file2)) { NULL }
+    else {
+      data <- data_joined_comp1()
+      data1 <- data_joined_comp()
+      data <- data %>%
+        select(date, "Site 1" = input$Para)
+      data1 <- data1 %>%
+        select(date, "Site 2" = input$Para1)
+      all <- left_join(data, data1, by = "date")
+      all <- all %>%
+        pivot_longer(-date, names_to = "parameter", values_to = "value")
+      ggplot(all, aes(as.POSIXct(date), value, colour = parameter)) +
+        labs(y = input$comp_y, title = input$comp_mt,
+             x = "") + theme2() + geom_line(size = 0.6) + theme(legend.title = element_blank())
     }
   })
   output$plot2 <- renderPlot({
