@@ -954,7 +954,7 @@ server <- function(input, output, session) {
         select(date, "Site 1" = input$Para)
       data1 <- data1 %>%
         select(date, "Site 2" = input$Para1)
-      all <- left_join(data, data1, by = "date")
+      all <- full_join(data, data1, by = "date")
       all <- all %>%
         pivot_longer(-date, names_to = "parameter", values_to = "value")
       ggplot(all, aes(as.POSIXct(date), value, colour = parameter)) +
