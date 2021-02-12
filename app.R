@@ -850,12 +850,6 @@ server <- function(input, output, session) {
       data_joined <- data_joined()
       data_joined <- data_joined %>%
         dplyr::select(- date, - day)
-      data_joined_comp1 <- data_joined_comp1()
-      data_joined_comp1 <- data_joined_comp1 %>%
-        dplyr::select(- date, - day)
-      data_joined_comp <- data_joined_comp()
-      data_joined_comp <- data_joined_comp %>%
-        dplyr::select(- date, - day)
     }
     updateSelectInput(session, "palleInp", choices = names(data_joined))
     updateSelectInput(session, "palleInp1", choices = names(data_joined))
@@ -864,6 +858,18 @@ server <- function(input, output, session) {
     updateSelectInput(session, "InDepVar", choices = names(data_joined))
     updateSelectInput(session, "DepVar1", choices = names(data_joined))
     updateSelectInput(session, "InDepVar1", choices = names(data_joined))
+  })
+  observe({
+    if (is.null(input$file1) | is.null(input$file2)) {
+      NULL
+    } else {
+      data_joined_comp1 <- data_joined_comp1()
+      data_joined_comp1 <- data_joined_comp1 %>%
+        dplyr::select(- date, - day)
+      data_joined_comp <- data_joined_comp()
+      data_joined_comp <- data_joined_comp %>%
+        dplyr::select(- date, - day)
+    }
     updateSelectInput(session, "Para", choices = names(data_joined_comp1))
     updateSelectInput(session, "Para1", choices = names(data_joined_comp))
   })
