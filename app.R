@@ -329,7 +329,7 @@ ui <- fluidPage(
                                 value = 5,
                                 title = "Statistics Plots",
                                 verbatimTextOutput("normality_test"),
-                                # verbatimTextOutput("kendal_test"),
+                                verbatimTextOutput("kendal_test"),
                                 plotOutput("plot6", width = 800),
                                 plotOutput("plot7", width = 800)),
                               tabPanel(
@@ -921,13 +921,29 @@ server <- function(input, output, session) {
     }
     x
   })
-  # kenda <- reactive({
-  #   data <- data_freq()
-  #   y <- as.numeric(as.character(data[[input$palleInp2]]))
-  #   y <- as.ts(y)
-  #   c <- trend::mk.test(y)
-  #   c
-  # })
+  kenda <- reactive({
+    if(input$avg_hour2 == "daily2") {
+      data <- openair::timeAverage(data, avg.time = "day")
+      data <- data %>%
+        select(everything(), "y" = input$palleInp2) %>%
+        mutate(month = format(date, "%m")) %>%
+        group_by(month) %>%
+        mutate(med_data = median(y, na.rm = TRUE))
+    } else { 
+      data <- data_freq()
+      data <- data %>%
+        select(everything(), "y" = input$palleInp2) %>%
+        mutate(hour = format(date, "%H"),
+               month = format(date, "%m")) %>%
+        group_by(hour, month) %>%
+        mutate(med_data = median(y, na.rm = TRUE))
+      }
+    data$y <- ifelse(is.na(data$y), data$med_data, data$y)
+    y <- as.numeric(as.character(data$y))
+    y <- as.ts(y)
+    c <- trend::mk.test(y)
+    c
+  })
   
   output$normality_test <- renderPrint({
     if (is.null(input$file1)) { "No file" }
@@ -935,12 +951,17 @@ server <- function(input, output, session) {
       normalilty_t()
     }
   })
-  # output$kendal_test <- renderPrint({
-  #   if (is.null(input$file1)) { "No file" }
-  #   else {
-  #     kenda()
-  #   }
-  # })
+  output$kendal_test <- renderPrint({
+    data <- data_freq()
+    data$y <- as.numeric(as.character(data[[input$palleInp2]]))
+    if (is.null(input$file1)) { "No file" }
+    else {
+      validate(
+        need(try(all(is.na(data$y))), "Sorry, there is no data.")
+        )
+      kenda()
+    }
+  })
   output$plot1 <- renderPlot({
     if (is.null(input$file1)) { NULL }
     else {
