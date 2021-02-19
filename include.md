@@ -1,4 +1,3 @@
-Adithi R. Upadhya, ILK Labs
 
 ### We are in this together\!
 
@@ -12,13 +11,13 @@ A walk through to use this app for everyone -
   - Upload the data and check all boxes / conditions with default
     settings (trust us, that will be a good approach)
   - Look at the time-series plot on what days it is high and at what
-    time, look at the diurnal pattern and the general way on how Air
+    time, look at the diurnal pattern and the general way on how air
     pollution varies.
-  - Look at months for the values which bother you.
-  - Look for sources (what you feel contribute to air pollution) and
+  - Look at months which bother you.
+  - Look for sources (which you think contribute to air pollution) and
     write back to us on what you see.
-  - What more do you want from us?
-  - You want to explore more and have an idea, contact us
-    <adithi@ilklabs.com>.
-  - You have feature request - open an issue
+  - What more do you want to learn? Talk to the Humans of ILK.
+  - You want to explore more or have an idea, contact us at
+    [contact@ilklabs.com](contact@ilklabs.com).
+  - If you have feature request - open an issue
     [here](https://github.com/adithirgis/OpenSourceAirQualityApp).
