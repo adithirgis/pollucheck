@@ -606,135 +606,81 @@ server <- function(input, output, session) {
     site1_join_f1 <- tseries_df %>%
       mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) 
   }
+  data_file <- function(per, type, file_data_path, file_1, file, remove_9, repeated, 
+                        percent, ey, exclude, high_number) {
+    if (is.null(file_1)) {
+      return(NULL)
+    } else {
+      if(type == "cpcb") {
+        c(all, date) := cpcb(file_data_path, file)
+        all <- data.frame(all) 
+        date <- data.frame(date)
+      } else if(type == "an") {
+        c(all, date) := an(file_data_path)
+        all <- data.frame(all) 
+        date <- data.frame(date)
+      } else if (type == "oaq") {
+        c(all, date) := openaq(file_data_path)
+        all <- data.frame(all) 
+        date <- data.frame(date)
+      }
+      
+      site1_join_f1 <- all %>%
+        mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) %>%
+        dplyr::select(date, day, everything())
+      
+      if(remove_9) {
+        site1_join_f1 <- neg(site1_join_f1)
+      } else { site1_join_f1 }  
+      
+      if(repeated) {
+        site1_join_f1 <- rep(site1_join_f1)
+      } else { site1_join_f1 }  
+      
+      name <- site1_join_f1 %>%
+        dplyr::select(everything(), -day, -date)
+      site1_join_f1 <- site1_join_f1 %>%
+        mutate(ratio = NA) %>%
+        dplyr::select(date, day, everything())
+      if(exclude) {
+        site1_join_f1 <- outlier(site1_join_f1, name, date, ey)
+      } else { site1_join_f1 } 
+      
+      site1_join_f1 <- site1_join_f1 %>%
+        dplyr::select(date, day, everything())
+      col_interest <- 3:ncol(site1_join_f1)
+      site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
+                                               FUN = function(x) as.numeric(as.character(x)))
+      if(percent) {
+        site1_join_f1 <- compl(name, site1_join_f1, date, file, per)
+      } else { site1_join_f1 }
+      
+      if("PM2.5" %in% colnames(site1_join_f1)) {
+        site1_join_f1 <- remov_99(site1_join_f1, high_number)
+        if("PM10" %in% colnames(site1_join_f1))
+        {
+          site1_join_f1 <- ratio(site1_join_f1, high_number)
+        } else {
+          site1_join_f1$ratio <- NA
+        }
+      } else { site1_join_f1 }
+      site1_join_f1 <- site1_join_f1 %>%
+        dplyr::select(date, day, everything()) %>%
+        janitor::remove_empty("cols")
+      site1_join_f1
+    }
+  }
   
   CPCB_f <- reactive({
-    per1 <- input$per
-    if (is.null(input$file1)) {
-      return(NULL)
-    } else {
-      if(input$type == "cpcb") {
-        c(all, date) := cpcb(input$file1$datapath, input$file)
-        all <- data.frame(all) 
-        date <- data.frame(date)
-      } else if(input$type == "an") {
-        c(all, date) := an(input$file1$datapath)
-        all <- data.frame(all) 
-        date <- data.frame(date)
-      } else if (input$type == "oaq") {
-        c(all, date) := openaq(input$file1$datapath)
-        all <- data.frame(all) 
-        date <- data.frame(date)
-      }
-      
-      site1_join_f1 <- all %>%
-        mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) %>%
-        dplyr::select(date, day, everything())
-      
-      if(input$remove_9) {
-        site1_join_f1 <- neg(site1_join_f1)
-      } else { site1_join_f1 }  
-      
-      if(input$repeated) {
-        site1_join_f1 <- rep(site1_join_f1)
-      } else { site1_join_f1 }  
-      
-      name <- site1_join_f1 %>%
-        dplyr::select(everything(), -day, -date)
-      site1_join_f1 <- site1_join_f1 %>%
-        mutate(ratio = NA) %>%
-        dplyr::select(date, day, everything())
-      if(input$exclude) {
-        site1_join_f1 <- outlier(site1_join_f1, name, date, input$ey)
-      } else { site1_join_f1 } 
-      
-      site1_join_f1 <- site1_join_f1 %>%
-        dplyr::select(date, day, everything())
-      col_interest <- 3:ncol(site1_join_f1)
-      site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
-                                               FUN = function(x) as.numeric(as.character(x)))
-      if(input$percent) {
-        site1_join_f1 <- compl(name, site1_join_f1, date, input$file, per1)
-      } else { site1_join_f1 }
-      
-      if("PM2.5" %in% colnames(site1_join_f1)) {
-        site1_join_f1 <- remov_99(site1_join_f1, input$high_number)
-        if("PM10" %in% colnames(site1_join_f1))
-        {
-          site1_join_f1 <- ratio(site1_join_f1, input$high_number)
-        } else {
-          site1_join_f1$ratio <- NA
-        }
-      } else { site1_join_f1 }
-      site1_join_f1 <- site1_join_f1 %>%
-        dplyr::select(date, day, everything()) %>%
-        janitor::remove_empty("cols")
-      site1_join_f1
-    }
-  })
+    site1_join_f1 <- data_file(input$per, input$type, input$file1$datapath, input$file1,
+                               input$file, input$remove_9, input$repeated, input$percent, 
+                               input$ey, input$exclude, input$high_number)
+ })
   
   Comp_f <- reactive({
-    per2 <- input$per2
-    if (is.null(input$file2)) {
-      return(NULL)
-    } else {
-      if(input$type2 == "cpcb2") {
-        c(all, date) := cpcb(input$file2$datapath, input$file12)
-        all <- data.frame(all) 
-        date <- data.frame(date)
-      } else if(input$type2 == "an2") {
-        c(all, date) := an(input$file2$datapath)
-        all <- data.frame(all) 
-        date <- data.frame(date)
-      } else if (input$type2 == "oaq2") {
-        c(all, date) := openaq(input$file2$datapath)
-        all <- data.frame(all) 
-        date <- data.frame(date)
-      }
-      
-      site1_join_f1 <- all %>%
-        mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) %>%
-        dplyr::select(date, day, everything())
-      
-      if(input$remove_92) {
-        site1_join_f1 <- neg(site1_join_f1)
-      } else { site1_join_f1 }  
-      
-      if(input$repeated2) {
-        site1_join_f1 <- rep(site1_join_f1)
-      } else { site1_join_f1 }  
-      
-      name <- site1_join_f1 %>%
-        dplyr::select(everything(), -day, -date)
-      site1_join_f1 <- site1_join_f1 %>%
-        mutate(ratio = NA) %>%
-        dplyr::select(date, day, everything())
-      if(input$exclude2) {
-        site1_join_f1 <- outlier(site1_join_f1, name, date, input$ey2)
-      } else { site1_join_f1 } 
-      
-      site1_join_f1 <- site1_join_f1 %>%
-        dplyr::select(date, day, everything())
-      col_interest <- 3:ncol(site1_join_f1)
-      site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
-                                               FUN = function(x) as.numeric(as.character(x)))
-      if(input$percent2) {
-        site1_join_f1 <- compl(name, site1_join_f1, date, input$file12, per2)
-      } else { site1_join_f1 }
-      
-      if("PM2.5" %in% colnames(site1_join_f1)) {
-        site1_join_f1 <- remov_99(site1_join_f1, input$high_number2)
-        if("PM10" %in% colnames(site1_join_f1))
-        {
-          site1_join_f1 <- ratio(site1_join_f1, input$high_number2)
-        } else {
-          site1_join_f1$ratio <- NA
-        }
-      } else { site1_join_f1 }
-      site1_join_f1 <- site1_join_f1 %>%
-        dplyr::select(date, day, everything()) %>%
-        janitor::remove_empty("cols")
-      site1_join_f1
-    }
+    site1_join_f1 <- data_file(input$per2, input$type2, input$file2$datapath, input$file2,
+                               input$file12, input$remove_92, input$repeated2, input$percent2, 
+                               input$ey2, input$exclude2, input$high_number2)
   })
   
   mess <- function(button, da) {
