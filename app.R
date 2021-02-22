@@ -358,9 +358,12 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   # bs_themer()
   options(shiny.maxRequestSize = 30*1024^2, shiny.launch.browser = TRUE)
+  #### Function to remove outliers
   LLD <- function(x, y, z, ey) {
     ifelse(x < (y + (ey * z)) && x > (y - (ey * z)), x, NA)
   }
+  
+  #### Function to make date time series
   date_ts <- function(file, time_period) {
     ye <- format(file[1, "date"], format = "%Y")
     x1 <- as.POSIXct(paste0(ye, "-01-01 01:00:00"), 
@@ -376,6 +379,9 @@ server <- function(input, output, session) {
     date
     return(date)
   }
+  
+  #### CPCB data overlaps hence break it and make it into a df using this function 
+  #### using date and also making the first column as the column name
   make_df <- function(y, tseries_df) {
     df <- data.frame(y)
     if(!nrow(df))
@@ -392,6 +398,8 @@ server <- function(input, output, session) {
                                  tz = "Asia/Kolkata"))
     }
   }
+  
+  #### How to assign functions returning two variables
   ':=' <- function(lhs, rhs) {
     frame <- parent.frame()
     lhs <- as.list(substitute(lhs))
@@ -409,6 +417,8 @@ server <- function(input, output, session) {
       do.call(`=`, list(lhs[[i]], rhs[[i]]), envir=frame)
     return(invisible(NULL)) 
   }
+  
+  #### Function to handle cpcb data
   cpcb <- function(sf, sfd) {
     trial <- read.xlsx2(sf, 1, startRow = 17)
     trial$date <- gsub(":00", ":00:00", trial$To.Date, fixed = TRUE)
@@ -427,6 +437,8 @@ server <- function(input, output, session) {
     all <- list(site1_join, Ben, Beny, Bent) %>% reduce(left_join, by = "date")
     return(list(all, date))
   }
+  
+  #### Function to handle airnow data
   an <- function(sdw) {
     trial <- read.csv(sdw, header = TRUE, sep = ",", 
                       row.names = NULL)
@@ -440,6 +452,8 @@ server <- function(input, output, session) {
     all <- left_join(tseries_df, trial, by = "date")
     return(list(all, date))
   }
+  
+  #### Function to handle openaq data
   openaq <- function(sgf) {
     trial <- read.csv(sgf, header = TRUE, sep = ",", 
                       row.names = NULL)
@@ -485,6 +499,8 @@ server <- function(input, output, session) {
     }
     return(list(all, date))
   }
+  
+  #### Function to remove negative values
   neg <- function(site1_join_f1) {
     col_interest <- 3:ncol(site1_join_f1)
     site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
@@ -493,6 +509,8 @@ server <- function(input, output, session) {
                                              FUN = function(x) ifelse(x < 0, NA, x))
     site1_join_f1
   }
+  
+  #### Function to remove repeated values
   rep <- function(site1_join_f1) {
     col_interest <- 3:ncol(site1_join_f1)
     site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[, col_interest], 
@@ -504,6 +522,8 @@ server <- function(input, output, session) {
                                                as.numeric(as.character(x)))
     site1_join_f1
   }
+  
+  #### Function to remove values higher than a limit
   remov_99 <- function(site1_join_f1, high_number) {
     site1_join_f1$PM2.5 <- ifelse(as.numeric(as.character(site1_join_f1$PM2.5)) > 
                                     as.numeric(as.character(high_number)), 
@@ -511,6 +531,8 @@ server <- function(input, output, session) {
                                   as.numeric(as.character(site1_join_f1$PM2.5)))
     site1_join_f1
   }
+  
+  #### Function to compute PM2.5/PM10 ratio and check it
   ratio <- function(site1_join_f1, high_number) {
     b <- as.numeric(as.character(site1_join_f1$PM10)) > as.numeric(as.character(high_number))
     site1_join_f1$PM10 <- ifelse(b, as.numeric(as.character(NA)), 
@@ -525,6 +547,8 @@ server <- function(input, output, session) {
                                  as.numeric(as.character(site1_join_f1$PM10)))
     site1_join_f1
   }
+  
+  #### Function to remove outliers based on LLD function
   outlier <- function(site1_join_f1, name, date, eq) {
     site1_join_f1 <- site1_join_f1 %>%
       group_by(day) %>%
@@ -572,6 +596,8 @@ server <- function(input, output, session) {
     site1_join_f1 <- left_join(tseries_df, site1_join_f1, by = "date")
     site1_join_f1
   }
+  
+  #### Function to remove values which are incomplete in a day
   compl <- function(name, site1_join_f1, date, fi, per1) {
     tseries_df <- data.frame(date)
     for(i in names(name)){
@@ -606,6 +632,8 @@ server <- function(input, output, session) {
     site1_join_f1 <- tseries_df %>%
       mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) 
   }
+  
+  #### Functions to be applied on the data set in a sequence
   data_file <- function(per, type, file_data_path, file_1, file, remove_9, repeated, 
                         percent, ey, exclude, high_number) {
     if (is.null(file_1)) {
@@ -883,9 +911,14 @@ server <- function(input, output, session) {
                month = format(date, "%m")) %>%
         group_by(hour, month) %>%
         mutate(med_data = median(y, na.rm = TRUE))
-      }
+    }
     data$y <- ifelse(is.na(data$y), data$med_data, data$y)
+    med <- median(data$y, na.rm = TRUE)
+    data$y <- ifelse(is.na(data$y), med, data$y)
     y <- as.numeric(as.character(data$y))
+    validate(
+      need(try(all(is.na(y)) == TRUE), "Sorry, there is no data.")
+    )
     y <- as.ts(y)
     c <- trend::mk.test(y)
     c
@@ -902,9 +935,6 @@ server <- function(input, output, session) {
     data$y <- as.numeric(as.character(data[[input$palleInp2]]))
     if (is.null(input$file1)) { "No file" }
     else {
-      validate(
-        need(try(all(is.na(data$y))), "Sorry, there is no data.")
-        )
       kenda()
     }
   })
