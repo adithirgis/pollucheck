@@ -108,6 +108,9 @@ ui <- fluidPage(
                                                             selected = "ad"),
                                                tags$hr(),
                                                tags$hr(),
+                                               actionButton("mk", "Trend Analysis"),
+                                               tags$hr(),
+                                               tags$hr(),
                                                textInput("freq_mt", label = "Edit title of plot", 
                                                          value = "Title"),
                                                textInput("freq_x", label = "Edit X axis title", 
@@ -300,7 +303,6 @@ ui <- fluidPage(
                                                downloadButton('download', "Download as csv"),
                                                tags$hr())),
                 mainPanel(
-                  theme = bslib::bs_theme(), 
                   tags$a(img(src = 'logo.png', align = "right", height = 70,
                              width = 70),
                          href = "https://www.ilklabs.com/", target = "_blank"),
@@ -330,6 +332,7 @@ ui <- fluidPage(
                                 title = "Statistics Plots",
                                 verbatimTextOutput("normality_test"),
                                 verbatimTextOutput("kendal_test"),
+                                plotOutput("plot13", width = 800),
                                 plotOutput("plot6", width = 800),
                                 plotOutput("plot7", width = 800)),
                               tabPanel(
@@ -720,64 +723,55 @@ server <- function(input, output, session) {
   
   data_joined <- eventReactive(input$hourly, {
     data <- mess(input$avg_hour, "daily")
-    return(data)
   })
   data_joined_comp <- eventReactive(input$ploer, {
     data <- Comp_f()
     if(input$avg_hour12 == "daily12") {
       data <- openair::timeAverage(data, avg.time = "day")
     } else { data }
-    return(data)
   })
   data_joined_comp1 <- eventReactive(input$ploer1, {
     data <- CPCB_f()
     if(input$avg_hour12 == "daily12") {
       data <- openair::timeAverage(data, avg.time = "day")
     } else { data }
-    return(data)
   })
   data_plot <- eventReactive(input$ts, {
     data <- mess(input$avg_hour3, "daily3")
-    return(data)
   })
   data_box <- eventReactive(input$box, {
     data <- mess(input$avg_hour3, "daily3")
-    return(data)
   })
   data_boxt <- eventReactive(input$boxt, {
     data <- CPCB_f()
     if(input$avg_hour3 == "daily3") {
       data <- openair::timeAverage(data, avg.time = "day")
     } else { data }
-    return(data)
   })
   data_mbox <- eventReactive(input$mbox, {
     data <- mess(input$avg_hour3, "daily3")
-    return(data)
   })
   data_tv <- eventReactive(input$tv, {
     data <- mess(input$avg_hour4, "daily4")
-    return(data)
   })
   data_cp <- eventReactive(input$cp, {
     data <- mess(input$avg_hour4, "daily4")
-    return(data)
+    
   })
   data_qq <- eventReactive(input$qq, {
     data <- mess(input$avg_hour2, "daily2")
-    return(data)
   })
   data_freq <- eventReactive(input$freq, {
     data <- mess(input$avg_hour2, "daily2")
-    return(data)
+  })
+  data_mk <- eventReactive(input$mk, {
+    data <- mess(input$avg_hour2, "daily2")
   })
   data_reg <- eventReactive(input$reg, {
     data <- mess(input$avg_hour1, "daily1")
-    return(data)
   })
   data_mreg <- eventReactive(input$mulreg, {
     data <- mess(input$avg_hour1, "daily1")
-    return(data)
   })
   data_diurnal <- eventReactive(input$diurnal, {
     data <- CPCB_f()
@@ -811,6 +805,7 @@ server <- function(input, output, session) {
       }
     return(data)
   })
+  
   output$download_diurnal <- downloadHandler(
     filename <- function() {"diurnal_data.csv"},
     content <- function(fname) {
@@ -871,7 +866,7 @@ server <- function(input, output, session) {
     })
 
   theme2 <- reactive({
-    theme2 <- list(theme_minimal(),
+    theme2 <- list(theme_classic(),
                    theme(legend.text = element_text(size = 18),
                          plot.title = element_text(size = 14, face = "bold"),
                          axis.title = element_text(size = 20, face = "bold"),
@@ -896,6 +891,7 @@ server <- function(input, output, session) {
     x
   })
   kenda <- reactive({
+    data <- data_mk()
     if(input$avg_hour2 == "daily2") {
       data <- openair::timeAverage(data, avg.time = "day")
       data <- data %>%
@@ -904,7 +900,6 @@ server <- function(input, output, session) {
         group_by(month) %>%
         mutate(med_data = median(y, na.rm = TRUE))
     } else { 
-      data <- data_freq()
       data <- data %>%
         select(everything(), "y" = input$palleInp2) %>%
         mutate(hour = format(date, "%H"),
@@ -916,13 +911,7 @@ server <- function(input, output, session) {
     med <- median(data$y, na.rm = TRUE)
     data$y <- ifelse(is.na(data$y), med, data$y)
     y <- as.numeric(as.character(data$y))
-    validate(
-      need(try(all(is.na(y)) == TRUE), "Sorry, there is no data.")
-    )
-    y <- as.ts(y)
-    c <- trend::mk.test(y)
-    c
-  })
+   })
   
   output$normality_test <- renderPrint({
     if (is.null(input$file1)) { "No file" }
@@ -931,11 +920,13 @@ server <- function(input, output, session) {
     }
   })
   output$kendal_test <- renderPrint({
-    data <- data_freq()
-    data$y <- as.numeric(as.character(data[[input$palleInp2]]))
+    y <- kenda()
+    # validate(need(try(all(is.na(y)) == TRUE), "Sorry no data!"))
     if (is.null(input$file1)) { "No file" }
     else {
-      kenda()
+      y <- as.ts(y)
+      c <- trend::mk.test(y)
+      c
     }
   })
   output$plot1 <- renderPlot({
@@ -1144,6 +1135,16 @@ server <- function(input, output, session) {
         theme2() + theme(axis.text.x = element_text(size = 12, face = "bold"))
     }
   })
+  output$plot13 <- renderPlot({
+    y <- kenda()
+    if (is.null(input$file1)) { NULL }
+    else {
+      yu <- spectrum(y, log = "no")
+      plot_mk <- plot(yu$spec ~ yu$freq, xlab = "frequency", ylab = "spectral density", type = "l",
+           col = "steelblue", cex.lab = 1.5, cex.axis = 1.5, cex.main = 1.5)
+      plot_mk
+    }
+  })
   
   # acf(z, lag.max = ((nrow(TimeSerie))/2), na.action = na.pass)
   
@@ -1249,7 +1250,7 @@ server <- function(input, output, session) {
     })
   
 }
-## Run app
+#### Run app
 shinyApp(ui, server)
 
 
