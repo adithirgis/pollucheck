@@ -35,29 +35,29 @@ ui <- fluidPage(
   sidebarLayout(position = "left",
                 sidebarPanel(width = 3,
                              conditionalPanel(condition = "input.tabs1 == 3",
-                                               tags$hr(),
-                                               selectInput("palleInp", "Select parameter to plot",
-                                                           multiple = FALSE, 
-                                                           "Select"),
-                                               tags$hr(),
-                                               tags$hr(),
-                                               radioButtons("avg_hour3", "Average to",
-                                                            c("Hourly" = "hour3",
-                                                              "Daily" = "daily3"), 
-                                                            selected = "hour3"),
-                                               tags$hr(),
-                                               tags$hr(),
-                                               textInput("ts_mt", label = "Edit title of plot", 
-                                                         value = "Title"),
-                                               textInput("ts_y", label = "Edit Y axis title", 
-                                                         value = "Pollutant"),
-                                               actionButton("ts", "Time Series"),
-                                               tags$hr(),
-                                               tags$hr(),
-                                               textInput("box_mt", label = "Edit title of plot", 
-                                                         value = "Title"),
-                                               textInput("box_y", label = "Edit Y axis title", 
-                                                         value = "Pollutant"),
+                                              tags$hr(),
+                                              selectInput("palleInp", "Select parameter to plot",
+                                                          multiple = FALSE, 
+                                                          "Select"),
+                                              tags$hr(),
+                                              tags$hr(),
+                                              radioButtons("avg_hour3", "Average to",
+                                                           c("Hourly" = "hour3",
+                                                             "Daily" = "daily3"), 
+                                                           selected = "hour3"),
+                                              tags$hr(),
+                                              tags$hr(),
+                                              textInput("ts_mt", label = "Edit title of plot", 
+                                                        value = "Title"),
+                                              textInput("ts_y", label = "Edit Y axis title", 
+                                                        value = "Pollutant"),
+                                              actionButton("ts", "Time Series"),
+                                              tags$hr(),
+                                              tags$hr(),
+                                              textInput("box_mt", label = "Edit title of plot", 
+                                                        value = "Title"),
+                                              textInput("box_y", label = "Edit Y axis title", 
+                                                        value = "Pollutant"),
                                               actionButton("box", "Month-Yearly Box Plot"),
                                               tags$hr(),
                                               tags$hr(),
@@ -84,224 +84,223 @@ ui <- fluidPage(
                                                              "Median and IQR" = "mediq"), 
                                                            selected = "mesd"),
                                               textInput("diurnal_mt", label = "Edit title of plot", 
-                                                       value = "Title"),
+                                                        value = "Title"),
                                               textInput("diurnal_y", label = "Edit Y axis title", 
-                                                       value = "Pollutant"),
+                                                        value = "Pollutant"),
                                               actionButton("diurnal", "Diurnal Plot"),
                                               downloadButton('download_diurnal', "Download as csv"),
                                               tags$hr()),
-                              conditionalPanel(condition = "input.tabs1 == 5",
-                                               tags$hr(),
-                                               selectInput("palleInp2", "Select parameter to plot",
-                                                           multiple = FALSE, "Select"),
-                                               tags$hr(),
-                                               tags$hr(),
-                                               radioButtons("avg_hour2", "Average to",
-                                                            c("Hourly" = "hour2",
-                                                              "Daily" = "daily2"), 
-                                                            selected = "hour2"),
-                                               tags$hr(),
-                                               tags$hr(),
-                                               radioButtons("normality", "Normality Test",
-                                                            c("Anderson-Darling" = "ad",
-                                                              "Shapiro-Wilk" = "sh"), 
-                                                            selected = "ad"),
-                                               tags$hr(),
-                                               tags$hr(),
-                                               actionButton("mk", "Trend Analysis"),
-                                               tags$hr(),
-                                               tags$hr(),
-                                               textInput("freq_mt", label = "Edit title of plot", 
-                                                         value = "Title"),
-                                               textInput("freq_x", label = "Edit X axis title", 
-                                                         value = "Pollutant"),
-                                               actionButton("freq", "Density Plot"),
-                                               tags$hr(),
-                                               tags$hr(),
-                                               textInput("qq_mt", label = "Edit title of plot", 
-                                                         value = "Title"),
-                                               textInput("qq_y", label = "Edit Y axis title", 
-                                                         value = "Pollutant"),
-                                               actionButton("qq", "QQ Plot"),
-                                               tags$hr()),
-                              conditionalPanel(condition = "input.tabs1 == 2",
-                                               tags$hr(),
-                                               selectInput("avg",
-                                                           label = "Averaging period for summary statistics",
-                                                           c("None" = "no",
-                                                             "Daily" = "day",
-                                                             "Monthly" = "monthly", 
-                                                             "Month-Yearly" = "month"),
-                                                           multiple = FALSE, 
-                                                           selected = "None"),
-                                               tags$hr(),
-                                               downloadButton('download_stats', "Download as csv"),
-                                               tags$hr()),
-                              conditionalPanel(condition = "input.tabs1 == 6",
-                                               tags$hr(),
-                                               radioButtons("avg_hour1", "Average to",
-                                                            c("Hourly" = "hour1",
-                                                              "Daily" = "daily1"), 
-                                                            selected = "hour1"),
-                                               tags$hr(),
-                                               tags$hr(),
-                                               selectInput("DepVar", 
-                                                           "Dependent Variable", 
-                                                           multiple = FALSE, "Select"),
-                                               selectInput("InDepVar", 
-                                                           "Independent Variable", 
-                                                           multiple = FALSE, "Select"),
-                                               textInput("reg_mt", label = "Edit title of plot", 
-                                                         value = "Title"),
-                                               textInput("reg_x", label = "Edit X axis title", 
-                                                         value = "Pollutant"),
-                                               textInput("reg_y", label = "Edit Y axis title", 
-                                                         value = "Pollutant"),
-                                               actionButton("reg", "Linear Regression Plot"),
-                                               tags$hr(),
-                                               tags$hr(),
-                                               selectInput("DepVar1", 
-                                                           "Dependent Variable", 
-                                                           multiple = FALSE, "Select"),
-                                               selectInput("InDepVar1", 
-                                                           "Independent Variable(s)", 
-                                                           multiple = TRUE, "Select"),
-                                               actionButton("mulreg", "Multiple Regression"),
-                                               tags$hr()),
-                              conditionalPanel(condition = "input.tabs1 == 7",
-                                               tags$hr(),
-                                               radioButtons("type2", "Data downloaded from",
-                                                            choiceNames = list(
-                                                              HTML("<a href = 'https://openaq.org/#/countries/IN?_k=5ecycz' target = '_blank'>OpenAQ</a>"), 
-                                                              HTML("<a href = 'https://www.airnow.gov/international/us-embassies-and-consulates/#India' target = '_blank'>AirNow - US Embassies</a>"),
-                                                              HTML("<a href = 'https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing' target = '_blank'>Pollution Control Board</a>")),
-                                                            choiceValues = list("oaq2", "an2", "cpcb2"),
-                                                            selected = "cpcb2"),
-                                               tags$hr(),
-                                               conditionalPanel(condition = "input.type2 == 'cpcb2'",
-                                                                radioButtons("file12", "Time resolution of downloaded data",
-                                                                             c("15 minutes" = "15 min",
-                                                                               "30 minutes" = "30 min",
-                                                                               "60 minutes" = "60 min"), 
-                                                                             selected = "60 min")),
-                                               tags$hr(),
-                                               fileInput("file2",
-                                                         "Upload comparision data",
-                                                         multiple = TRUE,
-                                                         accept = c('.xlsx', '.csv')),
-                                               tags$hr(),
-                                               checkboxInput('remove_92', 'Remove negative values'),
-                                               tags$hr(),
-                                               checkboxInput('repeated2', 'Remove consecutive measurements'),
-                                               tags$hr(),
-                                               checkboxInput('exclude2', 'Remove outliers based on Mean and Std Dev'),
-                                               conditionalPanel(
-                                                 condition = "input.exclude2 == true",
-                                                 numericInput("ey2", "Specify a multiple for removing outliers (Mean + X*Std Dev)",
-                                                              value = 3)),
-                                               tags$hr(),
-                                               checkboxInput('percent2', 'Completeness of data in a day'),
-                                               conditionalPanel(
-                                                 condition = "input.percent2 == true",
-                                                 sliderInput("per2", "Specify % of data completeness required in a day",
-                                                             value = 75,  min = 35, max = 100)),
-                                               tags$hr(),
-                                               numericInput("high_number2",
-                                                            "Remove PM2.5 and PM10 values above",
-                                                            value = 9999),
-                                               tags$hr(),
-                                               selectInput("Para", 
-                                                           "Paramter to plot in orginal data", 
-                                                           multiple = FALSE, "Select"),
-                                               selectInput("Para1", 
-                                                           "Paramter to plot in comparision data", 
-                                                           multiple = FALSE, "Select"),
-                                               tags$hr(),
-                                               radioButtons("avg_hour12", "Average to",
-                                                            c("Hourly" = "hour12",
-                                                              "Daily" = "daily12"), 
-                                                            selected = "hour12"),
-                                               tags$hr(),
-                                               actionButton("ploer1", "Join tables"),
-                                               tags$hr(),
-                                               textInput("comp_mt", label = "Edit title of plot", 
-                                                         value = "Title"),
-                                               textInput("comp_y", label = "Edit Y axis title", 
-                                                         value = "Pollutant"),
-                                               actionButton("ploer", "Plot time series")),
-                              conditionalPanel(condition = "input.tabs1 == 4",
-                                               tags$hr(),
-                                               selectInput("palleInp1", "Select parameter to plot",
-                                                           multiple = FALSE, "Select"),
-                                               tags$hr(),
-                                               tags$hr(),
-                                               radioButtons("avg_hour4", "Average to",
-                                                            c("Hourly" = "hour4",
-                                                              "Daily" = "daily4"), 
-                                                            selected = "hour4"),
-                                               tags$hr(),
-                                               tags$hr(),
-                                               textInput("cp_mt", label = "Edit title of plot", 
-                                                         value = "Title"),
-                                               actionButton("cp", "Calendar Plot"),
-                                               tags$hr(),
-                                               tags$hr(),
-                                               radioButtons("stat_tv", "Plot using",
-                                                            c("Median and quantiles" = "median",
-                                                              "Mean and 95% confidence intervals" = "mean"), 
-                                                            selected = "mean"),
-                                               actionButton("tv", "Time Variation"),
-                                               tags$hr()),
+                             conditionalPanel(condition = "input.tabs1 == 5",
+                                              tags$hr(),
+                                              selectInput("palleInp2", "Select parameter to plot",
+                                                          multiple = FALSE, "Select"),
+                                              tags$hr(),
+                                              tags$hr(),
+                                              radioButtons("avg_hour2", "Average to",
+                                                           c("Hourly" = "hour2",
+                                                             "Daily" = "daily2"), 
+                                                           selected = "hour2"),
+                                              tags$hr(),
+                                              tags$hr(),
+                                              radioButtons("normality", "Normality Test",
+                                                           c("Anderson-Darling" = "ad",
+                                                             "Shapiro-Wilk" = "sh"), 
+                                                           selected = "ad"),
+                                              tags$hr(),
+                                              tags$hr(),
+                                              actionButton("mk", "Trend Analysis"),
+                                              tags$hr(),
+                                              tags$hr(),
+                                              textInput("freq_mt", label = "Edit title of plot", 
+                                                        value = "Title"),
+                                              textInput("freq_x", label = "Edit X axis title", 
+                                                        value = "Pollutant"),
+                                              actionButton("freq", "Density Plot"),
+                                              tags$hr(),
+                                              tags$hr(),
+                                              textInput("qq_mt", label = "Edit title of plot", 
+                                                        value = "Title"),
+                                              textInput("qq_y", label = "Edit Y axis title", 
+                                                        value = "Pollutant"),
+                                              actionButton("qq", "QQ Plot"),
+                                              tags$hr()),
+                             conditionalPanel(condition = "input.tabs1 == 2",
+                                              tags$hr(),
+                                              selectInput("avg",
+                                                          label = "Averaging period for summary statistics",
+                                                          c("None" = "no",
+                                                            "Daily" = "day",
+                                                            "Monthly" = "monthly", 
+                                                            "Month-Yearly" = "month"),
+                                                          multiple = FALSE, 
+                                                          selected = "None"),
+                                              tags$hr(),
+                                              downloadButton('download_stats', "Download as csv"),
+                                              tags$hr()),
+                             conditionalPanel(condition = "input.tabs1 == 6",
+                                              tags$hr(),
+                                              radioButtons("avg_hour1", "Average to",
+                                                           c("Hourly" = "hour1",
+                                                             "Daily" = "daily1"), 
+                                                           selected = "hour1"),
+                                              tags$hr(),
+                                              tags$hr(),
+                                              selectInput("DepVar", 
+                                                          "Dependent Variable", 
+                                                          multiple = FALSE, "Select"),
+                                              selectInput("InDepVar", 
+                                                          "Independent Variable", 
+                                                          multiple = FALSE, "Select"),
+                                              textInput("reg_mt", label = "Edit title of plot", 
+                                                        value = "Title"),
+                                              textInput("reg_x", label = "Edit X axis title", 
+                                                        value = "Pollutant"),
+                                              textInput("reg_y", label = "Edit Y axis title", 
+                                                        value = "Pollutant"),
+                                              actionButton("reg", "Linear Regression Plot"),
+                                              tags$hr(),
+                                              tags$hr(),
+                                              selectInput("DepVar1", 
+                                                          "Dependent Variable", 
+                                                          multiple = FALSE, "Select"),
+                                              selectInput("InDepVar1", 
+                                                          "Independent Variable(s)", 
+                                                          multiple = TRUE, "Select"),
+                                              actionButton("mulreg", "Multiple Regression"),
+                                              tags$hr()),
+                             conditionalPanel(condition = "input.tabs1 == 4",
+                                              tags$hr(),
+                                              selectInput("palleInp1", "Select parameter to plot",
+                                                          multiple = FALSE, "Select"),
+                                              tags$hr(),
+                                              tags$hr(),
+                                              radioButtons("avg_hour4", "Average to",
+                                                           c("Hourly" = "hour4",
+                                                             "Daily" = "daily4"), 
+                                                           selected = "hour4"),
+                                              tags$hr(),
+                                              tags$hr(),
+                                              textInput("cp_mt", label = "Edit title of plot", 
+                                                        value = "Title"),
+                                              actionButton("cp", "Calendar Plot"),
+                                              tags$hr(),
+                                              tags$hr(),
+                                              radioButtons("stat_tv", "Plot using",
+                                                           c("Median and quantiles" = "median",
+                                                             "Mean and 95% confidence intervals" = "mean"), 
+                                                           selected = "mean"),
+                                              actionButton("tv", "Time Variation"),
+                                              tags$hr()),
                              conditionalPanel(condition = "input.tabs1 == 1",
-                                               tags$hr(),
-                                               radioButtons("type", "Data downloaded from",
-                                                            choiceNames = list(
-                                                              HTML("<a href = 'https://openaq.org/#/countries/IN?_k=5ecycz' target = '_blank'>OpenAQ</a>"), 
-                                                              HTML("<a href = 'https://www.airnow.gov/international/us-embassies-and-consulates/#India' target = '_blank'>AirNow - US Embassies</a>"),
-                                                              HTML("<a href = 'https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing' target = '_blank'>Pollution Control Board</a>")),
-                                                            choiceValues = list("oaq", "an", "cpcb"),
-                                                            selected = "cpcb"),
-                                               tags$hr(),
-                                               conditionalPanel(condition = "input.type == 'cpcb'",
-                                                                radioButtons("file", "Time resolution of downloaded data",
-                                                                             c("15 minutes" = "15 min",
-                                                                               "30 minutes" = "30 min",
-                                                                               "60 minutes" = "60 min"), 
-                                                                             selected = "60 min")),
-                                               tags$hr(),
-                                               fileInput("file1",
-                                                         "Upload data",
-                                                         multiple = TRUE,
-                                                         accept = c('.xlsx', '.csv')),
-                                               tags$hr(),
-                                               checkboxInput('remove_9', 'Remove negative values'),
-                                               tags$hr(),
-                                               checkboxInput('repeated', 'Remove consecutive measurements'),
-                                               tags$hr(),
-                                               checkboxInput('exclude', 'Remove outliers based on Mean and Std Dev'),
-                                               conditionalPanel(
-                                                 condition = "input.exclude == true",
-                                                 numericInput("ey", "Specify a multiple for removing outliers (Mean + X*Std Dev)",
-                                                              value = 3)),
-                                               tags$hr(),
-                                               checkboxInput('percent', 'Completeness of data in a day'),
-                                               conditionalPanel(
-                                                 condition = "input.percent == true",
-                                                 sliderInput("per", "Specify % of data completeness required in a day",
-                                                              value = 75,  min = 35, max = 100)),
-                                               tags$hr(),
-                                               numericInput("high_number",
-                                                            "Remove PM2.5 and PM10 values above",
-                                                            value = 9999),
-                                               tags$hr(),
-                                               radioButtons("avg_hour", "Average to",
-                                                            c("Hourly" = "hour",
-                                                              "Daily" = "daily"), 
-                                                            selected = "hour"),
-                                               tags$hr(),
-                                               actionButton("hourly", "Show Data"),
-                                               downloadButton('download', "Download as csv"),
-                                               tags$hr())),
+                                              tags$hr(),
+                                              radioButtons("type", "Data downloaded from",
+                                                           choiceNames = list(
+                                                             HTML("<a href = 'https://openaq.org/#/countries/IN?_k=5ecycz' target = '_blank'>OpenAQ</a>"), 
+                                                             HTML("<a href = 'https://www.airnow.gov/international/us-embassies-and-consulates/#India' target = '_blank'>AirNow - US Embassies</a>"),
+                                                             HTML("<a href = 'https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing' target = '_blank'>Pollution Control Board</a>")),
+                                                           choiceValues = list("oaq", "an", "cpcb"),
+                                                           selected = "cpcb"),
+                                              tags$hr(),
+                                              conditionalPanel(condition = "input.type == 'cpcb'",
+                                                               radioButtons("file", "Time resolution of downloaded data",
+                                                                            c("15 minutes" = "15 min",
+                                                                              "30 minutes" = "30 min",
+                                                                              "60 minutes" = "60 min"), 
+                                                                            selected = "60 min")),
+                                              tags$hr(),
+                                              fileInput("file1",
+                                                        "Upload data",
+                                                        multiple = TRUE,
+                                                        accept = c('.xlsx', '.csv')),
+                                              tags$hr(),
+                                              checkboxInput('remove_9', 'Remove negative values'),
+                                              tags$hr(),
+                                              checkboxInput('repeated', 'Remove consecutive measurements'),
+                                              tags$hr(),
+                                              checkboxInput('exclude', 'Remove outliers based on Mean and Std Dev'),
+                                              conditionalPanel(
+                                                condition = "input.exclude == true",
+                                                numericInput("ey", "Specify a multiple for removing outliers (Mean + X*Std Dev)",
+                                                             value = 3)),
+                                              tags$hr(),
+                                              checkboxInput('percent', 'Completeness of data in a day'),
+                                              conditionalPanel(
+                                                condition = "input.percent == true",
+                                                sliderInput("per", "Specify % of data completeness required in a day",
+                                                            value = 75,  min = 35, max = 100)),
+                                              tags$hr(),
+                                              numericInput("high_number",
+                                                           "Remove PM2.5 and PM10 values above",
+                                                           value = 9999),
+                                              tags$hr(),
+                                              radioButtons("avg_hour", "Average to",
+                                                           c("Hourly" = "hour",
+                                                             "Daily" = "daily"), 
+                                                           selected = "hour"),
+                                              tags$hr(),
+                                              actionButton("hourly", "Show Data"),
+                                              downloadButton('download', "Download as csv"),
+                                              tags$hr()), 
+                             conditionalPanel(condition = "input.tabs1 == 7",
+                                              tags$hr(),
+                                              radioButtons("type2", "Data downloaded from",
+                                                           choiceNames = list(
+                                                             HTML("<a href = 'https://openaq.org/#/countries/IN?_k=5ecycz' target = '_blank'>OpenAQ</a>"), 
+                                                             HTML("<a href = 'https://www.airnow.gov/international/us-embassies-and-consulates/#India' target = '_blank'>AirNow - US Embassies</a>"),
+                                                             HTML("<a href = 'https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing' target = '_blank'>Pollution Control Board</a>")),
+                                                           choiceValues = list("oaq", "an", "cpcb"),
+                                                           selected = "cpcb"),
+                                              tags$hr(),
+                                              conditionalPanel(condition = "input.type == 'cpcb'",
+                                                               radioButtons("file12", "Time resolution of downloaded data",
+                                                                            c("15 minutes" = "15 min",
+                                                                              "30 minutes" = "30 min",
+                                                                              "60 minutes" = "60 min"), 
+                                                                            selected = "60 min")),
+                                              tags$hr(),
+                                              fileInput("file2",
+                                                        "Upload data",
+                                                        multiple = TRUE,
+                                                        accept = c('.xlsx', '.csv')),
+                                              tags$hr(),
+                                              checkboxInput('remove_92', 'Remove negative values'),
+                                              tags$hr(),
+                                              checkboxInput('repeated2', 'Remove consecutive measurements'),
+                                              tags$hr(),
+                                              checkboxInput('exclude2', 'Remove outliers based on Mean and Std Dev'),
+                                              conditionalPanel(
+                                                condition = "input.exclude == true",
+                                                numericInput("ey2", "Specify a multiple for removing outliers (Mean + X*Std Dev)",
+                                                             value = 3)),
+                                              tags$hr(),
+                                              checkboxInput('percent2', 'Completeness of data in a day'),
+                                              conditionalPanel(
+                                                condition = "input.percent == true",
+                                                sliderInput("per2", "Specify % of data completeness required in a day",
+                                                            value = 75,  min = 35, max = 100)),
+                                              tags$hr(),
+                                              numericInput("high_number2",
+                                                           "Remove PM2.5 and PM10 values above",
+                                                           value = 9999),
+                                              tags$hr(),
+                                              radioButtons("avg_hour12", "Average to",
+                                                           c("Hourly" = "hour",
+                                                             "Daily" = "daily"), 
+                                                           selected = "hour"),
+                                              tags$hr(),
+                                              selectInput("Para", 
+                                                          "Paramter to plot in orginal data", 
+                                                          multiple = FALSE, "Select"),
+                                              selectInput("Para1", 
+                                                          "Paramter to plot in comparision data", 
+                                                          multiple = FALSE, "Select"),
+                                              tags$hr(),
+                                              textInput("comp_mt", label = "Edit title of plot", 
+                                                        value = "Title"),
+                                              textInput("comp_y", label = "Edit Y axis title", 
+                                                        value = "Pollutant"),
+                                              actionButton("plot_values", "Plot it!"),
+                                              tags$hr())),
                 mainPanel(
                   tags$a(img(src = 'logo.png', align = "right", height = 70,
                              width = 70),
@@ -331,6 +330,7 @@ ui <- fluidPage(
                                 value = 5,
                                 title = "Statistics Plots",
                                 verbatimTextOutput("normality_test"),
+                                verbatimTextOutput("help_trend"), 
                                 verbatimTextOutput("kendal_test"),
                                 plotOutput("plot13", width = 800),
                                 plotOutput("plot6", width = 800),
@@ -352,7 +352,6 @@ ui <- fluidPage(
                                 plotOutput("plot5", height = 600),
                                 plotOutput("plot4", height = 600)),
                               tabPanel(
-                                value = 7,
                                 title = "Help",
                                 includeMarkdown("include.md")))
                 )))
@@ -397,8 +396,8 @@ server <- function(input, output, session) {
       df <- base::Filter(function(x)! all(is.na(x)), df)
       df <- df %>%
         dplyr::select("date" = `To Date`, everything()) %>%
-        mutate(date = as.POSIXct(date, format = '%d-%m-%Y %H:%M:%S', 
-                                 tz = "Asia/Kolkata"))
+        dplyr::mutate(date = as.POSIXct(date, format = '%d-%m-%Y %H:%M:%S', 
+                                        tz = "Asia/Kolkata"))
     }
   }
   
@@ -430,7 +429,7 @@ server <- function(input, output, session) {
     trial[ , c('From.Date', 'To.Date')] <- list(NULL)
     dt_s <- split(trial[, -ncol(trial)], trial$tbl_id)
     PM <- data.frame(dt_s$`0`) %>%
-      mutate(date = as.POSIXct(date, format = '%d-%m-%Y %H:%M:%S', tz = "Asia/Kolkata"))
+      dplyr::mutate(date = as.POSIXct(date, format = '%d-%m-%Y %H:%M:%S', tz = "Asia/Kolkata"))
     date <- date_ts(PM, sfd)
     tseries_df <- data.frame(date)
     site1_join <- left_join(tseries_df, PM, by = "date")
@@ -447,7 +446,7 @@ server <- function(input, output, session) {
                       row.names = NULL)
     trial <- trial %>%
       dplyr::select("date" = Date..LT., "PM2.5" = Raw.Conc., "Valid" = QC.Name) %>%
-      mutate(date  = as.POSIXct(date, format = '%Y-%m-%d %I:%M %p', tz = "Asia/Kolkata")) %>%
+      dplyr::mutate(date  = as.POSIXct(date, format = '%Y-%m-%d %I:%M %p', tz = "Asia/Kolkata")) %>%
       dplyr::filter(Valid == "Valid")
     trial$Valid <- NULL
     date <- date_ts(trial, "60 min")
@@ -462,7 +461,7 @@ server <- function(input, output, session) {
                       row.names = NULL)
     trial <- trial %>%
       dplyr::select("date" = local, "parameter" = parameter, "value" = value) %>%
-      mutate(date  = as.POSIXct(date, format = '%Y-%m-%dT%H:%M:%S+05:30', tz = "Asia/Kolkata"))
+      dplyr::mutate(date  = as.POSIXct(date, format = '%Y-%m-%dT%H:%M:%S+05:30', tz = "Asia/Kolkata"))
     date <- date_ts(trial, "15 min")
     tseries_df <- data.frame(date)
     trial <- trial %>%
@@ -555,11 +554,11 @@ server <- function(input, output, session) {
   outlier <- function(site1_join_f1, name, date, eq) {
     site1_join_f1 <- site1_join_f1 %>%
       group_by(day) %>%
-      mutate_all(funs(mean, sd), na.rm = TRUE) %>%
+      dplyr::mutate_all(funs(mean, sd), na.rm = TRUE) %>%
       ungroup() %>%
       dplyr::select(date, day, everything(), -date_mean, -date_sd)
     tseries_df <- site1_join_f1 %>%
-      select(date)
+      dplyr::select(date)
     for(i in names(name)) {
       data_list <- site1_join_f1 %>% 
         dplyr::select(starts_with(i))
@@ -593,7 +592,7 @@ server <- function(input, output, session) {
       tseries_df <- bind_cols(tseries_df, data_list)
     }
     site1_join_f1 <- tseries_df %>%
-      mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) %>%
+      dplyr::mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) %>%
       dplyr::select(date, day, everything(), -contains(c("_sd", "_mean")))
     tseries_df <- data.frame(date)
     site1_join_f1 <- left_join(tseries_df, site1_join_f1, by = "date")
@@ -617,7 +616,7 @@ server <- function(input, output, session) {
       }
       data_list <- data_list %>% 
         group_by(day) %>%
-        mutate_at(vars(contains(i)), list(no_hour = ~ sum(!is.na(.)))) %>%
+        dplyr::mutate_at(vars(contains(i)), list(no_hour = ~ sum(!is.na(.)))) %>%
         dplyr::select(-contains(c("_sd_no_hour", "_mean_no_hour")))
       old_no <- paste0(i, "_no_hour")
       names(data_list)[names(data_list) == old_no] <- 'no_hour'
@@ -633,7 +632,7 @@ server <- function(input, output, session) {
       tseries_df <- left_join(tseries_df, data_list, by = "date")
     }
     site1_join_f1 <- tseries_df %>%
-      mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) 
+      dplyr::mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) 
   }
   
   #### Functions to be applied on the data set in a sequence
@@ -655,11 +654,9 @@ server <- function(input, output, session) {
         all <- data.frame(all) 
         date <- data.frame(date)
       }
-      
       site1_join_f1 <- all %>%
-        mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) %>%
+        dplyr::mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) %>%
         dplyr::select(date, day, everything())
-      
       if(remove_9) {
         site1_join_f1 <- neg(site1_join_f1)
       } else { site1_join_f1 }  
@@ -671,7 +668,7 @@ server <- function(input, output, session) {
       name <- site1_join_f1 %>%
         dplyr::select(everything(), -day, -date)
       site1_join_f1 <- site1_join_f1 %>%
-        mutate(ratio = NA) %>%
+        dplyr::mutate(ratio = NA) %>%
         dplyr::select(date, day, everything())
       if(exclude) {
         site1_join_f1 <- outlier(site1_join_f1, name, date, ey)
@@ -703,17 +700,31 @@ server <- function(input, output, session) {
   }
   
   CPCB_f <- reactive({
-    site1_join_f1 <- data_file(input$per, input$type, input$file1$datapath, input$file1,
-                               input$file, input$remove_9, input$repeated, input$percent, 
-                               input$ey, input$exclude, input$high_number)
- })
-  
-  Comp_f <- reactive({
-    site1_join_f1 <- data_file(input$per2, input$type2, input$file2$datapath, input$file2,
-                               input$file12, input$remove_92, input$repeated2, input$percent2, 
-                               input$ey2, input$exclude2, input$high_number2)
+    site1 <- data_file(input$per, input$type, input$file1$datapath, input$file1,
+                       input$file, input$remove_9, input$repeated, input$percent, 
+                       input$ey, input$exclude, input$high_number)
+  })
+  Cmp_f <- reactive({
+    site1 <- data_file(input$per2, input$type2, input$file2$datapath, input$file2,
+                       input$file12, input$remove_92, input$repeated2, input$percent2, 
+                       input$ey2, input$exclude2, input$high_number2)
   })
   
+  observe({
+    if (is.null(input$file1) | is.null(input$file2)) {
+      NULL
+    } else {
+      data <- CPCB_f()
+      data <- data %>%
+        dplyr::select(- date, - day)
+      data1 <- Cmp_f()
+      data1 <- data1 %>%
+        dplyr::select(- date, - day)
+      updateSelectInput(session, "Para", choices = names(data))
+      updateSelectInput(session, "Para1", choices = names(data1))
+    }
+    
+  })
   mess <- function(button, da) {
     data <- CPCB_f()
     if(button == da) {
@@ -724,17 +735,32 @@ server <- function(input, output, session) {
   data_joined <- eventReactive(input$hourly, {
     data <- mess(input$avg_hour, "daily")
   })
-  data_joined_comp <- eventReactive(input$ploer, {
-    data <- Comp_f()
-    if(input$avg_hour12 == "daily12") {
-      data <- openair::timeAverage(data, avg.time = "day")
-    } else { data }
-  })
-  data_joined_comp1 <- eventReactive(input$ploer1, {
+  data_joined_comp <- eventReactive(input$plot_values, {
     data <- CPCB_f()
-    if(input$avg_hour12 == "daily12") {
+    data1 <- Cmp_f()
+    if(input$avg_hour12 == "daily") {
       data <- openair::timeAverage(data, avg.time = "day")
-    } else { data }
+      data1 <- openair::timeAverage(data1, avg.time = "day")
+    } else { 
+      data
+      data1}
+    data <- data %>%
+      select(date, "Site 1" = input$Para)
+    data1 <- data1 %>%
+      select(date, "Site 2" = input$Para1)
+    all <- full_join(data, data1, by = "date")
+    all <- all %>%
+      pivot_longer(-date, names_to = "parameter", values_to = "value") 
+  })
+  
+  output$plot12 <- renderPlot({
+    if (is.null(input$file1) | is.null(input$file2)) { NULL }
+    else {
+      all <- data_joined_comp()
+      ggplot(all, aes(as.POSIXct(date), value, colour = parameter)) +
+        labs(y = input$comp_y, title = input$comp_mt,
+             x = "") + theme2() + geom_line(size = 0.6) + theme(legend.title = element_blank())
+    }
   })
   data_plot <- eventReactive(input$ts, {
     data <- mess(input$avg_hour3, "daily3")
@@ -779,18 +805,18 @@ server <- function(input, output, session) {
       data <- openair::timeAverage(data, avg.time = "day")
     } else { 
       data <- data %>%
-        mutate(hour = format(date, "%H"),
-               month = format(date, "%b"))
+        dplyr::mutate(hour = format(date, "%H"),
+                      month = format(date, "%b"))
       data <- data %>%
         dplyr::select(hour, month, "y" = input$palleInp) 
       if(input$diur == "mesd" && input$diurn == "all") {
         data <- data %>%
-          select(hour, y) %>%
+          dplyr::select(hour, y) %>%
           group_by(hour) %>%
           summarise_all(funs(mean, sd), na.rm = TRUE)
       } else if(input$diur == "mediq" && input$diurn == "all") {
         data <- data %>%
-          select(hour, y) %>%
+          dplyr::select(hour, y) %>%
           group_by(hour) %>%
           summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
       } else if (input$diur == "mediq" && input$diurn == "mon") {
@@ -802,7 +828,7 @@ server <- function(input, output, session) {
           group_by(month, hour) %>%
           summarise_all(funs(mean, sd), na.rm = TRUE)
       } 
-      }
+    }
     return(data)
   })
   
@@ -828,20 +854,6 @@ server <- function(input, output, session) {
     updateSelectInput(session, "DepVar1", choices = names(data_joined))
     updateSelectInput(session, "InDepVar1", choices = names(data_joined))
   })
-  observe({
-    if (is.null(input$file1) | is.null(input$file2)) {
-      NULL
-    } else {
-      data_joined_comp1 <- data_joined_comp1()
-      data_joined_comp1 <- data_joined_comp1 %>%
-        dplyr::select(- date, - day)
-      data_joined_comp <- data_joined_comp()
-      data_joined_comp <- data_joined_comp %>%
-        dplyr::select(- date, - day)
-    }
-    updateSelectInput(session, "Para", choices = names(data_joined_comp1))
-    updateSelectInput(session, "Para1", choices = names(data_joined_comp))
-  })
   
   output$table1 <- DT::renderDataTable({
     data_joined <- data_joined() 
@@ -852,19 +864,18 @@ server <- function(input, output, session) {
     data_joined[,(cols) := round(.SD, 2), .SDcols = cols]
     if(input$avg_hour == "daily") {
       data_joined <- data_joined %>%
-        mutate(date = as.Date(date, tz = "Asia/Kolkata")) %>%
+        dplyr::mutate(date = as.Date(date, tz = "Asia/Kolkata")) %>%
         dplyr::select(date, everything(), - day)
       datatable(data_joined, options = list("pageLength" = 25)) %>% formatDate(1, "toLocaleDateString")
     } else { datatable(data_joined, options = list("pageLength" = 25)) %>% formatDate(1, "toLocaleString") }
   })
-  
   output$download <- downloadHandler(
     filename <- function() {"data.csv"},
     content <- function(fname) {
       data_joined <- data_joined()
       write.csv(data_joined, fname)
     })
-
+  
   theme2 <- reactive({
     theme2 <- list(theme_classic(),
                    theme(legend.text = element_text(size = 18),
@@ -876,10 +887,10 @@ server <- function(input, output, session) {
   })
   f <- reactive({
     f <- function(x) {
-    r <- quantile(x, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
-    names(r) <- c("ymin", "lower", "middle", "upper", "ymax")
-    r
-  }})
+      r <- quantile(x, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
+      names(r) <- c("ymin", "lower", "middle", "upper", "ymax")
+      r
+    }})
   normalilty_t <- reactive({
     data <- data_freq()
     y <- as.numeric(as.character(data[[input$palleInp2]]))
@@ -895,23 +906,23 @@ server <- function(input, output, session) {
     if(input$avg_hour2 == "daily2") {
       data <- openair::timeAverage(data, avg.time = "day")
       data <- data %>%
-        select(everything(), "y" = input$palleInp2) %>%
-        mutate(month = format(date, "%m")) %>%
+        dplyr::select(everything(), "y" = input$palleInp2) %>%
+        dplyr::mutate(month = format(date, "%m")) %>%
         group_by(month) %>%
-        mutate(med_data = median(y, na.rm = TRUE))
+        dplyr::mutate(med_data = median(y, na.rm = TRUE))
     } else { 
       data <- data %>%
-        select(everything(), "y" = input$palleInp2) %>%
-        mutate(hour = format(date, "%H"),
-               month = format(date, "%m")) %>%
+        dplyr::select(everything(), "y" = input$palleInp2) %>%
+        dplyr::mutate(hour = format(date, "%H"),
+                      month = format(date, "%m")) %>%
         group_by(hour, month) %>%
-        mutate(med_data = median(y, na.rm = TRUE))
+        dplyr::mutate(med_data = median(y, na.rm = TRUE))
     }
     data$y <- ifelse(is.na(data$y), data$med_data, data$y)
     med <- median(data$y, na.rm = TRUE)
     data$y <- ifelse(is.na(data$y), med, data$y)
     y <- as.numeric(as.character(data$y))
-   })
+  })
   
   output$normality_test <- renderPrint({
     if (is.null(input$file1)) { "No file" }
@@ -919,11 +930,19 @@ server <- function(input, output, session) {
       normalilty_t()
     }
   })
+  output$help_trend <- renderText({
+    paste("For trend analysis using Man-Kendal test the data is imputed using median values.", 
+          "If the hourly values are not present then the hourly median values of the month is imputed.", 
+          "If the data is still incomplete, then the median value of the whole dataset is considered.",
+          "For daily value imputation we use the daily median for imputing, if it still does not have data",
+          "we consider using the monthly median for it.",
+          sep = "\n")
+  })
   output$kendal_test <- renderPrint({
-    y <- kenda()
     # validate(need(try(all(is.na(y)) == TRUE), "Sorry no data!"))
     if (is.null(input$file1)) { "No file" }
     else {
+      y <- kenda()
       y <- as.ts(y)
       c <- trend::mk.test(y)
       c
@@ -939,30 +958,13 @@ server <- function(input, output, session) {
              x = "") + theme2() + geom_line(size = 0.6, color = "seagreen")
     }
   })
-  output$plot12 <- renderPlot({
-    if (is.null(input$file1) | is.null(input$file2)) { NULL }
-    else {
-      data <- data_joined_comp1()
-      data1 <- data_joined_comp()
-      data <- data %>%
-        select(date, "Site 1" = input$Para)
-      data1 <- data1 %>%
-        select(date, "Site 2" = input$Para1)
-      all <- full_join(data, data1, by = "date")
-      all <- all %>%
-        pivot_longer(-date, names_to = "parameter", values_to = "value")
-      ggplot(all, aes(as.POSIXct(date), value, colour = parameter)) +
-        labs(y = input$comp_y, title = input$comp_mt,
-             x = "") + theme2() + geom_line(size = 0.6) + theme(legend.title = element_blank())
-    }
-  })
   output$plot2 <- renderPlot({
     if (is.null(input$file1)) { NULL }
     else {
       data <- CPCB_f()
       data <- data %>%
-        mutate(hour = format(date, "%H"),
-               month = format(date, "%b"))
+        dplyr::mutate(hour = format(date, "%H"),
+                      month = format(date, "%b"))
       data <- data %>%
         dplyr::select(hour, month, "y" = input$palleInp) 
       data$hour <- as.numeric(as.character(data$hour))
@@ -970,7 +972,7 @@ server <- function(input, output, session) {
         NULL
       } else if (input$diur == "mesd" && input$diurn == "all") { 
         data <- data %>%
-          select(hour, y) %>%
+          dplyr::select(hour, y) %>%
           group_by(hour) %>%
           summarise_all(funs(mean, sd), na.rm = TRUE)
         ggplot(data, aes(hour, mean)) + geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), 
@@ -980,11 +982,11 @@ server <- function(input, output, session) {
           theme2() + geom_line(size = 0.6, color = "seagreen")
       } else if (input$diur == "mediq" && input$diurn == "all") {
         data <- data %>%
-          select(hour, y) %>%
+          dplyr::select(hour, y) %>%
           group_by(hour) %>%
           summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
         ggplot(data, aes(hour, median)) + geom_errorbar(aes(ymin = p25, ymax = p75), 
-                                                      color = "seagreen") + 
+                                                        color = "seagreen") + 
           scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
           labs(y = input$diurnal_y, x = "hour of the day", title = input$diurnal_mt) + 
           theme2() + geom_line(size = 0.6, color = "seagreen")
@@ -993,7 +995,7 @@ server <- function(input, output, session) {
           group_by(month, hour) %>%
           summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
         ggplot(data, aes(hour, median)) + geom_errorbar(aes(ymin = p25, ymax = p75), 
-                                                      color = "seagreen") + 
+                                                        color = "seagreen") + 
           scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
           labs(y = input$diurnal_y, x = "hour of the day", title = input$diurnal_mt) + 
           theme2() + geom_line(size = 0.6, color = "seagreen")  + facet_wrap(.~month, nrow = 3) + 
@@ -1122,8 +1124,8 @@ server <- function(input, output, session) {
     else {
       data <- data_boxt()
       data <- data %>%
-        mutate(month = format(date, "%b")) %>%
-        select(month, "y" = input$palleInp) %>%
+        dplyr::mutate(month = format(date, "%b")) %>%
+        dplyr::select(month, "y" = input$palleInp) %>%
         group_by(month) %>%
         summarise_all(funs(mean, sd), na.rm = TRUE)
       ggplot(data, aes(x = month, mean)) + 
@@ -1141,7 +1143,7 @@ server <- function(input, output, session) {
     else {
       yu <- spectrum(y, log = "no")
       plot_mk <- plot(yu$spec ~ yu$freq, xlab = "frequency", ylab = "spectral density", type = "l",
-           col = "steelblue", cex.lab = 1.5, cex.axis = 1.5, cex.main = 1.5)
+                      col = "steelblue", cex.lab = 1.5, cex.axis = 1.5, cex.main = 1.5)
       plot_mk
     }
   })
@@ -1159,7 +1161,6 @@ server <- function(input, output, session) {
       data <- fortify(lm_reg())
       y <- as.numeric(as.character(data[[input$DepVar1]]))
       ggplot(data = data, aes(x = .fitted, y = y)) +
-        geom_abline(slope = 1, intercept = 0, color = "black", size = 0.8, linetype = "dashed") + 
         geom_point(alpha = 0.5, color = "red") + 
         geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x, color = "deepskyblue") +
         labs(x = "Fitted", y = input$DepVar1) + theme2()
@@ -1219,8 +1220,8 @@ server <- function(input, output, session) {
       tmp <- t(tmp)
     } else {
       data <- data %>%
-        mutate(month  = format(day, "%b %Y"),
-               monthly = format(day, "%b")) %>%
+        dplyr::mutate(month  = format(day, "%b %Y"),
+                      monthly = format(day, "%b")) %>%
         dplyr::select(day, month, monthly, everything())
       data$group <- data[[input$avg]]
       data <- data %>%
