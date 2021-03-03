@@ -1,24 +1,19 @@
 library(shiny)
 library(Cairo)
-library(DT)
-library(data.table)
-library(dplyr)
-library(ggplot2)
-library(htmltools)
-library(tidyverse)
-library(lubridate)
-library(zoo)
-library(caTools)
-library(xts)
-library(readr)
 library(openair)
-library(xlsx)
-library(markdown)
-library(nortest)
-library(janitor)
-library(recipes)
-library(thematic)
+library(tidyverse)
+library(dplyr)
 library(bslib)
+library(forecast)
+library(biwavelet)
+library(xlsx)
+library(DT)
+library(ggplot2)
+library(data.table)
+library(janitor)
+library(nortest)
+library(zoo)
+
 
 ui <- fluidPage(
   theme = bslib::bs_theme(bootswatch = "pulse"), 
@@ -367,11 +362,11 @@ server <- function(input, output, session) {
   
   #### Function to make date time series
   date_ts <- function(file, time_period) {
-    ye <- format(file[1, "date"], format = "%Y")
-    x1 <- as.POSIXct(paste0(ye, "-01-01 01:00:00"), 
+    ye <- format(file[1, "date"], format = "%Y-%m")
+    x1 <- as.POSIXct(paste0(ye, "-01 00:00:00"), 
                      format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
-    ye <- format(tail(file$date, n = 3)[1], format = "%Y")
-    x2 <- as.POSIXct(paste0(ye, "-12-31 23:00:00"), 
+    ye <- format(tail(file$date, n = 3)[1], format = "%Y-%m-%d")
+    x2 <- as.POSIXct(paste0(ye, " 23:00:00"), 
                      format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
     date <- seq(
       from = as.POSIXct(x1, tz = "Asia/Kolkata"),
@@ -791,7 +786,14 @@ server <- function(input, output, session) {
     data <- mess(input$avg_hour2, "daily2")
   })
   data_mk <- eventReactive(input$mk, {
-    data <- mess(input$avg_hour2, "daily2")
+    data <- CPCB_f()
+    date_df <- data.frame(date = date_ts(data, "60 min"))
+    data <- data %>%
+      distinct(date, .keep_all = TRUE) %>%
+      right_join(date_df, by = "date")
+    if(input$avg_hour2 == "daily2") {
+      data <- openair::timeAverage(data, avg.time = "day")
+    } else { data }
   })
   data_reg <- eventReactive(input$reg, {
     data <- mess(input$avg_hour1, "daily1")
@@ -904,24 +906,12 @@ server <- function(input, output, session) {
   kenda <- reactive({
     data <- data_mk()
     if(input$avg_hour2 == "daily2") {
-      data <- openair::timeAverage(data, avg.time = "day")
-      data <- data %>%
-        dplyr::select(everything(), "y" = input$palleInp2) %>%
-        dplyr::mutate(month = format(date, "%m")) %>%
-        group_by(month) %>%
-        dplyr::mutate(med_data = median(y, na.rm = TRUE))
+      x <- zoo(data[[input$palleInp2]], data$date)
+      x <- as.ts(x)
+      x <- na.interp(x)
     } else { 
-      data <- data %>%
-        dplyr::select(everything(), "y" = input$palleInp2) %>%
-        dplyr::mutate(hour = format(date, "%H"),
-                      month = format(date, "%m")) %>%
-        group_by(hour, month) %>%
-        dplyr::mutate(med_data = median(y, na.rm = TRUE))
+      NULL
     }
-    data$y <- ifelse(is.na(data$y), data$med_data, data$y)
-    med <- median(data$y, na.rm = TRUE)
-    data$y <- ifelse(is.na(data$y), med, data$y)
-    y <- as.numeric(as.character(data$y))
   })
   
   output$normality_test <- renderPrint({
@@ -931,19 +921,18 @@ server <- function(input, output, session) {
     }
   })
   output$help_trend <- renderText({
-    paste("For trend analysis using Man-Kendal test the data is imputed using median values.", 
-          "If the hourly values are not present then the hourly median values of the month is imputed.", 
-          "If the data is still incomplete, then the median value of the whole dataset is considered.",
-          "For daily value imputation we use the daily median for imputing, if it still does not have data",
-          "we consider using the monthly median for it.",
-          sep = "\n")
+    paste("Trend Analysis can be used for daily data only!!",
+      "For trend analysis using Mann-Kendall test we use mk.test (https://www.rdocumentation.org/packages/trend/versions/1.1.4/topics/mk.test).", 
+      "For imputing values in the discontinious data set we use forecast package (https://cran.r-project.org/web/packages/forecast/forecast.pdf)", 
+      "For continious wavelet transform we use biwavelet package (https://cran.r-project.org/web/packages/biwavelet/biwavelet.pdf)",
+      "In periodicy analysis, the contours covered by black lines represent the significant periodicity at 95% significant
+519 level.", sep = "\n")
   })
   output$kendal_test <- renderPrint({
     # validate(need(try(all(is.na(y)) == TRUE), "Sorry no data!"))
     if (is.null(input$file1)) { "No file" }
     else {
       y <- kenda()
-      y <- as.ts(y)
       c <- trend::mk.test(y)
       c
     }
@@ -1129,22 +1118,25 @@ server <- function(input, output, session) {
         group_by(month) %>%
         summarise_all(funs(mean, sd), na.rm = TRUE)
       ggplot(data, aes(x = month, mean)) + 
-        geom_bar(position = position_dodge(), stat = "identity", colour = 'lightblue', 
-                 fill  = 'lightblue') + 
+        geom_bar(position = position_dodge(), stat = "identity", colour = 'seagreen', 
+                 fill  = 'seagreen') + 
         labs(y = input$box_yt, x = "", title = input$box_mtt) + 
         geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = .2, position = 
-                        position_dodge(.9), color = 'deepskyblue') +
+                        position_dodge(.9), color = 'seagreen') +
         theme2() + theme(axis.text.x = element_text(size = 12, face = "bold"))
     }
   })
   output$plot13 <- renderPlot({
-    y <- kenda()
+    y <- data_mk()
+    y_date <- julian(y$date, y$date[1])
+    x <- kenda()
+    data <- cbind(as.numeric(y_date), as.numeric(x))
     if (is.null(input$file1)) { NULL }
     else {
-      yu <- spectrum(y, log = "no")
-      plot_mk <- plot(yu$spec ~ yu$freq, xlab = "frequency", ylab = "spectral density", type = "l",
-                      col = "steelblue", cex.lab = 1.5, cex.axis = 1.5, cex.main = 1.5)
-      plot_mk
+      ## Continuous wavelet transform
+      cwt_data <- wt(data)
+      plot(cwt_data, xlab = "Time", main = "Periodicity Analysis", 
+           cex.lab = 1.5, cex.axis = 1.5, cex.main = 1.5)
     }
   })
   
