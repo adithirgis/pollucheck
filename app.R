@@ -347,7 +347,8 @@ ui <- fluidPage(
                                 plotOutput("plot4", height = 600)),
                               tabPanel(
                                 title = "Help",
-                                includeMarkdown("include.md")))
+                                includeMarkdown("include.md"),
+                                plotOutput("plot14", height = 500)))
                 )))
 
 
@@ -1138,6 +1139,26 @@ server <- function(input, output, session) {
            cex.lab = 1.5, cex.axis = 1.5, cex.main = 1.5, ncol = 64,
            legend.horiz = TRUE, plot.cb = TRUE)
     }
+  })
+  output$plot14 <- renderPlot({
+    data <- data.frame(
+      pollutant = c("Sulphur dioxide", "Nitrogen dioxide", "PM10", "PM2.5", 
+                    "Ozone", "Ammonia", "Benzene"),
+      levels = c(50, 40, 60, 40, 100, 100, 5)
+    )
+    ggplot(data, aes(pollutant, levels)) +
+      geom_hline(yintercept = 50, colour = "black") +
+      geom_hline(yintercept = 40, colour = "black") +
+      geom_hline(yintercept = 60, colour = "black") +
+      geom_hline(yintercept = 40, colour = "black") +
+      geom_hline(yintercept = 100, colour = "black") +
+      geom_hline(yintercept = 100, colour = "black") +
+      geom_hline(yintercept = 5, colour = "black") +
+      labs(y = "Major Pollutants", title = expression(paste("National Ambient Air Quality Annual Standards in India" , " (", mu, "g", ~m^{-3}, ")")),
+           x = "") + geom_text(aes(label = paste(pollutant, "=", levels)), 
+                               nudge_x = 0, nudge_y = 3, size = 6) + theme2() +
+      theme(axis.text.x = element_blank(), 
+            plot.title = element_text(size = 22, colour = "black")) 
   })
   
   # acf(z, lag.max = ((nrow(TimeSerie))/2), na.action = na.pass)
