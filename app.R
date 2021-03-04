@@ -1137,7 +1137,7 @@ server <- function(input, output, session) {
       cwt_data <- wt(data)
       plot(cwt_data, xlab = "Time", main = "Periodicity Analysis", 
            cex.lab = 1.5, cex.axis = 1.5, cex.main = 1.5, ncol = 64,
-           legend.horiz = TRUE, plot.cb = TRUE)
+           plot.cb = TRUE)
     }
   })
   output$plot14 <- renderPlot({

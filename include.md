@@ -21,3 +21,4 @@ A walk through to use this app for everyone -
     [contact@ilklabs.com](contact@ilklabs.com).
   - If you have feature request - open an issue
     [here](https://github.com/adithirgis/OpenSourceAirQualityApp).
+  - The major pollutants annual standards are plotted below.
