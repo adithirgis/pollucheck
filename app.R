@@ -36,7 +36,7 @@ ui <- fluidPage(
                                                           "Select"),
                                               tags$hr(),
                                               tags$hr(),
-                                              radioButtons("avg_hour3", "Average to",
+                                              radioButtons("avg_hour3", "Output average",
                                                            c("Hourly" = "hour3",
                                                              "Daily" = "daily3"), 
                                                            selected = "hour3"),
@@ -100,7 +100,7 @@ ui <- fluidPage(
                                               tags$hr()),
                              conditionalPanel(condition = "input.tabs1 == 6",
                                               tags$hr(),
-                                              radioButtons("avg_hour1", "Average to",
+                                              radioButtons("avg_hour1", "Output average",
                                                            c("Hourly" = "hour1",
                                                              "Daily" = "daily1"), 
                                                            selected = "hour1"),
@@ -135,7 +135,7 @@ ui <- fluidPage(
                                                           multiple = FALSE, "Select"),
                                               tags$hr(),
                                               tags$hr(),
-                                              radioButtons("avg_hour4", "Average to",
+                                              radioButtons("avg_hour4", "Output average",
                                                            c("Hourly" = "hour4",
                                                              "Daily" = "daily4"), 
                                                            selected = "hour4"),
@@ -154,7 +154,7 @@ ui <- fluidPage(
                                               tags$hr()),
                              conditionalPanel(condition = "input.tabs1 == 1",
                                               tags$hr(),
-                                              radioButtons("type", "Data downloaded from",
+                                              radioButtons("type", "Data Source",
                                                            choiceNames = list(
                                                              HTML("<a href = 'https://openaq.org/#/countries/IN?_k=5ecycz' target = '_blank'>OpenAQ</a>"), 
                                                              HTML("<a href = 'https://www.airnow.gov/international/us-embassies-and-consulates/#India' target = '_blank'>AirNow - US Embassies</a>"),
@@ -163,20 +163,20 @@ ui <- fluidPage(
                                                            selected = "cpcb"),
                                               tags$hr(),
                                               conditionalPanel(condition = "input.type == 'cpcb'",
-                                                               radioButtons("file", "Time resolution of downloaded data",
+                                                               radioButtons("file", "Input data time resolution",
                                                                             c("15 minutes" = "15 min",
                                                                               "30 minutes" = "30 min",
                                                                               "60 minutes" = "60 min"), 
                                                                             selected = "60 min")),
                                               tags$hr(),
                                               fileInput("file1",
-                                                        "Upload data",
+                                                        "Upload data*",
                                                         multiple = TRUE,
                                                         accept = c('.xlsx', '.csv')),
                                               tags$hr(),
                                               checkboxInput('remove_9', 'Remove negative values'),
                                               tags$hr(),
-                                              checkboxInput('repeated', 'Remove consecutive measurements'),
+                                              checkboxInput('repeated', 'Remove duplicate consecutive measurements'),
                                               tags$hr(),
                                               checkboxInput('exclude', 'Remove outliers based on Mean and Std Dev'),
                                               conditionalPanel(
@@ -194,7 +194,7 @@ ui <- fluidPage(
                                                            "Remove PM2.5 and PM10 values above",
                                                            value = 9999),
                                               tags$hr(),
-                                              radioButtons("avg_hour", "Average to",
+                                              radioButtons("avg_hour", "Output average",
                                                            c("Hourly" = "hour",
                                                              "Daily" = "daily"), 
                                                            selected = "hour"),
@@ -204,7 +204,7 @@ ui <- fluidPage(
                                               tags$hr()), 
                              conditionalPanel(condition = "input.tabs1 == 7",
                                               tags$hr(),
-                                              radioButtons("type2", "Data downloaded from",
+                                              radioButtons("type2", "Data Source",
                                                            choiceNames = list(
                                                              HTML("<a href = 'https://openaq.org/#/countries/IN?_k=5ecycz' target = '_blank'>OpenAQ</a>"), 
                                                              HTML("<a href = 'https://www.airnow.gov/international/us-embassies-and-consulates/#India' target = '_blank'>AirNow - US Embassies</a>"),
@@ -213,7 +213,7 @@ ui <- fluidPage(
                                                            selected = "cpcb"),
                                               tags$hr(),
                                               conditionalPanel(condition = "input.type == 'cpcb'",
-                                                               radioButtons("file12", "Time resolution of downloaded data",
+                                                               radioButtons("file12", "Input data time resolution",
                                                                             c("15 minutes" = "15 min",
                                                                               "30 minutes" = "30 min",
                                                                               "60 minutes" = "60 min"), 
@@ -226,7 +226,7 @@ ui <- fluidPage(
                                               tags$hr(),
                                               checkboxInput('remove_92', 'Remove negative values'),
                                               tags$hr(),
-                                              checkboxInput('repeated2', 'Remove consecutive measurements'),
+                                              checkboxInput('repeated2', 'Remove duplicate consecutive measurements'),
                                               tags$hr(),
                                               checkboxInput('exclude2', 'Remove outliers based on Mean and Std Dev'),
                                               conditionalPanel(
@@ -244,7 +244,7 @@ ui <- fluidPage(
                                                            "Remove PM2.5 and PM10 values above",
                                                            value = 9999),
                                               tags$hr(),
-                                              radioButtons("avg_hour12", "Average to",
+                                              radioButtons("avg_hour12", "Output average",
                                                            c("Hourly" = "hour",
                                                              "Daily" = "daily"), 
                                                            selected = "hour"),
@@ -268,7 +268,7 @@ ui <- fluidPage(
                                                           multiple = FALSE, "Select"),
                                               tags$hr(),
                                               tags$hr(),
-                                              radioButtons("avg_hour2", "Average to",
+                                              radioButtons("avg_hour2", "Output average",
                                                            c("Hourly" = "hour2",
                                                              "Daily" = "daily2"), 
                                                            selected = "hour2"),
@@ -322,7 +322,7 @@ ui <- fluidPage(
                                 plotOutput("plot2", width = 800)),
                               tabPanel(
                                 value = 5,
-                                title = "Statistics Plots",
+                                title = "Basic Plots",
                                 verbatimTextOutput("normality_test"),
                                 verbatimTextOutput("help_trend"), 
                                 verbatimTextOutput("kendal_test"),
@@ -342,7 +342,7 @@ ui <- fluidPage(
                                        plotOutput("plot12", height = 600)),
                               tabPanel(
                                 value = 4,
-                                title = "openair package plots",
+                                title = "openair",
                                 plotOutput("plot5", height = 600),
                                 plotOutput("plot4", height = 600)),
                               tabPanel(
@@ -457,7 +457,7 @@ server <- function(input, output, session) {
     trial <- trial %>%
       dplyr::select("date" = local, "parameter" = parameter, "value" = value) %>%
       dplyr::mutate(date  = as.POSIXct(date, format = '%Y-%m-%dT%H:%M:%S+05:30', tz = "Asia/Kolkata"))
-    date <- date_ts(trial, "15 min")
+    date <- date_ts(trial, "1 min")
     tseries_df <- data.frame(date)
     trial <- trial %>%
       pivot_wider(names_from = parameter, values_from = value)
