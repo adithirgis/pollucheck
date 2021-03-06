@@ -342,7 +342,7 @@ ui <- fluidPage(
                                        plotOutput("plot12", height = 600)),
                               tabPanel(
                                 value = 4,
-                                title = "openair",
+                                title = "`openair`",
                                 plotOutput("plot5", height = 600),
                                 plotOutput("plot4", height = 600)),
                               tabPanel(
