@@ -11,6 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 A walk through to use this app for everyone -
 
+How to Download Data from the CPCB website?
+
+
 - Example - Where do you live in India?
 - Find the nearest [CPCB station](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing) (because they have a reliable sensor).
 - Download that data (15, 30, 60 min resolution would be good).
