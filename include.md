@@ -15,7 +15,7 @@ How to Download Data from the CPCB website?
     website](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing)
     to access the Central/State Pollution Control Board Data.
 
-![Fig 1](WWW/CPCB_data_down.jpeg)
+![Fig 1](WWW/CPCB_data_down_S.jpeg)
 
   - Select the Indian state from the “State Name” dropdown.
 
@@ -44,13 +44,11 @@ How to Download Data from the CPCB website?
 
   - Now select the Start Date and End date of the data and click on
     “Submit”.
-
   - Download that data (15, 30, 60 min resolution would be good).
-
   - Select the source from where the data was downloaded.
-
   - Now select the time resolution at which the data was downloaded.
-    ![Fig 6](WWW/App_TA.jpeg)
+
+![Fig 6](WWW/App_TA.jpeg)
 
   - Select the check box according to your need.
     
@@ -77,23 +75,19 @@ How to Download Data from the CPCB website?
     mean values.
 
   - “Download the csv” or click on “show data” to see the data in the
-    app. ![Fig 9](WWW/App_down.jpeg)
+    app.
+
+![Fig 9](WWW/App_down.jpeg)
 
   - Look at the time-series plot in Plots tab on what days it is high
     and at what time, look at the diurnal pattern and the general way on
     how air pollution varies.
-
   - Look at months which bother you.
-
   - Look for sources (which you think contribute to air pollution) and
     write back to us on what you see.
-
   - What more do you want to learn? Talk to the Humans of ILK.
-
   - You want to explore more or have an idea, contact us at
     [contact@ilklabs.com](contact@ilklabs.com).
-
   - If you have feature request - open an issue
     [here](https://github.com/adithirgis/OpenSourceAirQualityApp).
-
   - The major pollutants annual standards are plotted below.
