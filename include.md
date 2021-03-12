@@ -9,7 +9,7 @@ How to Download Data from the CPCB website?
 
   - Find the nearest [CPCB
     station](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing)
-    (because they have a reliable sensor).
+    to download data from a regulatory air quality monitor.
 
   - Visit [CPCB
     website](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing)
