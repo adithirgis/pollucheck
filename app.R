@@ -181,6 +181,7 @@ ui <- fluidPage(
                                               checkboxInput('exclude', 'Remove outliers based on Mean and Std Dev'),
                                               conditionalPanel(
                                                 condition = "input.exclude == true",
+                                                checkboxInput('log_op', 'Use log values'),
                                                 numericInput("ey", "Specify a multiple for removing outliers (Mean + X*Std Dev)",
                                                              value = 3)),
                                               tags$hr(),
@@ -230,13 +231,14 @@ ui <- fluidPage(
                                               tags$hr(),
                                               checkboxInput('exclude2', 'Remove outliers based on Mean and Std Dev'),
                                               conditionalPanel(
-                                                condition = "input.exclude == true",
+                                                condition = "input.exclude2 == true",
+                                                checkboxInput('log_op2', 'Use log values?'),
                                                 numericInput("ey2", "Specify a multiple for removing outliers (Mean + X*Std Dev)",
                                                              value = 3)),
                                               tags$hr(),
                                               checkboxInput('percent2', 'Completeness of data in a day'),
                                               conditionalPanel(
-                                                condition = "input.percent == true",
+                                                condition = "input.percent2 == true",
                                                 sliderInput("per2", "Specify % of data completeness required in a day",
                                                             value = 75,  min = 35, max = 100)),
                                               tags$hr(),
@@ -632,7 +634,7 @@ server <- function(input, output, session) {
   
   #### Functions to be applied on the data set in a sequence
   data_file <- function(per, type, file_data_path, file_1, file, remove_9, repeated, 
-                        percent, ey, exclude, high_number) {
+                        percent, ey, exclude, high_number, log_op) {
     if (is.null(file_1)) {
       return(NULL)
     } else {
@@ -665,8 +667,20 @@ server <- function(input, output, session) {
       site1_join_f1 <- site1_join_f1 %>%
         dplyr::mutate(ratio = NA) %>%
         dplyr::select(date, day, everything())
+      col_interest <- 3:ncol(site1_join_f1)
+      if(log_op) {
+        site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
+                                                 FUN = function(x) log(x))
+      } else { site1_join_f1 } 
       if(exclude) {
         site1_join_f1 <- outlier(site1_join_f1, name, date, ey)
+        if(log_op) {
+          site1_join_f1 <- site1_join_f1 %>%
+            dplyr::select(date, day, everything())
+          col_interest <- 3:ncol(site1_join_f1)
+          site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
+                                                   FUN = function(x) exp(x))
+        }
       } else { site1_join_f1 } 
       
       site1_join_f1 <- site1_join_f1 %>%
@@ -697,12 +711,12 @@ server <- function(input, output, session) {
   CPCB_f <- reactive({
     site1 <- data_file(input$per, input$type, input$file1$datapath, input$file1,
                        input$file, input$remove_9, input$repeated, input$percent, 
-                       input$ey, input$exclude, input$high_number)
+                       input$ey, input$exclude, input$high_number, input$log_op)
   })
   Cmp_f <- reactive({
     site1 <- data_file(input$per2, input$type2, input$file2$datapath, input$file2,
                        input$file12, input$remove_92, input$repeated2, input$percent2, 
-                       input$ey2, input$exclude2, input$high_number2)
+                       input$ey2, input$exclude2, input$high_number2, input$log_op2)
   })
   
   observe({
