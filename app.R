@@ -820,30 +820,7 @@ server <- function(input, output, session) {
     if(input$avg_hour3 == "daily3") {
       data <- openair::timeAverage(data, avg.time = "day")
     } else { 
-      data <- data %>%
-        dplyr::mutate(hour = format(date, "%H"),
-                      month = format(date, "%b"))
-      data <- data %>%
-        dplyr::select(hour, month, "y" = input$palleInp) 
-      if(input$diur == "mesd" && input$diurn == "all") {
-        data <- data %>%
-          dplyr::select(hour, y) %>%
-          group_by(hour) %>%
-          summarise_all(funs(mean, sd), na.rm = TRUE)
-      } else if(input$diur == "mediq" && input$diurn == "all") {
-        data <- data %>%
-          dplyr::select(hour, y) %>%
-          group_by(hour) %>%
-          summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
-      } else if (input$diur == "mediq" && input$diurn == "mon") {
-        data <- data %>%
-          group_by(month, hour) %>%
-          summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
-      } else if (input$diur == "mesd" && input$diurn == "mon") {
-        data <- data %>%
-          group_by(month, hour) %>%
-          summarise_all(funs(mean, sd), na.rm = TRUE)
-      } 
+      data <- CPCB_f() 
     }
     return(data)
   })
@@ -964,7 +941,7 @@ server <- function(input, output, session) {
   output$plot2 <- renderPlot({
     if (is.null(input$file1)) { NULL }
     else {
-      data <- CPCB_f()
+      data <- data_diurnal()
       data <- data %>%
         dplyr::mutate(hour = format(date, "%H"),
                       month = format(date, "%b"))
