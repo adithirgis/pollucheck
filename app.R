@@ -45,28 +45,28 @@ ui <- fluidPage(
                                               textInput("ts_mt", label = "Edit title of plot", 
                                                         value = "Title"),
                                               textInput("ts_y", label = "Edit Y axis title", 
-                                                        value = "Pollutant"),
+                                                        value = "Parameter"),
                                               actionButton("ts", "Time Series"),
                                               tags$hr(),
                                               tags$hr(),
                                               textInput("box_mt", label = "Edit title of plot", 
                                                         value = "Title"),
                                               textInput("box_y", label = "Edit Y axis title", 
-                                                        value = "Pollutant"),
+                                                        value = "Parameter"),
                                               actionButton("box", "Month-Yearly Box Plot"),
                                               tags$hr(),
                                               tags$hr(),
                                               textInput("box_mmt", label = "Edit title of plot", 
                                                         value = "Title"),
                                               textInput("box_my", label = "Edit Y axis title", 
-                                                        value = "Pollutant"),
+                                                        value = "Parameter"),
                                               actionButton("mbox", "Monthly Box Plot"),
                                               tags$hr(),
                                               tags$hr(),
                                               textInput("box_mtt", label = "Edit title of plot", 
                                                         value = "Title"),
                                               textInput("box_yt", label = "Edit Y axis title", 
-                                                        value = "Pollutant"),
+                                                        value = "Parameter"),
                                               actionButton("boxt", "Vertical Bar Plot"),
                                               tags$hr(),
                                               tags$hr(),
@@ -81,7 +81,7 @@ ui <- fluidPage(
                                               textInput("diurnal_mt", label = "Edit title of plot", 
                                                         value = "Title"),
                                               textInput("diurnal_y", label = "Edit Y axis title", 
-                                                        value = "Pollutant"),
+                                                        value = "Parameter"),
                                               actionButton("diurnal", "Diurnal Plot"),
                                               downloadButton('download_diurnal', "Download as csv"),
                                               tags$hr()),
@@ -115,9 +115,9 @@ ui <- fluidPage(
                                               textInput("reg_mt", label = "Edit title of plot", 
                                                         value = "Title"),
                                               textInput("reg_x", label = "Edit X axis title", 
-                                                        value = "Pollutant"),
+                                                        value = "Parameter"),
                                               textInput("reg_y", label = "Edit Y axis title", 
-                                                        value = "Pollutant"),
+                                                        value = "Parameter"),
                                               actionButton("reg", "Linear Regression Plot"),
                                               tags$hr(),
                                               tags$hr(),
@@ -261,7 +261,7 @@ ui <- fluidPage(
                                               textInput("comp_mt", label = "Edit title of plot", 
                                                         value = "Title"),
                                               textInput("comp_y", label = "Edit Y axis title", 
-                                                        value = "Pollutant"),
+                                                        value = "Parameter"),
                                               actionButton("plot_values", "Plot it!"),
                                               tags$hr()),
                              conditionalPanel(condition = "input.tabs1 == 5",
@@ -287,14 +287,14 @@ ui <- fluidPage(
                                               textInput("freq_mt", label = "Edit title of plot", 
                                                         value = "Title"),
                                               textInput("freq_x", label = "Edit X axis title", 
-                                                        value = "Pollutant"),
+                                                        value = "Parameter"),
                                               actionButton("freq", "Density Plot"),
                                               tags$hr(),
                                               tags$hr(),
                                               textInput("qq_mt", label = "Edit title of plot", 
                                                         value = "Title"),
                                               textInput("qq_y", label = "Edit Y axis title", 
-                                                        value = "Pollutant"),
+                                                        value = "Parameter"),
                                               actionButton("qq", "QQ Plot"),
                                               tags$hr())),
                 mainPanel(
@@ -316,7 +316,7 @@ ui <- fluidPage(
                                 dataTableOutput("table")), 
                               tabPanel(
                                 value = 3,
-                                title = "Plots",
+                                title = "Summary Plots",
                                 plotOutput("plot1", width = 800),
                                 plotOutput("plot3", width = 800),
                                 plotOutput("plot9", width = 800),
@@ -324,13 +324,13 @@ ui <- fluidPage(
                                 plotOutput("plot2", width = 800)),
                               tabPanel(
                                 value = 5,
-                                title = "Basic Plots",
+                                title = "Statistics Plots",
                                 verbatimTextOutput("normality_test"),
+                                plotOutput("plot6", width = 800),
+                                plotOutput("plot7", width = 800),
                                 verbatimTextOutput("help_trend"), 
                                 verbatimTextOutput("kendal_test"),
-                                plotOutput("plot13", width = 800),
-                                plotOutput("plot6", width = 800),
-                                plotOutput("plot7", width = 800)),
+                                plotOutput("plot13", width = 800)),
                               tabPanel(
                                 value = 6,
                                 title = "Linear Regression",
@@ -882,8 +882,8 @@ server <- function(input, output, session) {
       data_joined <- data_joined %>%
         dplyr::mutate(date = as.Date(date, tz = "Asia/Kolkata")) %>%
         dplyr::select(date, everything(), - day)
-      datatable(data_joined, options = list("pageLength" = 25)) %>% formatDate(1, "toLocaleDateString")
-    } else { datatable(data_joined, options = list("pageLength" = 25)) %>% formatDate(1, "toLocaleString") }
+      datatable(data_joined, options = list("pageLength" = 15)) %>% formatDate(1, "toLocaleDateString")
+    } else { datatable(data_joined, options = list("pageLength" = 15)) %>% formatDate(1, "toLocaleString") }
   })
   output$download <- downloadHandler(
     filename <- function() {"data.csv"},
@@ -1092,7 +1092,7 @@ server <- function(input, output, session) {
         stat_qq(size = 2, geom = 'point', color = "deepskyblue") +
         stat_qq_line(size = 1, linetype = 2) + 
         scale_x_continuous(breaks = ticks, labels = labels) +
-        labs(x = "Emperical percentile",
+        labs(x = "Emperical percentiles",
              y =  input$qq_y, title = input$qq_mt) + theme2()
     }
   })
@@ -1283,6 +1283,4 @@ shinyApp(ui, server)
 
 
 # runApp(display.mode = "showcase")
-
-
 
