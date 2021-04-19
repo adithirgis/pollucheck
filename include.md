@@ -91,15 +91,17 @@ How to Download Data from the CPCB website?
 <img src="WWW/App_down.jpeg" width="250" alt="Fig 9" /><figcaption aria-hidden="true">Fig 9</figcaption>
 </figure>
 
--   Look at the time-series plot in Plots tab on what days it is high
-    and at what time, look at the diurnal pattern and the general way on
-    how air pollution varies.
--   Look at months which bother you.
--   Look for sources (which you think contribute to air pollution) and
-    write back to us on what you see.
+-   Look at the time series of pollutant concentrations in the **Plots**
+    tab (time series are plots with x axis representing time). Do you
+    see patterns? Are there times of the month or times of the day where
+    concentrations are particularly higher or lower? Are there
+    particular months in a year that are more polluted than others?
+-   Think about sources in the particular location: traffic, industries,
+    garbage burning, etc.
 -   What more do you want to learn? Talk to the Humans of ILK.
--   You want to explore more or have an idea, contact us at
-    [contact@ilklabs.com](contact@ilklabs.com).
+-   What more do you want to learn about the data? We are happy to
+    incorporate more features based one what users need. Write to us at
+    <contact@ilklabs.com>.
 -   If you have feature request - open an issue
     [here](https://github.com/adithirgis/OpenSourceAirQualityApp).
 -   The major pollutants annual standards are plotted below.

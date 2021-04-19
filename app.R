@@ -709,15 +709,48 @@ server <- function(input, output, session) {
   }
   
   CPCB_f <- reactive({
-    site1 <- data_file(input$per, input$type, input$file1$datapath, input$file1,
+    data <- data_file(input$per, input$type, input$file1$datapath, input$file1,
                        input$file, input$remove_9, input$repeated, input$percent, 
                        input$ey, input$exclude, input$high_number, input$log_op)
   })
   Cmp_f <- reactive({
-    site1 <- data_file(input$per2, input$type2, input$file2$datapath, input$file2,
+    data <- data_file(input$per2, input$type2, input$file2$datapath, input$file2,
                        input$file12, input$remove_92, input$repeated2, input$percent2, 
                        input$ey2, input$exclude2, input$high_number2, input$log_op2)
   })
+  
+  query_modal <- modalDialog(
+    title = "What to expect?",
+    HTML("Have a look at the app!<br>"),
+    tags$img(src = base64enc::dataURI(file = "WWW/img_1.jpg", mime = "image/jpeg"),
+             width = 450,
+             height = 200),
+    tags$img(src = base64enc::dataURI(file = "WWW/img_2.jpg", mime = "image/jpeg"),
+             width = 450,
+             height = 200),
+    tags$img(src = base64enc::dataURI(file = "WWW/img_3.jpg", mime = "image/jpeg"),
+             width = 450,
+             height = 200),
+    tags$img(src = base64enc::dataURI(file = "WWW/img_4.jpg", mime = "image/jpeg"),
+             width = 450,
+             height = 200),
+    tags$img(src = base64enc::dataURI(file = "WWW/img_5.jpg", mime = "image/jpeg"),
+             width = 450,
+             height = 200),
+    tags$img(src = base64enc::dataURI(file = "WWW/img_6.jpg", mime = "image/jpeg"),
+             width = 450,
+             height = 200),
+    tags$img(src = base64enc::dataURI(file = "WWW/img_7.jpg", mime = "image/jpeg"),
+             width = 450,
+             height = 200),
+    tags$img(src = base64enc::dataURI(file = "WWW/img_8.jpg", mime = "image/jpeg"),
+             width = 450,
+             height = 200),
+    easyClose = F
+  )
+  
+  # Show the model on start up ...
+  showModal(query_modal)
   
   observe({
     if (is.null(input$file1) | is.null(input$file2)) {
