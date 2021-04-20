@@ -6,7 +6,7 @@ library(dplyr)
 library(bslib)
 library(forecast)
 library(biwavelet)
-library(xlsx)
+library(readxl)
 library(DT)
 library(ggplot2)
 library(data.table)
@@ -383,6 +383,8 @@ server <- function(input, output, session) {
   #### using date and also making the first column as the column name
   make_df <- function(y, tseries_df) {
     df <- data.frame(y)
+    df <- df %>%
+      select(everything(), -c(new_set, set))
     if(!nrow(df))
     {
       df <- tseries_df
@@ -397,6 +399,7 @@ server <- function(input, output, session) {
                                         tz = "Asia/Kolkata"))
     }
   }
+  
   
   #### How to assign functions returning two variables
   ':=' <- function(lhs, rhs) {
@@ -419,20 +422,23 @@ server <- function(input, output, session) {
   
   #### Function to handle cpcb data
   cpcb <- function(sf, sfd) {
-    trial <- read.xlsx2(sf, 1, startRow = 17)
-    trial$date <- gsub(":00", ":00:00", trial$To.Date, fixed = TRUE)
-    trial$tbl_id <- cumsum(!nzchar(trial$date))
-    trial <- trial[nzchar(trial$date), ]
-    trial[ , c('From.Date', 'To.Date')] <- list(NULL)
-    dt_s <- split(trial[, -ncol(trial)], trial$tbl_id)
+    trial <- read_excel(path = sf, skip = 16, col_types = "text") 
+    trial$date <- gsub(":00", ":00:00", trial$`To Date`, fixed = TRUE)
+    trial <- trial %>%
+      mutate(new_set = is.na(`From Date`),
+             set     = cumsum(new_set)) %>%
+      filter(!is.na(`To Date`))
+    trial[ , c('From Date', 'To Date')] <- list(NULL)
+    dt_s <- split(trial, trial$set)
     PM <- data.frame(dt_s$`0`) %>%
       dplyr::mutate(date = as.POSIXct(date, format = '%d-%m-%Y %H:%M:%S', tz = "Asia/Kolkata"))
     date <- date_ts(PM, sfd)
     tseries_df <- data.frame(date)
-    site1_join <- left_join(tseries_df, PM, by = "date")
-    Ben <- make_df(dt_s$`2`, tseries_df)
-    Beny <- make_df(dt_s$`4`, tseries_df)
-    Bent <- make_df(dt_s$`6`, tseries_df)
+    site1_join <- left_join(tseries_df, PM, by = "date") %>%
+      select(date, everything(), - c(new_set, set))
+    Ben <- make_df(dt_s$`1`, tseries_df)
+    Beny <- make_df(dt_s$`2`, tseries_df)
+    Bent <- make_df(dt_s$`3`, tseries_df)
     all <- list(site1_join, Ben, Beny, Bent) %>% reduce(left_join, by = "date")
     return(list(all, date))
   }
@@ -459,11 +465,11 @@ server <- function(input, output, session) {
     trial <- trial %>%
       dplyr::select("date" = local, "parameter" = parameter, "value" = value) %>%
       dplyr::mutate(date  = as.POSIXct(date, format = '%Y-%m-%dT%H:%M:%S+05:30', tz = "Asia/Kolkata"))
+    trial <- trial[order(trial$date), ]
     date <- date_ts(trial, "1 min")
     tseries_df <- data.frame(date)
     trial <- trial %>%
       pivot_wider(names_from = parameter, values_from = value)
-    trial <- trial[order(trial$date), ]
     all <- left_join(tseries_df, trial, by = "date") 
     all$hour <- lubridate::ceiling_date(all$date, "hour")
     all <- all %>%
@@ -495,6 +501,21 @@ server <- function(input, output, session) {
     {
       all <- all %>%
         dplyr::select(date, everything(), "NO" = no)
+    }
+    if("co" %in% colnames(all))
+    {
+      all <- all %>%
+        dplyr::select(date, everything(), "CO" = co)
+    }
+    if("o3" %in% colnames(all))
+    {
+      all <- all %>%
+        dplyr::select(date, everything(), "O3" = o3)
+    }
+    if("so2" %in% colnames(all))
+    {
+      all <- all %>%
+        dplyr::select(date, everything(), "SO2" = so2)
     }
     return(list(all, date))
   }
@@ -589,10 +610,10 @@ server <- function(input, output, session) {
       tseries_df <- bind_cols(tseries_df, data_list)
     }
     site1_join_f1 <- tseries_df %>%
-      dplyr::mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) %>%
-      dplyr::select(date, day, everything(), -contains(c("_sd", "_mean")))
+      dplyr::select(date, everything(), -contains(c("_sd", "_mean")))
     tseries_df <- data.frame(date)
-    site1_join_f1 <- left_join(tseries_df, site1_join_f1, by = "date")
+    site1_join_f1 <- left_join(tseries_df, site1_join_f1, by = "date") %>%
+      dplyr::mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) 
     site1_join_f1
   }
   
@@ -896,7 +917,7 @@ server <- function(input, output, session) {
     } else { datatable(data_joined, options = list("pageLength" = 15)) %>% formatDate(1, "toLocaleString") }
   })
   output$download <- downloadHandler(
-    filename <- function() {"data.csv"},
+    filename <- function() {"Data.csv"},
     content <- function(fname) {
       data_joined <- data_joined()
       write.csv(data_joined, fname)
