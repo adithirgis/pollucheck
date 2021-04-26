@@ -1,4 +1,6 @@
 
+# Have a look at the app!
+
 ### We are in this together!
 
 A walk through to use this app for everyone -
@@ -15,23 +17,23 @@ How to Download Data from the CPCB website?
     website](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing)
     to access the Central/State Pollution Control Board Data.
 
-![Fig 1](WWW/CPCB_data_down_S.jpeg)
+![](WWW/CPCB_data_down_S.jpeg)
 
 -   Select the Indian state from the “State Name” dropdown.
 
-![Fig 2](WWW/CPCB_Station.jpeg)
+![](WWW/CPCB_Station.jpeg)
 
 -   Now select the city for which the data needs to be downloaded using
     the “City Name” dropdown menu.
 
-![Fig 3](WWW/CPCB_Station_city.jpeg)
+![](WWW/CPCB_Station_city.jpeg)
 
 -   Now from the “Station Name” drop-down select the desired station.
 
 -   Select the Parameters. Note- Multiple parameters can be selected at
     a time.
 
-![Fig 4](WWW/CPCB_Station_parameters.jpeg)
+![](WWW/CPCB_Station_parameters.jpeg)
 
 -   Report Format- To use the PolluCheck app, Please keep the format as
     “tabular”.
@@ -40,7 +42,7 @@ How to Download Data from the CPCB website?
     time averaging of data. Note- Pollucheck app only supports 15 min,
     30 min, and 60 min average data.
 
-![Fig 5](WWW/CPCB_Station_TA.jpeg)
+![](WWW/CPCB_Station_TA.jpeg)
 
 -   Now select the Start Date and End date of the data and click on
     “Submit”.
@@ -48,7 +50,7 @@ How to Download Data from the CPCB website?
 -   Select the source from where the data was downloaded.
 -   Now select the time resolution at which the data was downloaded.
 
-![Fig 6](WWW/App_TA.jpeg)
+![](WWW/App_TA.jpeg)
 
 -   Select the check box according to your need.
 
@@ -67,14 +69,14 @@ How to Download Data from the CPCB website?
         if you want to remove outiliers based on Mean and Standard
         Deviation values.
 
-    ![Fig 7](WWW/App_Out.jpeg)
+    ![](WWW/App_Out.jpeg)
 
     -   Completeness of data in a day- If you are looking for
         entire/complete dataset to be present for analysis and not less,
         you can use this to select the desired level of completeness in
         a day using the scroll bar.
 
-    ![Fig 8](WWW/App_Comp.jpeg)
+    ![](WWW/App_Comp.jpeg)
 
 -   Remove PM2.5 and PM10 values above- Usually, values above 999 are
     incorrect, also because the instruments usually measure only to 999
@@ -87,9 +89,7 @@ How to Download Data from the CPCB website?
 -   “Download the csv” or click on “Show Data” to see the data in the
     app.
 
-<figure>
-<img src="WWW/App_down.jpeg" width="250" alt="Fig 9" /><figcaption aria-hidden="true">Fig 9</figcaption>
-</figure>
+<img src="WWW/App_down.jpeg" width="250" />
 
 -   Look at the time series of pollutant concentrations in the **Plots**
     tab (time series are plots with x axis representing time). Do you
@@ -104,4 +104,37 @@ How to Download Data from the CPCB website?
     <contact@ilklabs.com>.
 -   If you have feature request - open an issue
     [here](https://github.com/adithirgis/OpenSourceAirQualityApp).
--   The major pollutants annual standards are plotted below.
+
+### The application has various tabs - look at each of them and their usage.
+
+##### File tab displays the data after cleaning process.
+
+<img src="WWW/img_1.JPG" style="width:100.0%" />
+
+##### Summary tab displays the summary statistics for daily, monthly or for the entire dataset.
+
+<img src="WWW/img_2.JPG" style="width:100.0%" />
+
+##### Summary Plots tab generates time series, box plot, and diurnal plot of the selected parameter.
+
+<img src="WWW/img_3.JPG" style="width:100.0%" />
+
+##### Statistics Plots tab tests for normality, pattern and generates density plot, qq plot of the selected parameter.
+
+<img src="WWW/img_4.JPG" style="width:100.0%" />
+
+##### Linear Regression tab does univariate and multivariate linear regression for selected parameter(s).
+
+<img src="WWW/img_5.JPG" style="width:100.0%" />
+
+##### Compare tab allows users to upload another file for comparision with the loaded data.
+
+<img src="WWW/img_6.JPG" style="width:100.0%" />
+
+##### `openair` tab allows users use the package’s widely used functions - calendar plot and diurnal pattern for the selected parameter.
+
+<img src="WWW/img_7.JPG" style="width:100.0%" />
+
+### Explore yourself!
+
+##### The major pollutants annual standards are plotted below.

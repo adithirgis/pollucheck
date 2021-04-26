@@ -740,36 +740,20 @@ server <- function(input, output, session) {
                        input$ey2, input$exclude2, input$high_number2, input$log_op2)
   })
   
+  observeEvent(input$switch_tab, {
+    updateTabsetPanel(session, "tabs1", selected = "Help")
+  })
+  
   query_modal <- modalDialog(
     title = "What to expect?",
-    HTML("Have a look at the app!<br>"),
-    tags$img(src = base64enc::dataURI(file = "WWW/img_1.JPG", mime = "image/jpeg"),
-             width = 450,
-             height = 200),
-    tags$img(src = base64enc::dataURI(file = "WWW/img_2.JPG", mime = "image/jpeg"),
-             width = 450,
-             height = 200),
-    tags$img(src = base64enc::dataURI(file = "WWW/img_3.JPG", mime = "image/jpeg"),
-             width = 450,
-             height = 200),
-    tags$img(src = base64enc::dataURI(file = "WWW/img_4.JPG", mime = "image/jpeg"),
-             width = 450,
-             height = 200),
-    tags$img(src = base64enc::dataURI(file = "WWW/img_5.JPG", mime = "image/jpeg"),
-             width = 450,
-             height = 200),
-    tags$img(src = base64enc::dataURI(file = "WWW/img_6.JPG", mime = "image/jpeg"),
-             width = 450,
-             height = 200),
-    tags$img(src = base64enc::dataURI(file = "WWW/img_7.JPG", mime = "image/jpeg"),
-             width = 450,
-             height = 200),
-    tags$img(src = base64enc::dataURI(file = "WWW/img_8.JPG", mime = "image/jpeg"),
-             width = 450,
-             height = 200),
+    HTML("First visit here?<br>"),
+    footer = tagList(
+      actionButton("switch_tab", "Help"),
+      modalButton("Close")
+    ), 
     easyClose = F
   )
-
+  
   # Show the model on start up ...
   showModal(query_modal)
   
