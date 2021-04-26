@@ -11,7 +11,7 @@ The link for this app is this - https://aruapps.shinyapps.io/OpenSourceAirQualit
 - We have also included the popular openair package in this application. 
 
  
-# Have a look at the app!
+## Have a look at the app!
 
 ### We are in this together!
 
@@ -74,7 +74,7 @@ How to Download Data from the CPCB website?
 
 -   "Download the csv" or click on "Show Data" to see the data in the app.
 
-![](WWW/App_down.jpeg){width=250px}
+![](WWW/App_down.jpeg)
 
 -   Look at the time series of pollutant concentrations in the **Plots** tab (time series are plots with x axis representing time). Do you see patterns? Are there times of the month or times of the day where concentrations are particularly higher or lower? Are there particular months in a year that are more polluted than others?
 -   Think about sources in the particular location: traffic, industries, garbage burning, etc.
@@ -116,4 +116,3 @@ How to Download Data from the CPCB website?
 ### Explore yourself!
 
 
-##### The major pollutants annual standards are plotted below.
