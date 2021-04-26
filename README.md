@@ -87,30 +87,30 @@ How to Download Data from the CPCB website?
 
 ##### File tab displays the data after cleaning process. 
 
-![](WWW/img_1.JPG){width=100%}
+![](WWW/img_1.JPG)
 
 ##### Summary tab displays the summary statistics for daily, monthly or for the entire dataset. 
 
-![](WWW/img_2.JPG){width=100%}
+![](WWW/img_2.JPG)
 
 ##### Summary Plots tab generates time series, box plot, and diurnal plot of the selected parameter. 
-![](WWW/img_3.JPG){width=100%}
+![](WWW/img_3.JPG)
 
 ##### Statistics Plots tab tests for normality, pattern and generates density plot, qq plot of the selected parameter.
 
-![](WWW/img_4.JPG){width=100%}
+![](WWW/img_4.JPG)
 
 ##### Linear Regression tab does univariate and multivariate linear regression for selected parameter(s).
 
-![](WWW/img_5.JPG){width=100%}
+![](WWW/img_5.JPG)
 
 ##### Compare tab allows users to upload another file for comparision with the loaded data.
 
-![](WWW/img_6.JPG){width=100%}
+![](WWW/img_6.JPG)
 
 ##### `openair` tab allows users use the package's widely used functions - calendar plot and diurnal pattern for the selected parameter.
 
-![](WWW/img_7.JPG){width=100%}
+![](WWW/img_7.JPG)
 
 
 ### Explore yourself!
