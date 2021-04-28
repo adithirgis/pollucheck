@@ -228,11 +228,13 @@ ui <- fluidPage(
                                               selectInput("Para1", 
                                                           "Parameter to plot in comparision data", 
                                                           multiple = FALSE, "Select"),
-                                              actionButton("plot_values", "Plot it!"),
-                                              textInput("comp_mt", label = "Edit title of plot", 
+                                              actionButton("plot_values", "Plot all"),
+                                              textInput("comp_mt", label = "Edit title of time-series plot", 
                                                         value = "Title"),
-                                              textInput("comp_y", label = "Edit Y axis title", 
+                                              textInput("comp_y", label = "Edit Y axis label of time-series plot", 
                                                         value = "Parameter"),
+                                              textInput("reg_mt1", label = "Edit title of scatter plot", 
+                                                        value = "Title"),
                                               tags$hr()),
                              conditionalPanel(condition = "input.tabs1 == 5",
                                               tags$hr(),
@@ -264,7 +266,6 @@ ui <- fluidPage(
                                                         value = "Title"),
                                               textInput("qq_y", label = "Edit Y axis label", 
                                                         value = "Parameter"),
-                                              
                                               tags$hr(),
                                               tags$hr(),
                                               conditionalPanel(condition = 'input.avg_hour2 == "daily2"',
@@ -313,7 +314,8 @@ ui <- fluidPage(
                                 verbatimTextOutput(outputId = "DepPrint")),
                               tabPanel(value = 7,
                                        title = "Compare",
-                                       plotOutput("plot12", height = 600)),
+                                       plotOutput("plot12", height = 600),
+                                       plotOutput("plot15", height = 600)),
                               tabPanel(
                                 value = 4,
                                 title = "`openair`",
@@ -329,7 +331,7 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   # bs_themer()
   options(shiny.maxRequestSize = 30*1024^2, shiny.launch.browser = TRUE)
-  observeEvent(input$exclude,{
+  observeEvent(input$exclude, {
     if (input$exclude) shinyjs::enable(id = "log_op")  
     else shinyjs::disable(id = "log_op") 
   })
@@ -719,6 +721,7 @@ server <- function(input, output, session) {
   
   observeEvent(input$switch_tab, {
     updateTabsetPanel(session, "tabs1", selected = "Help")
+    removeModal()
   })
   
   query_modal <- modalDialog(
@@ -773,14 +776,14 @@ server <- function(input, output, session) {
     data1 <- data1 %>%
       select(date, "Site 2" = input$Para1)
     all <- full_join(data, data1, by = "date")
-    all <- all %>%
-      pivot_longer(-date, names_to = "parameter", values_to = "value") 
   })
   
   output$plot12 <- renderPlot({
     if (is.null(input$file1) | is.null(input$file2)) { NULL }
     else {
       all <- data_joined_comp()
+      all <- all %>%
+        pivot_longer(-date, names_to = "parameter", values_to = "value") 
       ggplot(all, aes(as.POSIXct(date), value, colour = parameter)) +
         labs(y = input$comp_y, title = input$comp_mt,
              x = "") + theme2() + geom_line(size = 0.6) + theme(legend.title = element_blank())
@@ -1109,6 +1112,31 @@ server <- function(input, output, session) {
         geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x, color = "deepskyblue") +
         labs(x = input$reg_x,
              y = input$reg_y, title = input$reg_mt,
+             subtitle = paste0("R square: ", r, "; Equation: ", reg_eqn(s))) + 
+        theme2()
+    }
+  })
+  output$plot15 <- renderPlot({
+    if (is.null(input$file1) | is.null(input$file2)) { NULL }
+    else {
+      data <- data_joined_comp()
+      y <- as.numeric(as.character(data$`Site 1`))
+      x <- as.numeric(as.character(data$`Site 2`))
+      reg_eqn <- function(x) {
+        R_sq <- round(as.numeric(x$adj.r.squared), digits = 2)
+        int <- round(coef(x)[1], digits = 2)
+        slope <- round(coef(x)[2], digits = 2)
+        eqn <- paste("y = ", slope, "x + (", int, ")")
+        return(eqn)
+      }
+      m <- lm(y ~ x, data)
+      s <- summary(m)
+      r <- round(s$adj.r.squared, digits = 2)
+      ggplot(data = data, aes(x = x, y = y)) +
+        geom_point(alpha = 0.5, color = "red") + 
+        geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x, color = "deepskyblue") +
+        labs(x = "Site 1",
+             y = "Site 2", title = input$reg_mt1,
              subtitle = paste0("R square: ", r, "; Equation: ", reg_eqn(s))) + 
         theme2()
     }
