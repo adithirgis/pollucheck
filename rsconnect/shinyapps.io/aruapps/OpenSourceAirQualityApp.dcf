@@ -5,8 +5,9 @@ account: aruapps
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3997538
-bundleId: 4519371
+bundleId: 4534180
 url: https://aruapps.shinyapps.io/OpenSourceAirQualityApp/
-when: 1619421363.05969
+when: 1619683952.60045
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: Data.csv|trial_data.csv|Veg_type.xlsx

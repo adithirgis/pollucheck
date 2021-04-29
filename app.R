@@ -68,7 +68,7 @@ ui <- fluidPage(
                                                         value = "Parameter"),
                                               tags$hr(),
                                               tags$hr(),
-                                              actionButton("boxt", "Vertical Bar Plot"),
+                                              actionButton("boxt", "Vertical bar plot"),
                                               tags$br(),
                                               tags$br(),
                                               textInput("box_mtt", label = "Edit title of plot", 
@@ -204,7 +204,7 @@ ui <- fluidPage(
                                                            "Remove PM2.5 and PM10 above",
                                                            value = 9999),
                                               tags$hr(),
-                                              radioButtons("avg_hour", "Output agregation",
+                                              radioButtons("avg_hour", "Output aggregation",
                                                            c("Hourly average" = "hour",
                                                              "Daily average" = "daily"), 
                                                            selected = "hour"),
@@ -380,12 +380,12 @@ server <- function(input, output, session) {
   #### using date and also making the first column as the column name
   make_df <- function(y, tseries_df) {
     df <- data.frame(y)
-    df <- df %>%
-      select(everything(), -c(new_set, set))
     if(!nrow(df))
     {
       df <- tseries_df
     } else {
+      df <- df %>%
+        select(everything(), -c(new_set, set))
       names(df) <- as.matrix(df[1, ])
       df <- df[-1, ]
       df[] <- lapply(df, function(x) type.convert(as.character(x)))
@@ -474,45 +474,18 @@ server <- function(input, output, session) {
       summarise_all(funs(mean), na.rm = TRUE) %>%
       dplyr::select(everything(), - date) %>%
       dplyr::select("date" = hour, everything())
-    if("pm25" %in% colnames(all))
+    names(all) <- toupper(names(all))
+    all <- all %>%
+      dplyr::select(everything(), "date" = DATE)
+    if("PM25" %in% colnames(all))
     {
       all <- all %>%
-        dplyr::select(date, everything(), "PM2.5" = pm25)
+        dplyr::select(date, everything(), "PM2.5" = PM25)
     }
-    if("pm10" %in% colnames(all))
-    {
-      all <- all %>%
-        dplyr::select(date, everything(), "PM10" = pm10)
-    }
-    if("nox" %in% colnames(all))
+    if("NOX" %in% colnames(all))
     {
       all <- all %>%
         dplyr::select(date, everything(), "NOx" = nox)
-    }
-    if("no2" %in% colnames(all))
-    {
-      all <- all %>%
-        dplyr::select(date, everything(), "NO2" = no2)
-    }
-    if("no" %in% colnames(all))
-    {
-      all <- all %>%
-        dplyr::select(date, everything(), "NO" = no)
-    }
-    if("co" %in% colnames(all))
-    {
-      all <- all %>%
-        dplyr::select(date, everything(), "CO" = co)
-    }
-    if("o3" %in% colnames(all))
-    {
-      all <- all %>%
-        dplyr::select(date, everything(), "O3" = o3)
-    }
-    if("so2" %in% colnames(all))
-    {
-      all <- all %>%
-        dplyr::select(date, everything(), "SO2" = so2)
     }
     return(list(all, date))
   }
@@ -950,9 +923,9 @@ server <- function(input, output, session) {
   output$help_trend <- renderText({
     paste("Trend Analysis can be used for daily data only!!",
       "For trend analysis using Mann-Kendall test we use mk.test (https://www.rdocumentation.org/packages/trend/versions/1.1.4/topics/mk.test).", 
-      "For imputing values in the discontinious data set we use forecast package (https://cran.r-project.org/web/packages/forecast/forecast.pdf)", 
-      "For continious wavelet transform we use biwavelet package (https://cran.r-project.org/web/packages/biwavelet/biwavelet.pdf)",
-      "In periodicy analysis, the contours covered by black lines represent the significant periodicity at 95% significant
+      "For imputing values in the discontinuous data set we use forecast package (https://cran.r-project.org/web/packages/forecast/forecast.pdf)", 
+      "For continuous wavelet transform we use biwavelet package (https://cran.r-project.org/web/packages/biwavelet/biwavelet.pdf)",
+      "In periodicity analysis, the contours covered by black lines represent the significant periodicity at 95% significant
 519 level.", sep = "\n")
   })
   output$kendal_test <- renderPrint({
