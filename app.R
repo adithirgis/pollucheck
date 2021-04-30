@@ -41,6 +41,15 @@ ui <- fluidPage(
                                                            selected = "hour3"),
                                               tags$hr(),
                                               tags$hr(),
+                                              actionButton("da", "Data availability plot"),
+                                              tags$br(),
+                                              tags$br(),
+                                              textInput("da_mt", label = "Edit title of plot", 
+                                                        value = "Title"),
+                                              textInput("da_y", label = "Edit Y axis label", 
+                                                        value = "Parameter"),
+                                              tags$hr(),
+                                              tags$hr(),
                                               actionButton("ts", "Time-series plot"),
                                               tags$br(),
                                               tags$br(),
@@ -308,6 +317,7 @@ ui <- fluidPage(
                               tabPanel(
                                 value = 3,
                                 title = "Summary Plots",
+                                plotOutput("plot16", width = 800),
                                 plotOutput("plot1", width = 800),
                                 plotOutput("plot3", width = 800),
                                 plotOutput("plot9", width = 800),
@@ -553,17 +563,14 @@ server <- function(input, output, session) {
       if(i == "NO") {
         data_list <- data_list %>%
           dplyr::select(- contains(c("NO2", "NOx")))
-        mean <- paste0(i, "_mean")
-        sd <- paste0(i, "_sd")
       } else if (i == "O") {
         data_list <- data_list %>%
           dplyr::select(- contains(c("Ozone")))
-        mean <- paste0(i, "_mean")
-        sd <- paste0(i, "_sd")
       } else {
-        mean <- paste0(i, "_mean")
-        sd <- paste0(i, "_sd")
+        data_list
       }
+      mean <- paste0(i, "_mean")
+      sd <- paste0(i, "_sd")
       x <- as.numeric(as.character(data_list[[i]]))
       x[!is.finite(x)] <- NA
       y <- grep("_mean", colnames(data_list))
@@ -589,7 +596,8 @@ server <- function(input, output, session) {
   
   #### Function to remove values which are incomplete in a day
   compl <- function(name, site1_join_f1, date, fi, per1) {
-    tseries_df <- data.frame(date)
+    tseries_df <- site1_join_f1 %>%
+      dplyr::select(date)
     for(i in names(name)){
       data_list <- site1_join_f1 %>% 
         dplyr::select(date, day, starts_with(i))
@@ -598,9 +606,9 @@ server <- function(input, output, session) {
           dplyr::select(-contains(c("NO2", "NOx")))
       } else if(i == "O") {
         data_list <- data_list %>%
-          dplyr::select(-contains(c("Ozone")))
+          dplyr::select(-contains(c("Ozone", "O3")))
       } else {
-        NULL
+        data_list
       }
       data_list <- data_list %>% 
         group_by(day) %>%
@@ -615,9 +623,9 @@ server <- function(input, output, session) {
       } else if(fi == "60 min") {
         time_avg = 24
       }
-      data_list <- subset(data_list, no_hour >= ((per1 / 100) * time_avg))
-      data_list[ , c('day', 'no_hour')] <- list(NULL)
-      tseries_df <- left_join(tseries_df, data_list, by = "date")
+      data_list[[i]] <- ifelse(data_list$no_hour >= ((per1 / 100) * time_avg), data_list[[i]], NA)
+      data_list[ , c('date', 'day', 'no_hour')] <- list(NULL)
+      tseries_df <- bind_cols(tseries_df, data_list)
     }
     site1_join_f1 <- tseries_df %>%
       dplyr::mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) 
@@ -779,6 +787,9 @@ server <- function(input, output, session) {
         labs(y = input$comp_y, title = input$comp_mt,
              x = "") + theme2() + geom_line(size = 0.6) + theme(legend.title = element_blank())
     }
+  })
+  data_da <- eventReactive(input$da, {
+    data <- mess(input$avg_hour3, "daily3")
   })
   data_plot <- eventReactive(input$ts, {
     data <- mess(input$avg_hour3, "daily3")
@@ -1183,6 +1194,24 @@ server <- function(input, output, session) {
                                nudge_x = 0, nudge_y = 3, size = 6) + theme2() +
       theme(axis.text.x = element_blank(), 
             plot.title = element_text(size = 22, colour = "black")) 
+  })
+  output$plot16 <- renderPlot({
+    if (is.null(input$file1)) { NULL }
+    else {
+      data <- data_da()
+      data_avail <- data %>%
+        dplyr::select(day, "y" = input$palleInp) %>%
+        group_by(day) %>%
+        summarise(mean = mean(y, na.rm = TRUE))
+      no_na_df <- data_avail %>%
+        mutate(Exp = "Data Availability")
+      no_na_df <- no_na_df[complete.cases(no_na_df), ]
+      ggplot(no_na_df, aes(x = day, y = Exp)) + 
+        geom_errorbarh(aes(xmax = day, xmin = day), size = 0.25, colour = "steelblue") + 
+        labs(y = input$da_y, title = input$da_mt, x = "") + 
+        scale_x_date(date_breaks = "60 days", date_labels = "%b %d") +
+        theme2() + theme(axis.text.y = element_blank(), axis.title.y = element_text(angle = 90))
+    }
   })
   
   # acf(z, lag.max = ((nrow(TimeSerie))/2), na.action = na.pass)
