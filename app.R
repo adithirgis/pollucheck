@@ -32,15 +32,6 @@ ui <- fluidPage(
                 sidebarPanel(width = 3,
                              conditionalPanel(condition = "input.tabs1 == 3",
                                               tags$hr(),
-                                              selectInput("palleInp", "Select parameter",
-                                                          multiple = FALSE, 
-                                                          "Select"),
-                                              radioButtons("avg_hour3", "Plotting data",
-                                                           c("Hourly average" = "hour3",
-                                                             "Daily average" = "daily3"), 
-                                                           selected = "hour3"),
-                                              tags$hr(),
-                                              tags$hr(),
                                               actionButton("da", "Data availability plot"),
                                               tags$br(),
                                               tags$br(),
@@ -48,6 +39,15 @@ ui <- fluidPage(
                                                         value = "Title"),
                                               textInput("da_y", label = "Edit Y axis label", 
                                                         value = "Parameter"),
+                                              tags$hr(),
+                                              tags$hr(),
+                                              selectInput("palleInp", "Select parameter",
+                                                          multiple = FALSE, 
+                                                          "Select"),
+                                              radioButtons("avg_hour3", "Plotting data",
+                                                           c("Hourly average" = "hour3",
+                                                             "Daily average" = "daily3"), 
+                                                           selected = "hour3"),
                                               tags$hr(),
                                               tags$hr(),
                                               actionButton("ts", "Time-series plot"),
@@ -1200,17 +1200,17 @@ server <- function(input, output, session) {
     else {
       data <- data_da()
       data_avail <- data %>%
-        dplyr::select(day, "y" = input$palleInp) %>%
+        dplyr::select(day, everything(), - date) %>%
         group_by(day) %>%
-        summarise(mean = mean(y, na.rm = TRUE))
-      no_na_df <- data_avail %>%
-        mutate(Exp = "Data Availability")
+        summarise_all(funs(mean), na.rm = TRUE) %>%
+        pivot_longer(-day, names_to = "Parameter", values_to = "Value")
+      no_na_df <- data_avail 
       no_na_df <- no_na_df[complete.cases(no_na_df), ]
-      ggplot(no_na_df, aes(x = day, y = Exp)) + 
-        geom_errorbarh(aes(xmax = day, xmin = day), size = 0.25, colour = "steelblue") + 
+      ggplot(no_na_df, aes(x = day, y = Parameter, color = Parameter)) + 
+        geom_errorbarh(aes(xmax = day, xmin = day), size = 0.25) + 
         labs(y = input$da_y, title = input$da_mt, x = "") + 
         scale_x_date(date_breaks = "60 days", date_labels = "%b %d") +
-        theme2() + theme(axis.text.y = element_blank(), axis.title.y = element_text(angle = 90))
+        theme2() 
     }
   })
   
