@@ -119,6 +119,11 @@ How to Download Data from the CPCB website?
 
 ##### Summary Plots tab generates time series, box plot, and diurnal plot of the selected parameter.
 
+-   Data availability plot of all the pollutants after the cleaning
+    process can be generated.
+
+    ![](WWW/DA_plot.JPG)
+
 -   The parameter to plot and the data aggregation options are
     available.
 
@@ -130,7 +135,7 @@ How to Download Data from the CPCB website?
 
     ![](WWW/image_7.JPG)
 
-    ![](WWW/image_8.JPG)
+    <img src="WWW/image_8.JPG" style="width:100.0%" />
 
 -   Month and year box plot
 
@@ -151,11 +156,11 @@ How to Download Data from the CPCB website?
 
     ![](WWW/image_12.JPG)
 
-    ![](WWW/image_13.JPG)
+    <img src="WWW/image_13.JPG" style="width:100.0%" />
 
 ##### Statistics Plots tab tests for normality, pattern and generates density plot, qq plot of the selected parameter.
 
--   Using a selected parameter and aggregation methos, normality test
+-   Using a selected parameter and aggregation methods, normality test
     using the Anderson Darling test (for N &gt; 500) or Shapiro-Wilk
     test can be conducted.
 
@@ -206,9 +211,9 @@ How to Download Data from the CPCB website?
     comparison and generate time series and a scatter plot between
     parameters selected from different sites.
 
-    <img src="WWW/image_24.JPG" style="width:100.0%" />
+    ![](WWW/image_24.JPG)
 
-    <img src="WWW/image_25.JPG" style="width:100.0%" />
+    ![](WWW/image_25.JPG)
 
     <img src="WWW/image_26.JPG" style="width:100.0%" />
 
@@ -216,7 +221,7 @@ How to Download Data from the CPCB website?
 
 -   Calendar plot
 
-    <img src="WWW/image_27.JPG" style="width:100.0%" />
+    ![](WWW/image_27.JPG)
 
     <img src="WWW/image_28.JPG" style="width:100.0%" />
 

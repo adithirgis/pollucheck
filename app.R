@@ -35,8 +35,6 @@ ui <- fluidPage(
                                               actionButton("da", "Data availability plot"),
                                               tags$br(),
                                               tags$br(),
-                                              textInput("da_mt", label = "Edit title of plot", 
-                                                        value = "Title"),
                                               textInput("da_y", label = "Edit Y axis label", 
                                                         value = "Parameter"),
                                               tags$hr(),
@@ -1208,9 +1206,9 @@ server <- function(input, output, session) {
       no_na_df <- no_na_df[complete.cases(no_na_df), ]
       ggplot(no_na_df, aes(x = day, y = Parameter, color = Parameter)) + 
         geom_errorbarh(aes(xmax = day, xmin = day), size = 0.25) + 
-        labs(y = input$da_y, title = input$da_mt, x = "") + 
+        labs(y = input$da_y, title = "Data availability plot", x = "") + 
         scale_x_date(date_breaks = "60 days", date_labels = "%b %d") +
-        theme2() 
+        theme2() + theme(legend.position = "none")
     }
   })
   

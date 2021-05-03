@@ -96,6 +96,10 @@ How to Download Data from the CPCB website?
 
 ##### Summary Plots tab generates time series, box plot, and diurnal plot of the selected parameter.
 
+-   Data availability plot of all the pollutants after the cleaning process can be generated.
+
+    ![](WWW/DA_plot.JPG)
+
 -   The parameter to plot and the data aggregation options are available.
 
 ![](WWW/image_6.JPG)

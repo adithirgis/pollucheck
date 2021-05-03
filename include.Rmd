@@ -95,6 +95,10 @@ How to Download Data from the CPCB website?
 
 ##### Summary Plots tab generates time series, box plot, and diurnal plot of the selected parameter.
 
+-   Data availability plot of all the pollutants after the cleaning process can be generated.
+
+    ![](WWW/DA_plot.JPG)
+
 -   The parameter to plot and the data aggregation options are available.
 
     ![](WWW/image_6.JPG)
@@ -105,7 +109,7 @@ How to Download Data from the CPCB website?
 
     ![](WWW/image_7.JPG)
 
-    ![](WWW/image_8.JPG)
+    ![](WWW/image_8.JPG){width=100%}
 
 -   Month and year box plot
 
@@ -123,11 +127,11 @@ How to Download Data from the CPCB website?
 
     ![](WWW/image_12.JPG)
 
-    ![](WWW/image_13.JPG)
+    ![](WWW/image_13.JPG){width=100%}
 
 ##### Statistics Plots tab tests for normality, pattern and generates density plot, qq plot of the selected parameter.
 
--   Using a selected parameter and aggregation methos, normality test using the Anderson Darling test (for N \> 500) or Shapiro-Wilk test can be conducted.
+-   Using a selected parameter and aggregation methods, normality test using the Anderson Darling test (for N > 500) or Shapiro-Wilk test can be conducted.
 
 -   Density plot
 
@@ -144,7 +148,7 @@ How to Download Data from the CPCB website?
 -   Trend Analysis is also available for daily values. For trend analysis using Mann-Kendall test we use [mk.test](https://www.rdocumentation.org/packages/trend/versions/1.1.4/topics/mk.test). For imputing values in the discontinuous data set we use [forecast package](https://cran.r-project.org/web/packages/forecast/forecast.pdf). For continuous wavelet transform we use [biwavelet package](https://cran.r-project.org/web/packages/biwavelet/biwavelet.pdf). In periodicity analysis, the contours covered by black lines represent the significant periodicity at 95% significant 519 level.
 
     ![](WWW/image_19.JPG)
-    
+
     ![](WWW/image_18.JPG){width=100%}
 
 ##### Linear Regression tab does univariate and multivariate linear regression for selected parameter(s).
@@ -165,18 +169,18 @@ How to Download Data from the CPCB website?
 
 -   The Compare tab allows user to upload data from another site for comparison and generate time series and a scatter plot between parameters selected from different sites.
 
-    ![](WWW/image_24.JPG){width=100%}
+    ![](WWW/image_24.JPG)
 
-    ![](WWW/image_25.JPG){width=100%}
-    
+    ![](WWW/image_25.JPG)
+
     ![](WWW/image_26.JPG){width=100%}
 
 ##### `openair` tab allows users use the package's widely used functions for the selected parameter.
 
 -   Calendar plot
 
-    ![](WWW/image_27.JPG){width=100%}
-    
+    ![](WWW/image_27.JPG)
+
     ![](WWW/image_28.JPG){width=100%}
 
 -   Time variation plot
