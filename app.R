@@ -33,10 +33,6 @@ ui <- fluidPage(
                              conditionalPanel(condition = "input.tabs1 == 3",
                                               tags$hr(),
                                               actionButton("da", "Data availability plot"),
-                                              tags$br(),
-                                              tags$br(),
-                                              textInput("da_y", label = "Edit Y axis label", 
-                                                        value = "Parameter"),
                                               tags$hr(),
                                               tags$hr(),
                                               selectInput("palleInp", "Select parameter",
@@ -152,12 +148,6 @@ ui <- fluidPage(
                                               tags$hr(),
                                               selectInput("palleInp1", "Select parameter",
                                                           multiple = FALSE, "Select"),
-                                              tags$br(),
-                                              radioButtons("avg_hour4", "Plotting data",
-                                                           c("Hourly average" = "hour4",
-                                                             "Daily average" = "daily4"), 
-                                                           selected = "hour4"),
-                                              tags$hr(),
                                               tags$hr(),
                                               actionButton("cp", "Calendar Plot"),
                                               tags$br(),
@@ -196,7 +186,7 @@ ui <- fluidPage(
                                               tags$hr(),
                                               checkboxInput('remove_9', 'Remove negative values'),
                                               checkboxInput('repeated', 'Remove duplicate consecutive values'),
-                                              checkboxInput('exclude', 'Specify a multiple (X) to remove outliers based on Mean and SD (Mean + X * SD)'),
+                                              checkboxInput('exclude', 'Specify a multiple (x) to remove outliers based on Mean and SD (Mean + x * SD)'),
                                               checkboxInput('log_op', 'Use log values'),
                                               conditionalPanel(
                                                 condition = "input.exclude == true",
@@ -445,6 +435,13 @@ server <- function(input, output, session) {
     Beny <- make_df(dt_s$`2`, tseries_df)
     Bent <- make_df(dt_s$`3`, tseries_df)
     all <- list(site1_join, Ben, Beny, Bent) %>% reduce(left_join, by = "date")
+    all <- all %>%
+      select(date, everything())
+    col_interest <- 2:ncol(all)
+    all[ , col_interest] <- sapply(X = all[ , col_interest], 
+                                             FUN = function(x) as.numeric(as.character(x)))
+    all[ , col_interest] <- sapply(X = all[ , col_interest], 
+                                             FUN = function(x) ifelse(x == -999, NA, x))
     return(list(all, date))
   }
   
@@ -460,6 +457,13 @@ server <- function(input, output, session) {
     date <- date_ts(trial, "60 min")
     tseries_df <- data.frame(date)
     all <- left_join(tseries_df, trial, by = "date")
+    all <- all %>%
+      select(date, everything())
+    col_interest <- 2:ncol(all)
+    all[ , col_interest] <- sapply(X = all[ , col_interest], 
+                                   FUN = function(x) as.numeric(as.character(x)))
+    all[ , col_interest] <- sapply(X = all[ , col_interest], 
+                                   FUN = function(x) ifelse(x == -999, NA, x))
     return(list(all, date))
   }
   
@@ -1168,7 +1172,7 @@ server <- function(input, output, session) {
     else {
       ## Continuous wavelet transform
       cwt_data <- wt(data)
-      plot(cwt_data, xlab = "Time", main = "Periodicity Analysis", 
+      plot(cwt_data, xlab = "Time", main = "Periodicity Analysis (wavelet)", 
            cex.lab = 1.5, cex.axis = 1.5, cex.main = 1.5, ncol = 64,
            plot.cb = TRUE)
     }
@@ -1206,8 +1210,8 @@ server <- function(input, output, session) {
       no_na_df <- no_na_df[complete.cases(no_na_df), ]
       ggplot(no_na_df, aes(x = day, y = Parameter, color = Parameter)) + 
         geom_errorbarh(aes(xmax = day, xmin = day), size = 0.25) + 
-        labs(y = input$da_y, title = "Data availability plot", x = "") + 
-        scale_x_date(date_breaks = "60 days", date_labels = "%b %d") +
+        labs(y = "", title = "Data availability plot", x = "") + 
+        scale_x_date(date_breaks = "60 days", date_labels = "%b-%y") +
         theme2() + theme(legend.position = "none")
     }
   })
