@@ -283,7 +283,8 @@ ui <- fluidPage(
                                               tags$hr(),
                                               tags$hr(),
                                               conditionalPanel(condition = 'input.avg_hour2 == "daily2"',
-                                                               actionButton("mk", "Trend Analysis")),
+                                                               actionButton("mk", "Trend Analysis"),
+                                                               actionButton("ta", "Periodicity Analysis")),
                                               tags$hr())),
                 mainPanel(
                   tags$a(img(src = 'logo.png', align = "right", height = 70,
@@ -313,7 +314,7 @@ ui <- fluidPage(
                                 plotOutput("plot2", width = 800)),
                               tabPanel(
                                 value = 5,
-                                title = "Statistics Plots",
+                                title = "Statistical Plots",
                                 verbatimTextOutput("normality_test"),
                                 plotOutput("plot6", width = 800),
                                 plotOutput("plot7", width = 800),
@@ -513,7 +514,7 @@ server <- function(input, output, session) {
   }
   
   #### Function to remove repeated values
-  rep <- function(site1_join_f1) {
+  repeat_ed <- function(site1_join_f1) {
     col_interest <- 3:ncol(site1_join_f1)
     site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[, col_interest], 
                                              FUN = function(j)
@@ -660,7 +661,7 @@ server <- function(input, output, session) {
       } else { site1_join_f1 }  
       
       if(repeated) {
-        site1_join_f1 <- rep(site1_join_f1)
+        site1_join_f1 <- repeat_ed(site1_join_f1)
       } else { site1_join_f1 }  
       
       name <- site1_join_f1 %>%
@@ -778,7 +779,15 @@ server <- function(input, output, session) {
       select(date, "Site 2" = input$Para1)
     all <- full_join(data, data1, by = "date")
   })
-  
+  trend <- function(data, button, avg) {
+    date_df <- data.frame(date = date_ts(data, "60 min"))
+    data <- data %>%
+      distinct(date, .keep_all = TRUE) %>%
+      right_join(date_df, by = "date")
+    if(button == avg) {
+      data <- openair::timeAverage(data, avg.time = "day")
+    } else { data }
+  }
   output$plot12 <- renderPlot({
     if (is.null(input$file1) | is.null(input$file2)) { NULL }
     else {
@@ -809,10 +818,10 @@ server <- function(input, output, session) {
     data <- mess(input$avg_hour3, "daily3")
   })
   data_tv <- eventReactive(input$tv, {
-    data <- mess(input$avg_hour4, "daily4")
+    data <- CPCB_f()
   })
   data_cp <- eventReactive(input$cp, {
-    data <- mess(input$avg_hour4, "daily4")
+    data <- CPCB_f()
     
   })
   data_qq <- eventReactive(input$qq, {
@@ -823,13 +832,11 @@ server <- function(input, output, session) {
   })
   data_mk <- eventReactive(input$mk, {
     data <- CPCB_f()
-    date_df <- data.frame(date = date_ts(data, "60 min"))
-    data <- data %>%
-      distinct(date, .keep_all = TRUE) %>%
-      right_join(date_df, by = "date")
-    if(input$avg_hour2 == "daily2") {
-      data <- openair::timeAverage(data, avg.time = "day")
-    } else { data }
+    data <- trend(data, input$avg_hour2, "daily2")
+  })
+  data_ta <- eventReactive(input$ta, {
+    data <- CPCB_f()
+    data <- trend(data, input$avg_hour2, "daily2")
   })
   data_reg <- eventReactive(input$reg, {
     data <- mess(input$avg_hour1, "daily1")
@@ -910,7 +917,11 @@ server <- function(input, output, session) {
     data <- data_freq()
     y <- as.numeric(as.character(data[[input$palleInp2]]))
     if(input$normality == "sh") {
-      x <- shapiro.test(y)
+      if(length(y) <= 5000) {
+        x <- shapiro.test(y)
+      } else {
+        x <- "Sample size is greater than 500, so Shapiro-Wilk test will not be reliable, please use Anderson-Darling test."
+      }
     } else {
       x <- ad.test(y)
     }
@@ -920,7 +931,6 @@ server <- function(input, output, session) {
     data <- data_mk()
     if(input$avg_hour2 == "daily2") {
       x <- zoo(data[[input$palleInp2]], data$date)
-      x <- as.ts(x)
       x <- na.interp(x)
     } else { 
       NULL
@@ -930,6 +940,7 @@ server <- function(input, output, session) {
   output$normality_test <- renderPrint({
     if (is.null(input$file1)) { "No file" }
     else {
+      
       normalilty_t()
     }
   })
@@ -945,9 +956,13 @@ server <- function(input, output, session) {
     # validate(need(try(all(is.na(y)) == TRUE), "Sorry no data!"))
     if (is.null(input$file1)) { "No file" }
     else {
+      if(input$avg_hour2 != "daily2") {
+        "Trend analysis are not prominent with hourly values."
+      } else {
       y <- kenda()
       c <- trend::mk.test(y)
       c
+      }
     }
   })
   output$plot1 <- renderPlot({
@@ -1164,12 +1179,17 @@ server <- function(input, output, session) {
     }
   })
   output$plot13 <- renderPlot({
-    y <- data_mk()
-    y_date <- julian(y$date, y$date[1])
-    x <- kenda()
-    data <- cbind(as.numeric(y_date), as.numeric(x))
     if (is.null(input$file1)) { NULL }
     else {
+      data <- data_ta()
+      y_date <- julian(data$date, data$date[1])
+      if(input$avg_hour2 == "daily2") {
+        x <- zoo(data[[input$palleInp2]], data$date)
+        x <- na.interp(x)
+      } else { 
+        NULL
+      }
+      data <- cbind(as.numeric(y_date), as.numeric(x))
       ## Continuous wavelet transform
       cwt_data <- wt(data)
       plot(cwt_data, xlab = "Time", main = "Periodicity Analysis (wavelet)", 
@@ -1324,4 +1344,19 @@ shinyApp(ui, server)
 
 
 # runApp(display.mode = "showcase")
+
+# fft(data_op$PM10)
+# 
+# x <- zoo(data_op$PM10, data_op$date)
+# x <- as.ts(x)
+# x <- na.interp(x)
+# y_date <- julian(data_op$date, data_op$date[1])
+# data <- cbind(as.numeric(y_date), as.numeric(x))
+# ## Continuous wavelet transform
+# cwt_data <- spectrum(data, log = "no")
+# delta <- 1/365
+# specx <- cwt_data$freq / delta
+# specy <- 2 * cwt_data$spec[,2]
+# plot(specx, specy, xlab = "Period (days)", ylab = "Spectral Density", type = "l")
+# write.csv(data_op, "data.csv")
 

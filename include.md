@@ -158,7 +158,7 @@ How to Download Data from the CPCB website?
 
     <img src="WWW/image_13.JPG" style="width:100.0%" />
 
-##### Statistics Plots tab tests for normality, pattern and generates density plot, qq plot of the selected parameter.
+##### Statistical Plots tab tests for normality, pattern and generates density plot, qq plot of the selected parameter.
 
 -   Using a selected parameter and aggregation methods, normality test
     using the Anderson Darling test (for N &gt; 500) or Shapiro-Wilk
