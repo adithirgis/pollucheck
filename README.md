@@ -188,4 +188,3 @@ How to Download Data from the CPCB website?
 
     ![](WWW/image_29.JPG)
 
-### Explore yourself!
