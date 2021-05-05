@@ -882,7 +882,10 @@ server <- function(input, output, session) {
   })
   
   output$download_diurnal <- downloadHandler(
-    filename <- function() {"diurnal_data.csv"},
+    filename <- function() {
+      name_file <- paste0(name_file(), "_diurnal")
+      paste(name_file, "csv", sep = ".")
+    },
     content <- function(fname) {
       data <- data_diurnal()
       write.csv(data, fname)
@@ -904,6 +907,11 @@ server <- function(input, output, session) {
     updateSelectInput(session, "InDepVar1", choices = names(data_joined))
   })
   
+  name_file <- reactive({
+    file_n <- gsub(".xlsx", "", input$file1)
+    file_n <- gsub(".csv", "", file_n)
+  })
+  
   output$table1 <- DT::renderDataTable({
     data_joined <- data_joined() 
     cols <- names(data_joined)[3:ncol(data_joined)]
@@ -919,10 +927,13 @@ server <- function(input, output, session) {
     } else { datatable(data_joined, options = list("pageLength" = 15)) %>% formatDate(1, "toLocaleString") }
   })
   output$download <- downloadHandler(
-    filename <- function() {"Data.csv"},
-    content <- function(fname) {
+    filename = function(){
+      name_file <- paste0(name_file(), "_average")
+      paste(name_file, "csv", sep = ".")
+    },
+    content = function(file) {
       data_joined <- data_joined()
-      write.csv(data_joined, fname)
+      write.csv(data_joined, file)
     })
   
   theme2 <- reactive({
@@ -1351,7 +1362,10 @@ server <- function(input, output, session) {
   })
   
   output$download_stats <- downloadHandler(
-    filename <- function() {"stats_data.csv"},
+    filename <- function() {
+      name_file <- paste0(name_file(), "_stats")
+      paste(name_file, "csv", sep = ".")
+      },
     content <- function(fname) {
       data_summary <- data_summary()
       write.csv(data_summary, fname)
