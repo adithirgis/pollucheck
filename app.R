@@ -171,6 +171,16 @@ ui <- fluidPage(
                                                              HTML("<a href = 'https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing' target = '_blank'>Pollution Control Board</a>")),
                                                            choiceValues = list("oaq", "an", "cpcb"),
                                                            selected = "cpcb"),
+                                              tags$br(),
+                                              test <- a("Input Timezone* (link to supported
+                                             timezones)",
+                                                        href = "https://en.wikipedia.org/wiki/List_of_tz_database_time_zones",
+                                                        style = "font-size:14px; ",
+                                                        target = "_blank"),
+                                              selectInput("timezone",
+                                                          label = "",
+                                                          choices = OlsonNames(),
+                                                          selected = "Asia/Kolkata"),
                                               tags$hr(),
                                               conditionalPanel(condition = "input.type == 'cpcb'",
                                                                radioButtons("file", "Input data time-resolution",
@@ -218,6 +228,16 @@ ui <- fluidPage(
                                                              HTML("<a href = 'https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing' target = '_blank'>Pollution Control Board</a>")),
                                                            choiceValues = list("oaq", "an", "cpcb"),
                                                            selected = "cpcb"),
+                                              tags$br(),
+                                              test <- a("Input Timezone* (link to supported
+                                             timezones)",
+                                                        href = "https://en.wikipedia.org/wiki/List_of_tz_database_time_zones",
+                                                        style = "font-size:14px; ",
+                                                        target = "_blank"),
+                                              selectInput("timezone1",
+                                                          label = "",
+                                                          choices = OlsonNames(),
+                                                          selected = "Asia/Kolkata"),
                                               tags$hr(),
                                               conditionalPanel(condition = "input.type == 'cpcb'",
                                                                radioButtons("file12", "Input data time resolution",
@@ -284,6 +304,8 @@ ui <- fluidPage(
                                               tags$hr(),
                                               conditionalPanel(condition = 'input.avg_hour2 == "daily2"',
                                                                actionButton("mk", "Trend Analysis"),
+                                                               tags$br(),
+                                                               tags$br(),
                                                                actionButton("ta", "Periodicity Analysis")),
                                               tags$hr())),
                 mainPanel(
@@ -318,7 +340,6 @@ ui <- fluidPage(
                                 verbatimTextOutput("normality_test"),
                                 plotOutput("plot6", width = 800),
                                 plotOutput("plot7", width = 800),
-                                verbatimTextOutput("help_trend"), 
                                 verbatimTextOutput("kendal_test"),
                                 plotOutput("plot13", width = 800)),
                               tabPanel(
@@ -352,6 +373,10 @@ server <- function(input, output, session) {
     if (input$exclude) shinyjs::enable(id = "log_op")  
     else shinyjs::disable(id = "log_op") 
   })
+  observeEvent(input$type, {
+    if (input$type == "cpcb") shinyjs::disable(id = "timezone")  
+    else shinyjs::enable(id = "timezone") 
+  })
   
   #### Function to remove outliers
   LLD <- function(x, y, z, ey) {
@@ -362,13 +387,13 @@ server <- function(input, output, session) {
   date_ts <- function(file, time_period) {
     ye <- format(file[1, "date"], format = "%Y-%m")
     x1 <- as.POSIXct(paste0(ye, "-01 00:00:00"), 
-                     format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
+                     format = '%Y-%m-%d %H:%M:%S', tz = input$timezone)
     ye <- format(tail(file$date, n = 3)[1], format = "%Y-%m-%d")
     x2 <- as.POSIXct(paste0(ye, " 23:00:00"), 
-                     format = '%Y-%m-%d %H:%M:%S', tz = "Asia/Kolkata")
+                     format = '%Y-%m-%d %H:%M:%S', tz = input$timezone)
     date <- seq(
-      from = as.POSIXct(x1, tz = "Asia/Kolkata"),
-      to = as.POSIXct(x2, tz = "Asia/Kolkata"),
+      from = as.POSIXct(x1, tz = input$timezone),
+      to = as.POSIXct(x2, tz = input$timezone),
       by = time_period
     ) 
     date
@@ -392,7 +417,7 @@ server <- function(input, output, session) {
       df <- df %>%
         dplyr::select("date" = `To Date`, everything()) %>%
         dplyr::mutate(date = as.POSIXct(date, format = '%d-%m-%Y %H:%M:%S', 
-                                        tz = "Asia/Kolkata"))
+                                        tz = input$timezone))
     }
   }
   
@@ -427,7 +452,7 @@ server <- function(input, output, session) {
     trial[ , c('From Date', 'To Date')] <- list(NULL)
     dt_s <- split(trial, trial$set)
     PM <- data.frame(dt_s$`0`) %>%
-      dplyr::mutate(date = as.POSIXct(date, format = '%d-%m-%Y %H:%M:%S', tz = "Asia/Kolkata"))
+      dplyr::mutate(date = as.POSIXct(date, format = '%d-%m-%Y %H:%M:%S', tz = input$timezone))
     date <- date_ts(PM, sfd)
     tseries_df <- data.frame(date)
     site1_join <- left_join(tseries_df, PM, by = "date") %>%
@@ -452,7 +477,7 @@ server <- function(input, output, session) {
                       row.names = NULL)
     trial <- trial %>%
       dplyr::select("date" = Date..LT., "PM2.5" = Raw.Conc., "Valid" = QC.Name) %>%
-      dplyr::mutate(date  = as.POSIXct(date, format = '%Y-%m-%d %I:%M %p', tz = "Asia/Kolkata")) %>%
+      dplyr::mutate(date  = as.POSIXct(date, format = '%Y-%m-%d %I:%M %p', tz = input$timezone)) %>%
       dplyr::filter(Valid == "Valid")
     trial$Valid <- NULL
     date <- date_ts(trial, "60 min")
@@ -474,7 +499,7 @@ server <- function(input, output, session) {
                       row.names = NULL)
     trial <- trial %>%
       dplyr::select("date" = local, "parameter" = parameter, "value" = value) %>%
-      dplyr::mutate(date  = as.POSIXct(date, format = '%Y-%m-%dT%H:%M:%S+05:30', tz = "Asia/Kolkata"))
+      dplyr::mutate(date  = as.POSIXct(date, format = '%Y-%m-%dT%H:%M:%S+05:30', tz = input$timezone))
     trial <- trial[order(trial$date), ]
     date <- date_ts(trial, "1 min")
     tseries_df <- data.frame(date)
@@ -500,6 +525,8 @@ server <- function(input, output, session) {
       all <- all %>%
         dplyr::select(date, everything(), "NOx" = nox)
     }
+    date <- all %>%
+      select(date)
     return(list(all, date))
   }
   
@@ -593,7 +620,7 @@ server <- function(input, output, session) {
       dplyr::select(date, everything(), -contains(c("_sd", "_mean")))
     tseries_df <- data.frame(date)
     site1_join_f1 <- left_join(tseries_df, site1_join_f1, by = "date") %>%
-      dplyr::mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) 
+      dplyr::mutate(day = as.Date(date, format = '%Y-%m-%d', tz = input$timezone)) 
     site1_join_f1
   }
   
@@ -631,7 +658,7 @@ server <- function(input, output, session) {
       tseries_df <- bind_cols(tseries_df, data_list)
     }
     site1_join_f1 <- tseries_df %>%
-      dplyr::mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) 
+      dplyr::mutate(day = as.Date(date, format = '%Y-%m-%d', tz = input$timezone)) 
   }
   
   #### Functions to be applied on the data set in a sequence
@@ -654,7 +681,7 @@ server <- function(input, output, session) {
         date <- data.frame(date)
       }
       site1_join_f1 <- all %>%
-        dplyr::mutate(day = as.Date(date, format = '%Y-%m-%d', tz = "Asia/Kolkata")) %>%
+        dplyr::mutate(day = as.Date(date, format = '%Y-%m-%d', tz = input$timezone)) %>%
         dplyr::select(date, day, everything())
       if(remove_9) {
         site1_join_f1 <- neg(site1_join_f1)
@@ -886,7 +913,7 @@ server <- function(input, output, session) {
     data_joined[,(cols) := round(.SD, 2), .SDcols = cols]
     if(input$avg_hour == "daily") {
       data_joined <- data_joined %>%
-        dplyr::mutate(date = as.Date(date, tz = "Asia/Kolkata")) %>%
+        dplyr::mutate(date = as.Date(date, tz = input$timezone)) %>%
         dplyr::select(date, everything(), - day)
       datatable(data_joined, options = list("pageLength" = 15)) %>% formatDate(1, "toLocaleDateString")
     } else { datatable(data_joined, options = list("pageLength" = 15)) %>% formatDate(1, "toLocaleString") }
@@ -944,14 +971,6 @@ server <- function(input, output, session) {
       normalilty_t()
     }
   })
-  output$help_trend <- renderText({
-    paste("Trend Analysis can be used for daily data only!!",
-      "For trend analysis using Mann-Kendall test we use mk.test (https://www.rdocumentation.org/packages/trend/versions/1.1.4/topics/mk.test).", 
-      "For imputing values in the discontinuous data set we use forecast package (https://cran.r-project.org/web/packages/forecast/forecast.pdf)", 
-      "For continuous wavelet transform we use biwavelet package (https://cran.r-project.org/web/packages/biwavelet/biwavelet.pdf)",
-      "In periodicity analysis, the contours covered by black lines represent the significant periodicity at 95% significant
-519 level.", sep = "\n")
-  })
   output$kendal_test <- renderPrint({
     # validate(need(try(all(is.na(y)) == TRUE), "Sorry no data!"))
     if (is.null(input$file1)) { "No file" }
@@ -995,7 +1014,7 @@ server <- function(input, output, session) {
         ggplot(data, aes(hour, mean)) + geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), 
                                                       color = "seagreen") + 
           scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
-          labs(y = input$diurnal_y, x = "hour of the day", title = input$diurnal_mt) + 
+          labs(y = input$diurnal_y, x = "Hour of the day (LT)'", title = input$diurnal_mt) + 
           theme2() + geom_line(size = 0.6, color = "seagreen")
       } else if (input$diur == "mediq" && input$diurn == "all") {
         data <- data %>%
@@ -1005,7 +1024,7 @@ server <- function(input, output, session) {
         ggplot(data, aes(hour, median)) + geom_errorbar(aes(ymin = p25, ymax = p75), 
                                                         color = "seagreen") + 
           scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
-          labs(y = input$diurnal_y, x = "hour of the day", title = input$diurnal_mt) + 
+          labs(y = input$diurnal_y, x = "Hour of the day (LT)'", title = input$diurnal_mt) + 
           theme2() + geom_line(size = 0.6, color = "seagreen")
       } else if (input$diur == "mediq" && input$diurn == "mon") {
         data <- data %>%
@@ -1211,7 +1230,7 @@ server <- function(input, output, session) {
       geom_hline(yintercept = 100, colour = "black") +
       geom_hline(yintercept = 100, colour = "black") +
       geom_hline(yintercept = 5, colour = "black") +
-      labs(y = "Major Pollutants", title = expression(paste("National Ambient Air Quality Annual Standards in India" , " (", mu, "g", ~m^{-3}, ")")),
+      labs(y = "Major Pollutants", title = expression(paste("National Ambient Air Quality Annual Standards in India" , " (", "ug", ~m^{-3}, ")")),
            x = "") + geom_text(aes(label = paste(pollutant, "=", levels)), 
                                nudge_x = 0, nudge_y = 3, size = 6) + theme2() +
       theme(axis.text.x = element_blank(), 
