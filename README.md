@@ -1,4 +1,4 @@
-# Open Source Air Quality App
+# Open Source Air Quality App!
 
 PolluCheck helps exploring the open source Indian air quality data.
 
