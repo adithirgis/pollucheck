@@ -15,6 +15,7 @@ library(nortest)
 library(zoo)
 
 
+
 ui <- fluidPage(
   shinyjs::useShinyjs(),
   theme = bslib::bs_theme(bootswatch = "pulse"), 
@@ -258,7 +259,10 @@ ui <- fluidPage(
                                               selectInput("Para1", 
                                                           "Parameter to plot in comparision data", 
                                                           multiple = FALSE, "Select"),
-                                              actionButton("plot_values", "Plot all"),
+                                              actionButton("plot_values", "Plot time series"),
+                                              tags$br(),
+                                              tags$br(),
+                                              actionButton("plot_val", "Scatter plot"),
                                               tags$br(),
                                               tags$br(),
                                               textInput("comp_mt", label = "Edit title of time-series plot", 
@@ -360,7 +364,7 @@ ui <- fluidPage(
                                 plotOutput("plot5", height = 600),
                                 plotOutput("plot4", height = 600)),
                               tabPanel(
-                                title = "Help",
+                                title = "FAQ's",
                                 includeMarkdown("include.md"),
                                 plotOutput("plot14", height = 500)))
                 )))
@@ -569,10 +573,10 @@ server <- function(input, output, session) {
                                  as.numeric(as.character(site1_join_f1$PM10)))
     site1_join_f1$ratio <- as.numeric(as.character(site1_join_f1$PM2.5)) / 
       as.numeric(as.character(site1_join_f1$PM10))
-    site1_join_f1$PM2.5 <- ifelse(site1_join_f1$ratio >= 1, 
+    site1_join_f1$PM2.5 <- ifelse(site1_join_f1$ratio >= 1 & !is.na(site1_join_f1$ratio), 
                                   as.numeric(as.character(NA)), 
                                   as.numeric(as.character(site1_join_f1$PM2.5)))
-    site1_join_f1$PM10 <- ifelse(site1_join_f1$ratio >= 1, 
+    site1_join_f1$PM10 <- ifelse(site1_join_f1$ratio >= 1 & !is.na(site1_join_f1$ratio), 
                                  as.numeric(as.character(NA)), 
                                  as.numeric(as.character(site1_join_f1$PM10)))
     site1_join_f1
@@ -749,7 +753,7 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$switch_tab, {
-    updateTabsetPanel(session, "tabs1", selected = "Help")
+    updateTabsetPanel(session, "tabs1", selected = "FAQ's")
     removeModal()
   })
   
@@ -757,7 +761,7 @@ server <- function(input, output, session) {
     title = "What to expect?",
     HTML("First visit here?<br>"),
     footer = tagList(
-      actionButton("switch_tab", "Help"),
+      actionButton("switch_tab", "FAQ's"),
       modalButton("Close")
     ), 
     easyClose = F
@@ -799,7 +803,22 @@ server <- function(input, output, session) {
       data1 <- openair::timeAverage(data1, avg.time = "day")
     } else { 
       data
-      data1}
+      data1 }
+    data <- data %>%
+      select(date, "Site 1" = input$Para)
+    data1 <- data1 %>%
+      select(date, "Site 2" = input$Para1)
+    all <- full_join(data, data1, by = "date")
+  })
+  data_scatter_comp <- eventReactive(input$plot_val, {
+    data <- CPCB_f()
+    data1 <- Cmp_f()
+    if(input$avg_hour == "daily") {
+      data <- openair::timeAverage(data, avg.time = "day")
+      data1 <- openair::timeAverage(data1, avg.time = "day")
+    } else { 
+      data
+      data1 }
     data <- data %>%
       select(date, "Site 1" = input$Para)
     data1 <- data1 %>%
@@ -1168,7 +1187,7 @@ server <- function(input, output, session) {
   output$plot15 <- renderPlot({
     if (is.null(input$file1) | is.null(input$file2)) { NULL }
     else {
-      data <- data_joined_comp()
+      data <- data_scatter_comp()
       y <- as.numeric(as.character(data$`Site 1`))
       x <- as.numeric(as.character(data$`Site 2`))
       reg_eqn <- function(x) {
@@ -1212,20 +1231,20 @@ server <- function(input, output, session) {
     if (is.null(input$file1)) { NULL }
     else {
       data <- data_ta()
-      y_date <- julian(data$date, data$date[1])
+      data$date <- as.Date(data$date, "%Y-%m-%d", tz = "Asia/Kolkata")
       if(input$avg_hour2 == "daily2") {
-        x <- zoo(data[[input$palleInp2]], data$date)
-        x <- na.interp(x)
+        data <- data.frame(data$date, na.interp(data[[input$palleInp2]])) 
+        data_wt <- wt(data, dt = 1) 
       } else { 
         NULL
       }
-      data <- cbind(as.numeric(y_date), as.numeric(x))
-      ## Continuous wavelet transform
-      cwt_data <- wt(data)
-      plot(cwt_data, xlab = "Time", main = "Periodicity Analysis (wavelet)", 
-           cex.lab = 1.5, cex.axis = 1.5, cex.main = 1.5, ncol = 64,
-           plot.cb = TRUE)
-    }
+      par(mfrow = c(1, 1), oma = c(0, 0, 0, 2), mar = c(5, 5, 5, 7) + 0.1) #specify the limits of margins to the plot area
+      plot.biwavelet(data_wt, form = "%Y-%m-%d", type = "power.corr.norm",
+                     plot.cb = TRUE, lwd.coi = 1, col.coi = "black",
+                     cex.lab = 1.5, cex.axis = 1.5, cex.main = 1.5, 
+                     plot.sig = 95, lwd.sig = 2, zlim = c(0, as.integer(log2(nrow(data)))), 
+                     ylab = "Period (days)", xlab = "Year")
+      }
   })
   output$plot14 <- renderPlot({
     data <- data.frame(

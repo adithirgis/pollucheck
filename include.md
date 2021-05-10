@@ -1,234 +1,241 @@
 
-# Have a look at the app!
-
-### We are in this together!
-
-A walk through to use this app for everyone -
-
-How to Download Data from the CPCB website?
-
--   Example - Where do you live in India?
-
--   Find the nearest [CPCB
-    station](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing)
-    to download data from a regulatory air quality monitor.
-
--   Visit [CPCB
-    website](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing)
-    to access the Central/State Pollution Control Board Data.
-
-![](WWW/CPCB_data_down_S.jpeg)
-
--   Select the Indian state from the “State Name” dropdown.
-
-![](WWW/CPCB_Station.jpeg)
-
--   Now select the city for which the data needs to be downloaded using
-    the “City Name” dropdown menu.
-
-![](WWW/CPCB_Station_city.jpeg)
-
--   Now from the “Station Name” drop-down select the desired station.
-
--   Select the Parameters. Note- Multiple parameters can be selected at
-    a time.
-
-![](WWW/CPCB_Station_parameters.jpeg)
-
--   Report Format- To use the PolluCheck app, Please keep the format as
-    “tabular”.
-
--   Criteria- This drop-down will help you to select between different
-    time averaging of data. Note- Pollucheck app only supports 15 min,
-    30 min, and 60 min average data.
-
--   Select the Start Date and End date of the data and click on
-    “Submit”.
-
--   Download that data (15, 30, 60 min resolution would be good).
-
-![](WWW/CPCB_Station_TA.jpeg)
-
-### Have a look at the app usage
-
--   Select the source from where the data was downloaded.
--   Now select the time resolution at which the data was downloaded.
-
-<img src="WWW/image_1.JPG" width="315"/>
-
--   Select the check box according to your need.
-
-    -   Remove Negative values- Negative values do not represent
-        concentration,they represent missing values, so it is always
-        advised to remove them.This option helps you to remove all the
-        negative values from your entire dataset.
-
-    -   Remove duplicate consecutive values- Sometimes when the
-        instrument breaks down, it tends to show exactly same
-        consecutive values, it is advised to remove these as well. This
-        feature removes consecutive repetitive values in your dataset.
-
-    -   Specify a multiple (X) to remove outliers based on Mean and SD-
-        If you want to clean your dataset based on outliers, not usually
-        necessary, use only if you want to remove outiliers based on
-        Mean and Standard Deviation values.
-
-    -   Specify % of data completeness for computing daily mean values-
-        If you are looking for entire/complete dataset to be present for
-        analysis and not less, you can use this to select the desired
-        level of completeness in a day using the scroll bar.
-
-    -   Remove PM2.5 and PM10 above- Usually, values above 9999 are
-        incorrect, also because the instruments usually measure only to
-        999 values in PM instruments. This can be removed using this
-        filter option.
-
-    <img src="WWW/image_2.JPG" width="410"/>
-
--   Output aggregation- The uploaded data can be converted into daily or
-    hourly mean values.
-
--   “Download as csv” or click on “Show Data” to see the data in the
-    app.
-
-![](WWW/image_3.JPG)
-
--   Look at the time series of pollutant concentrations in the **Plots**
-    tab (time series are plots with x axis representing time). Do you
-    see patterns? Are there times of the month or times of the day where
-    concentrations are particularly higher or lower? Are there
-    particular months in a year that are more polluted than others?
--   Think about sources in the particular location: traffic, industries,
-    garbage burning, etc.
--   What more do you want to learn? Talk to the Humans of ILK.
--   What more do you want to learn about the data? We are happy to
-    incorporate more features based one what users need. Write to us at
-    <contact@ilklabs.com>.
--   If you have feature request - open an issue
-    [here](https://github.com/adithirgis/OpenSourceAirQualityApp).
-
-### The application has various tabs - look at each of them and their usage.
-
-##### File tab displays the data after cleaning process.
-
-<img src="WWW/image_4.JPG" style="width:100.0%" />
-
-##### Summary tab displays the summary statistics for daily, monthly or for the entire dataset.
-
-<img src="WWW/image_5.JPG" style="width:100.0%" />
-
-##### Summary Plots tab generates time series, box plot, and diurnal plot of the selected parameter.
-
--   Data availability plot of all the pollutants after the cleaning
-    process can be generated.
-
-    ![](WWW/DA_plot.JPG)
-
--   The parameter to plot and the data aggregation options are
-    available.
-
-    ![](WWW/image_6.JPG)
-
--   Options to edit the Title and axis labels are available.
-
--   Time-series plot
-
-    ![](WWW/image_7.JPG)
-
-    <img src="WWW/image_8.JPG" style="width:100.0%" />
-
--   Month and year box plot
-
-    ![](WWW/image_9.JPG)
-
--   Monthly box plot
-
-    ![](WWW/image_10.JPG)
-
--   Vertical bar plot
-
-    ![](WWW/image_11.JPG)
-
--   Diurnal pot using hourly values - has two types using all data or
-    distributed month wise. There is an option to plot point and bars as
-    Median and IQR respectively or Mean and Standard Deviation. The data
-    used for plotting can be downloaded as csv file.
-
-    ![](WWW/image_12.JPG)
-
-    <img src="WWW/image_13.JPG" style="width:100.0%" />
-
-##### Statistical Plots tab tests for normality, pattern and generates density plot, qq plot of the selected parameter.
-
--   Using a selected parameter and aggregation methods, normality test
-    using the Anderson Darling test (for N &gt; 500) or Shapiro-Wilk
-    test can be conducted.
-
--   Density plot
-
-    ![](WWW/image_14.JPG)
-
-    <img src="WWW/image_15.JPG" style="width:100.0%" />
-
--   QQ plot
-
-    ![](WWW/image_16.JPG)
-
-    <img src="WWW/image_17.JPG" style="width:100.0%" />
-
--   Trend Analysis is also available for daily values. For trend
-    analysis using Mann-Kendall test we use
-    [mk.test](https://www.rdocumentation.org/packages/trend/versions/1.1.4/topics/mk.test).
-    For imputing values in the discontinuous data set we use [forecast
-    package](https://cran.r-project.org/web/packages/forecast/forecast.pdf).
-    For continuous wavelet transform we use [biwavelet
-    package](https://cran.r-project.org/web/packages/biwavelet/biwavelet.pdf).
-    In periodicity analysis, the contours covered by black lines
-    represent the significant periodicity at 95% significant 519 level.
-
-    ![](WWW/image_19.JPG)
-
-    <img src="WWW/image_18.JPG" style="width:100.0%" />
-
-##### Linear Regression tab does univariate and multivariate linear regression for selected parameter(s).
-
--   There is an option of plotting univariate linear regression plots
-    between various parameters available.
-
-    ![](WWW/image_20.JPG)
-
-    <img src="WWW/image_21.JPG" style="width:100.0%" />
-
--   Also multivariate linear regression can be performed.
-
-    ![](WWW/image_22.JPG)
-
-    <img src="WWW/image_23.JPG" style="width:100.0%" />
-
-##### Compare tab allows users to upload another file for comparision with the loaded data.
-
--   The Compare tab allows user to upload data from another site for
-    comparison and generate time series and a scatter plot between
-    parameters selected from different sites.
-
-    ![](WWW/image_24.JPG)
-
-    ![](WWW/image_25.JPG)
-
-    <img src="WWW/image_26.JPG" style="width:100.0%" />
-
-##### `openair` tab allows users use the package’s widely used functions for the selected parameter.
-
--   Calendar plot
-
-    ![](WWW/image_27.JPG)
-
-    <img src="WWW/image_28.JPG" style="width:100.0%" />
-
--   Time variation plot
-
-    <img src="WWW/image_29.JPG" style="width:100.0%" />
-
-### Explore yourself!
-
-##### The major pollutants annual standards are plotted below.
+# Frequently Asked Questions
+
+### File
+
+**Where can we download these data sets from?**  
+*The datasets can be downloaded from 3 sources - [CPCB
+website](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing),
+[OpenAQ](https://openaq.org/#/countries/IN?_k=5ecycz), and
+[AirNow](https://www.airnow.gov/international/us-embassies-and-consulates/#India).*
+
+**Does this application work for Countries other than India?**  
+*Yes, Any dataset from the 3 mentioned sources can be used in this
+application to analyze the data, the only important thing to remember is
+to choose the right time zone.*
+
+**How to use the application?**  
+*Please check
+[here](https://github.com/adithirgis/OpenSourceAirQualityApp) for a walk
+through.*
+
+**Will this application read data from a reference monitor which is not
+from the sources mentioned in the application?**  
+*No, this application can do post-processing of the data downloaded from
+the mentioned sources.*
+
+**What are the different file formats which can be uploaded to this
+application?**  
+*The data can be uploaded only in .csv or .xlsx format.*
+
+**What is the naming convention of downloaded files?**  
+*The File tab downloaded data is the hourly or daily average so
+“average.csv”, while the summary statistics file has an extension of
+“summary.csv”, and the diurnal table download will have an extension of
+“diurnal.csv”.*
+
+**What are the different packages used in the application?**  
+*The different packages we use here are - tidyverse, ggplot2, openair,
+lubridate, shiny, bslib, forecast, biwavelet, readxl, DT, data.table,
+nortest, janitor, zoo.*
+
+**Can the input file be manipulated/edited?**  
+*No. our application is currently designed to read the preset format of
+the input file.* *Any alterations in the input file may lead to the
+malfunctioning of the application.*
+
+**What is the standard outlier condition?**  
+*The standard outlier detection condition is to find the daily mean and
+standard deviation and then removing values which are lower then Mean -
+x \* SD and greater than Mean + x \* SD, where x is any real number.*
+
+**Why should we remove repeated consecutive measurements?**  
+*Sometimes when the instrument breaks down, it tends to show exactly the
+same consecutive values, it is advised to remove these as well.*
+
+**Why should we remove values above 9999 from the data?**  
+*Usually, values above 9999 are incorrect, also because the instruments
+usually measure only up to 999 values in PM instruments. This can be
+removed using this filter option.*
+
+**What are the available time resolutions for plots and tables?**  
+*Only hourly and daily average plots can be generated in this
+application, although the data table can be of 60, 30, and 15 minutes
+time resolution.*
+
+**How to export plots?**  
+*To save the image right click on the plot and select save image as. You
+can save it on your local computer in .png or .jpeg format.*
+
+**Can we upload datasets of different timezone?**  
+*Yes, for data from OpenAQ and AirNow, different time formats are
+supported, just select the right timezone.*
+
+**Are the plots customizable?**  
+*Only the axis labels and Plot title can be customized.*
+
+**Whom to contact for doubts or suggestions?**  
+*We are happy to incorporate more features based on what users need.
+Write to us at <contact@ilklabs.com>. For reporting any bug/issue click
+[here](https://github.com/adithirgis/OpenSourceAirQualityApp/issues).*
+
+**Can the plots generated using PolluCheck be used for publications?**  
+*Depends on the user. If you find the resolution and everything usable,
+please go ahead. Remember to cite us!*
+
+**How to cite PolluCheck?**
+
+**Is the theme of the application customizable?**  
+*No, the theme of the app is not customizable, if you have any
+suggestions and resources, please PR in the github repo link provided
+above.*
+
+### Summary
+
+**What is the naming convention of the file downloaded?**  
+*The data downloaded in this tab will have an extension of
+\_average.csv*.
+
+### Summary Plots
+
+**How to read the box plots?**  
+*A boxplot is a way to show a [five-number
+summary](https://www.statisticshowto.com/statistics-basics/how-to-find-a-five-number-summary-in-statistics/)
+in a chart. The main part of the chart (the “box”) shows where the
+middle portion of the data is: the interquartile range. At the ends of
+the box, you’ll find the first
+[quartile](https://www.statisticshowto.com/what-are-quartiles/)(the 25%
+mark) and the third quartile (the 75% mark). The whiskers on the far
+most of the box plots show the minimum and maximum values in the
+datasets. Finally, the median is represented by a vertical bar in the
+center of the box.
+([Source](https://www.statisticshowto.com/probability-and-statistics/descriptive-statistics/box-plot/))*
+
+**What do the bars in the vertical bar plots indicate?**  
+*The vertical bars represent mean + sd and mean - sd.*
+
+**What are the bars in the diurnal plot and why are there two
+options?**  
+*Diurnal plots represent the time of the day variability using mean (of
+that hour) and sd or median (of that hour) and IQR. So when you choose
+mean and sd the bars represent sd, while when you choose median and IQR,
+the bars represent IQR.*
+
+**Can we plot ratios of different pollutants on a time series?**  
+*No, this feature is not implemented yet.*
+
+### Statistical Plots
+
+**What is the difference between the Shapiro-Wilk normality test and the
+Anderson- Darling normality test?**  
+*Shapiro-Wilk test is used to check for normality when the sample size
+is below 5000, while if you have data points above 5000, please check
+Anderson-Darling test.*
+
+**How is the data imputed for trend analysis?**  
+*For imputing values in the discontinuous data set we use [forecast
+package](https://cran.r-project.org/web/packages/forecast/forecast.pdf),
+please check the resource for more details.*
+
+**What packages were used for Trend Analysis?**  
+*Trend Analysis is available for daily values alone. For trend analysis
+using Mann-Kendall test we use
+[mk.test](https://www.rdocumentation.org/packages/trend/versions/1.1.4/topics/mk.test).
+For imputing values in the discontinuous data set we use [forecast
+package](https://cran.r-project.org/web/packages/forecast/forecast.pdf).
+For continuous wavelet transform we use [biwavelet
+package](https://cran.r-project.org/web/packages/biwavelet/biwavelet.pdf).
+In periodicity analysis, the contours covered by black lines represent
+the significant periodicity at 95% significant 519 level.*
+
+**Why cant trend analysis be used for hourly data?**  
+*Hourly data does not have much periodicity to be captured.*
+
+**How Q-Q Plot is different from a Scatter Plot?**  
+*A Q-Q plot is a scatterplot created by plotting two sets of quantiles
+against one another. If both sets of quantiles came from the same
+distribution, we should see the points forming a line that’s roughly
+straight.
+([Source](https://data.library.virginia.edu/understanding-q-q-plots/#:~:text=A%20Q%2DQ%20plot%20is%20a,truly%20come%20from%20Normal%20distributions.))*
+
+### Linear Regression
+
+**What are univariate and multivariate?**  
+*Univariate regression is which consist of single independent variable
+while multivariate consist of three or more variables.*
+
+**What is the difference between multiple R- square and R- square?**  
+*Multiple R squared is simply a measure of Rsquared for models that have
+multiple predictor variables. Therefore it measures the amount of
+variation in the response variable that can be explained by the
+predictor variables. The fundamental point is that when you add
+predictors to your model, the multiple Rsquared will always increase, as
+a predictor will always explain some portion of the variance. Adjusted
+Rsquared controls against this increase, and adds penalties for the
+number of predictors in the model. Therefore it shows a balance between
+the most parsimonious model, and the best fitting model. Generally, if
+you have a large difference between your multiple and your adjusted
+Rsquared that indicates you may have overfit your model.
+[source](https://stats.stackexchange.com/questions/241283/what-is-the-main-difference-between-multiple-r-squared-and-adjusted-r-squared/241298)*
+
+**How to check if the data is significant or not?**  
+*The p-value in the last column tells you the significance of the
+regression coefficient for a given parameter. If the p-value is small
+enough to claim statistical significance, that just means there is
+strong evidence that the coefficient is different from 0, or else you
+could also try t-test.
+[source](https://stats.stackexchange.com/questions/37912/how-to-determine-which-variables-are-statistically-significant-in-multiple-regre)*
+
+**What are residuals?**  
+*The data points usually don’t fall exactly on this regression equation
+line; they are scattered around. A residual is the vertical distance
+between a data point and the regression line. It tells us how well a
+line fits with an individual data point.
+[source](https://www.statisticshowto.com/residual/)*
+
+**What are degrees of freedom?**  
+*The degrees of freedom indicate the number of independent values that
+can vary in an analysis without breaking any constraints.
+[source](https://statisticsbyjim.com/hypothesis-testing/degrees-freedom-statistics/)*
+
+### Compare
+
+**Can I compare two datasets of different timezone?**  
+*No, right now the comparison is with data from same timezone.*
+
+**Can I compare two datasets of different time periods?**  
+*Yes, you can check the time-series of both the datasets, but the
+scatter plot will not be generated as they belong to different time
+series.*
+
+**Can I compare datasets from different downloading sources?**  
+*Yes, you can definitely compare from different available sources.*
+
+**How many datasets can be compared at a time in the application?**  
+*As of now, only one single file can be compared to the uploaded
+dataset.*
+
+**Is it possible to compare two datasets with different time
+resolutions?**  
+*Yes! It is possible to compare datasets from different time resolution
+since the application averages to 1 hour or daily average.*
+
+### openair
+
+**What is the difference between “median and quantiles” and “mean and
+95% confidence intervals” in Time Variation Plot?**  
+*Since Time Variation plot shows the variation in parameters based on
+different time resolutions. It is the same option to time variation
+plots as mean and sd or median and IQR.*
+
+**Is there a possibility to generate other openair plots?**  
+*No, right now the application cannot generate other plots which can be
+generated using openair.*
+
+**Where can I find the documentation of openair?**  
+*Please click
+[here](https://cran.r-project.org/web/packages/openair/openair.pdf).
+Also, remember to cite them!*
+
+**What are the ambient levels in India?**  
+*Please check the graph below.*
