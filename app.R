@@ -144,6 +144,14 @@ ui <- fluidPage(
                                                           "Independent variable(s)", 
                                                           multiple = TRUE, "Select"),
                                               actionButton("mulreg", "Multivariate regression "),
+                                              tags$br(),
+                                              tags$br(),
+                                              textInput("reg_mmt", label = "Edit title of plot", 
+                                                        value = "Title"),
+                                              textInput("reg_mx", label = "Edit X axis label", 
+                                                        value = "Fitted"),
+                                              textInput("reg_my", label = "Edit Y axis label", 
+                                                        value = "Parameter"),
                                               tags$hr()),
                              conditionalPanel(condition = "input.tabs1 == 4",
                                               tags$hr(),
@@ -262,15 +270,21 @@ ui <- fluidPage(
                                               actionButton("plot_values", "Plot time series"),
                                               tags$br(),
                                               tags$br(),
-                                              actionButton("plot_val", "Scatter plot"),
-                                              tags$br(),
-                                              tags$br(),
                                               textInput("comp_mt", label = "Edit title of time-series plot", 
                                                         value = "Title"),
                                               textInput("comp_y", label = "Edit Y axis label of time-series plot", 
                                                         value = "Parameter"),
+                                              tags$br(),
+                                              tags$br(),
+                                              actionButton("plot_val", "Scatter plot"),
+                                              tags$br(),
+                                              tags$br(),
                                               textInput("reg_mt1", label = "Edit title of scatter plot", 
                                                         value = "Title"),
+                                              textInput("reg_mx1", label = "Edit X axis of scatter plot", 
+                                                        value = "Site 2"),
+                                              textInput("reg_my1", label = "Edit Y axis of scatter plot", 
+                                                        value = "Site 1"),
                                               tags$hr()),
                              conditionalPanel(condition = "input.tabs1 == 5",
                                               tags$hr(),
@@ -1203,8 +1217,8 @@ server <- function(input, output, session) {
       ggplot(data = data, aes(x = x, y = y)) +
         geom_point(alpha = 0.5, color = "red") + 
         geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x, color = "deepskyblue") +
-        labs(x = "Site 1",
-             y = "Site 2", title = input$reg_mt1,
+        labs(x = input$reg_mx1,
+             y = input$reg_my1, title = input$reg_mt1,
              subtitle = paste0("R square: ", r, "; Equation: ", reg_eqn(s))) + 
         theme2()
     }
@@ -1300,7 +1314,7 @@ server <- function(input, output, session) {
       ggplot(data = data, aes(x = .fitted, y = y)) +
         geom_point(alpha = 0.5, color = "red") + 
         geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x, color = "deepskyblue") +
-        labs(x = "Fitted", y = input$DepVar1) + theme2()
+        labs(x = input$reg_mx, y = input$reg_my, title = input$reg_mmt) + theme2()
     }
   })
   output$RegOut <- renderPrint({summary(lm_reg())})

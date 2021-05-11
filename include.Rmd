@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 **Does this application work for Countries other than India?**  
 *Yes, Any dataset from the 3 mentioned sources can be used in this application to analyze the data, the only important thing to remember is to choose the right time zone.*
 
-**How to use the application?**   
+**How to use the application?**  
 *Please check [here](https://github.com/adithirgis/OpenSourceAirQualityApp) for a walk through.*
 
 **Will this application read data from a reference monitor which is not from the sources mentioned in the application?**  
@@ -65,7 +65,8 @@ knitr::opts_chunk$set(echo = TRUE)
 **Can the plots generated using PolluCheck be used for publications?**  
 *Depends on the user. If you find the resolution and everything usable, please go ahead. Remember to cite us!*
 
-**How to cite PolluCheck?**
+**How to cite PolluCheck?**   
+*We will update this soon!*
 
 **Is the theme of the application customizable?**  
 *No, the theme of the app is not customizable, if you have any suggestions and resources, please PR in the github repo link provided above.*
@@ -76,6 +77,9 @@ knitr::opts_chunk$set(echo = TRUE)
 *The data downloaded in this tab will have an extension of \_average.csv*.
 
 ### Summary Plots
+
+**What is does data availability plot indicate?**  
+*The data availability plot shows the available daily data for each parameter.*
 
 **How to read the box plots?**  
 *A boxplot is a way to show a [five-number summary](https://www.statisticshowto.com/statistics-basics/how-to-find-a-five-number-summary-in-statistics/) in a chart. The main part of the chart (the "box") shows where the middle portion of the data is: the interquartile range. At the ends of the box, you'll find the first [quartile](https://www.statisticshowto.com/what-are-quartiles/)(the 25% mark) and the third quartile (the 75% mark). The whiskers on the far most of the box plots show the minimum and maximum values in the datasets. Finally, the median is represented by a vertical bar in the center of the box. ([Source](https://www.statisticshowto.com/probability-and-statistics/descriptive-statistics/box-plot/))*
