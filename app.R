@@ -324,7 +324,11 @@ ui <- fluidPage(
                                                                actionButton("mk", "Trend Analysis"),
                                                                tags$br(),
                                                                tags$br(),
-                                                               actionButton("ta", "Periodicity Analysis")),
+                                                               actionButton("ta", "Periodicity Analysis"),
+                                                               tags$br(),
+                                                               tags$br(),
+                                                               textInput("title_bi", label = "Edit title of the plot", 
+                                                                         value = "Title")),
                                               tags$hr())),
                 mainPanel(
                   tags$a(img(src = 'logo.png', align = "right", height = 70,
@@ -379,8 +383,10 @@ ui <- fluidPage(
                                 plotOutput("plot4", height = 600)),
                               tabPanel(
                                 title = "FAQ's",
-                                includeMarkdown("include.md"),
-                                plotOutput("plot14", height = 500)))
+                                includeMarkdown("include.md")),
+                              tabPanel(
+                                title = "Disclaimer",
+                                helpText("We are not responsible for malfunction or miscalculation or bugs in the code.")))
                 )))
 
 
@@ -756,14 +762,26 @@ server <- function(input, output, session) {
   }
   
   CPCB_f <- reactive({
-    data <- data_file(input$per, input$type, input$file1$datapath, input$file1,
-                       input$file, input$remove_9, input$repeated, input$percent, 
-                       input$ey, input$exclude, input$high_number, input$log_op)
+    if (is.null(input$file1)) {
+      data <- data_file(75, "cpcb", "TN_CMN_19.xlsx", "TN_CMN_19.xlsx",
+                        "60 min", TRUE, TRUE, TRUE,
+                        3, TRUE, 999, FALSE)
+    } else {
+      data <- data_file(input$per, input$type, input$file1$datapath, input$file1,
+                        input$file, input$remove_9, input$repeated, input$percent, 
+                        input$ey, input$exclude, input$high_number, input$log_op) 
+      }
   })
   Cmp_f <- reactive({
+    if (is.null(input$file2)) {
+      data <- data_file(75, "cpcb", "TN_CMN_19.xlsx", "TN_CMN_19.xlsx",
+                        "60 min", TRUE, TRUE, TRUE,
+                        3, TRUE, 999, FALSE)
+    } else {
     data <- data_file(input$per, input$type2, input$file2$datapath, input$file2,
                       input$file12, input$remove_9, input$repeated, input$percent, 
                       input$ey, input$exclude, input$high_number, input$log_op)
+    }
   })
   
   observeEvent(input$switch_tab, {
@@ -773,8 +791,11 @@ server <- function(input, output, session) {
   
   query_modal <- modalDialog(
     title = "What to expect?",
-    HTML("First visit here?<br>"),
+    HTML("First visit here? Dummy data is loaded click on buttons and generate the figures!<br>"),
     footer = tagList(
+      actionButton("help_link", "Read Me",
+                   onclick = "window.open('https://github.com/adithirgis/OpenSourceAirQualityApp#have-a-look-at-the-app',
+                   '_blank')"),
       actionButton("switch_tab", "FAQ's"),
       modalButton("Close")
     ), 
@@ -785,20 +806,20 @@ server <- function(input, output, session) {
   showModal(query_modal)
   
   observe({
-    if (is.null(input$file1) | is.null(input$file2)) {
-      NULL
-    } else {
+    if (is.null(input$file1 | input$file2)) {
       data <- CPCB_f()
-      data <- data %>%
-        dplyr::select(- date, - day)
       data1 <- Cmp_f()
-      data1 <- data1 %>%
-        dplyr::select(- date, - day)
-      updateSelectInput(session, "Para", choices = names(data))
-      updateSelectInput(session, "Para1", choices = names(data1))
+     } else {
+      data <- CPCB_f()
+      data1 <- Cmp_f()
     }
-    
-  })
+    data <- data %>% 
+      dplyr::select(- date, - day)
+    data1 <- data1 %>%
+      dplyr::select(- date, - day)
+    updateSelectInput(session, "Para", choices = names(data))
+    updateSelectInput(session, "Para1", choices = names(data1))
+    })
   mess <- function(button, da) {
     data <- CPCB_f()
     if(button == da) {
@@ -849,16 +870,18 @@ server <- function(input, output, session) {
     } else { data }
   }
   output$plot12 <- renderPlot({
-    if (is.null(input$file1) | is.null(input$file2)) { NULL }
+    if (is.null(input$file1) | is.null(input$file2)) { 
+      all <- data_joined_comp()
+      }
     else {
       all <- data_joined_comp()
-      all <- all %>%
-        pivot_longer(-date, names_to = "parameter", values_to = "value") 
-      ggplot(all, aes(as.POSIXct(date), value, colour = parameter)) +
-        labs(y = input$comp_y, title = input$comp_mt,
-             x = "") + theme2() + geom_line(size = 0.6) + theme(legend.title = element_blank())
     }
-  })
+    all <- all %>%
+      pivot_longer(-date, names_to = "parameter", values_to = "value") 
+    ggplot(all, aes(as.POSIXct(date), value, colour = parameter)) +
+      labs(y = input$comp_y, title = input$comp_mt,
+           x = "") + theme2() + geom_line(size = 0.6) + theme(legend.title = element_blank())
+   })
   data_da <- eventReactive(input$da, {
     data <- mess(input$avg_hour3, "daily3")
   })
@@ -906,11 +929,6 @@ server <- function(input, output, session) {
   })
   data_diurnal <- eventReactive(input$diurnal, {
     data <- CPCB_f()
-    if(input$avg_hour3 == "daily3") {
-      data <- openair::timeAverage(data, avg.time = "day")
-    } else { 
-      data <- CPCB_f() 
-    }
     return(data)
   })
   
@@ -925,7 +943,9 @@ server <- function(input, output, session) {
     })
   observe({
     if (is.null(input$file1)) {
-      NULL
+      data_joined <- CPCB_f()
+      data_joined <- data_joined %>%
+        dplyr::select(- date, - day)
     } else {
       data_joined <- data_joined()
       data_joined <- data_joined %>%
@@ -941,12 +961,23 @@ server <- function(input, output, session) {
   })
   
   name_file <- reactive({
+    if (is.null(input$file1)) {
+      file_n <- "file"
+    } else {
     file_n <- gsub(".xlsx", "", input$file1)
     file_n <- gsub(".csv", "", file_n)
+    }
   })
   
   output$table1 <- DT::renderDataTable({
-    data_joined <- data_joined() 
+    if (is.null(input$file1)) {
+      data_joined <- CPCB_f()
+      if(input$avg_hour == "daily") {
+        data_joined <- openair::timeAverage(data_joined, avg.time = "day")
+      } else { data_joined }
+    } else {
+      data_joined <- data_joined()  
+    }
     cols <- names(data_joined)[3:ncol(data_joined)]
     data_joined[ , cols] <- sapply(X = data_joined[ , cols], 
                                    FUN = function(x) as.numeric(as.character(x)))
@@ -959,6 +990,7 @@ server <- function(input, output, session) {
       datatable(data_joined, options = list("pageLength" = 15)) %>% formatDate(1, "toLocaleDateString")
     } else { datatable(data_joined, options = list("pageLength" = 15)) %>% formatDate(1, "toLocaleString") }
   })
+  
   output$download <- downloadHandler(
     filename = function(){
       name_file <- paste0(name_file(), "_average")
@@ -1009,295 +1041,277 @@ server <- function(input, output, session) {
   })
   
   output$normality_test <- renderPrint({
-    if (is.null(input$file1)) { "No file" }
-    else {
-      
-      normalilty_t()
-    }
+    normalilty_t()
   })
   output$kendal_test <- renderPrint({
     # validate(need(try(all(is.na(y)) == TRUE), "Sorry no data!"))
-    if (is.null(input$file1)) { "No file" }
-    else {
-      if(input$avg_hour2 != "daily2") {
-        "Trend analysis are not prominent with hourly values."
-      } else {
+    if(input$avg_hour2 != "daily2") {
+      "Trend analysis are not prominent with hourly values."
+    } else {
       y <- kenda()
       c <- trend::mk.test(y)
       c
-      }
     }
   })
   output$plot1 <- renderPlot({
-    if (is.null(input$file1)) { NULL }
-    else {
+    if (is.null(input$file1)) { 
       data <- data_plot()
-      y <- as.numeric(as.character(data[[input$palleInp]]))
-      ggplot(data, aes(as.POSIXct(date), y)) +
-        labs(y = input$ts_y, title = input$ts_mt,
-             x = "") + theme2() + geom_line(size = 0.6, color = "seagreen")
+      } else {
+      data <- data_plot()
     }
+    y <- as.numeric(as.character(data[[input$palleInp]]))
+    ggplot(data, aes(as.POSIXct(date), y)) +
+      labs(y = input$ts_y, title = input$ts_mt,
+           x = "") + theme2() + geom_line(size = 0.6, color = "seagreen")
   })
   output$plot2 <- renderPlot({
-    if (is.null(input$file1)) { NULL }
-    else {
+    if (is.null(input$file1)) { 
       data <- data_diurnal()
+    } else {
+      data <- data_diurnal()
+    }
+    data <- data %>%
+      dplyr::mutate(hour = format(date, "%H"),
+                    month = format(date, "%b"))
+    data <- data %>%
+      dplyr::select(hour, month, "y" = input$palleInp) 
+    data$hour <- as.numeric(as.character(data$hour))
+    if (input$diur == "mesd" && input$diurn == "all") { 
       data <- data %>%
-        dplyr::mutate(hour = format(date, "%H"),
-                      month = format(date, "%b"))
+        dplyr::select(hour, y) %>%
+        group_by(hour) %>%
+        summarise_all(funs(mean, sd), na.rm = TRUE)
+      ggplot(data, aes(hour, mean)) + geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), 
+                                                    color = "seagreen") + 
+        scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
+        labs(y = input$diurnal_y, x = "Hour of the day (LT)'", title = input$diurnal_mt) + 
+        theme2() + geom_line(size = 0.6, color = "seagreen")
+    } else if (input$diur == "mediq" && input$diurn == "all") {
       data <- data %>%
-        dplyr::select(hour, month, "y" = input$palleInp) 
-      data$hour <- as.numeric(as.character(data$hour))
-      if(input$avg_hour3 == "daily3") {
-        NULL
-      } else if (input$diur == "mesd" && input$diurn == "all") { 
-        data <- data %>%
-          dplyr::select(hour, y) %>%
-          group_by(hour) %>%
-          summarise_all(funs(mean, sd), na.rm = TRUE)
-        ggplot(data, aes(hour, mean)) + geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), 
+        dplyr::select(hour, y) %>%
+        group_by(hour) %>%
+        summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
+      ggplot(data, aes(hour, median)) + geom_errorbar(aes(ymin = p25, ymax = p75), 
                                                       color = "seagreen") + 
-          scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
-          labs(y = input$diurnal_y, x = "Hour of the day (LT)'", title = input$diurnal_mt) + 
-          theme2() + geom_line(size = 0.6, color = "seagreen")
-      } else if (input$diur == "mediq" && input$diurn == "all") {
-        data <- data %>%
-          dplyr::select(hour, y) %>%
-          group_by(hour) %>%
-          summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
-        ggplot(data, aes(hour, median)) + geom_errorbar(aes(ymin = p25, ymax = p75), 
-                                                        color = "seagreen") + 
-          scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
-          labs(y = input$diurnal_y, x = "Hour of the day (LT)'", title = input$diurnal_mt) + 
-          theme2() + geom_line(size = 0.6, color = "seagreen")
-      } else if (input$diur == "mediq" && input$diurn == "mon") {
-        data <- data %>%
-          group_by(month, hour) %>%
-          summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
-        ggplot(data, aes(hour, median)) + geom_errorbar(aes(ymin = p25, ymax = p75), 
-                                                        color = "seagreen") + 
-          scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
-          labs(y = input$diurnal_y, x = "hour of the day", title = input$diurnal_mt) + 
-          theme2() + geom_line(size = 0.6, color = "seagreen")  + facet_wrap(.~month, nrow = 3) + 
-          theme(axis.text.y = element_text(size = 12))
-      } else if (input$diur == "mesd" && input$diurn == "mon") { 
-        data <- data %>%
-          group_by(month, hour) %>%
-          summarise_all(funs(mean, sd), na.rm = TRUE)
-        ggplot(data, aes(hour, mean)) + geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), 
+        scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
+        labs(y = input$diurnal_y, x = "Hour of the day (LT)", title = input$diurnal_mt) + 
+        theme2() + geom_line(size = 0.6, color = "seagreen")
+    } else if (input$diur == "mediq" && input$diurn == "mon") {
+      data <- data %>%
+        group_by(month, hour) %>%
+        summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
+      ggplot(data, aes(hour, median)) + geom_errorbar(aes(ymin = p25, ymax = p75), 
                                                       color = "seagreen") + 
-          scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
-          labs(y = input$diurnal_y, x = "hour of the day", title = input$diurnal_mt) + 
-          theme2() + geom_line(size = 0.6, color = "seagreen") + facet_wrap(.~month, nrow = 3) + 
-          theme(axis.text.y = element_text(size = 12))
-      }
+        scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
+        labs(y = input$diurnal_y, x = "hour of the day", title = input$diurnal_mt) + 
+        theme2() + geom_line(size = 0.6, color = "seagreen")  + facet_wrap(.~month, nrow = 3) + 
+        theme(axis.text.y = element_text(size = 12))
+    } else if (input$diur == "mesd" && input$diurn == "mon") { 
+      data <- data %>%
+        group_by(month, hour) %>%
+        summarise_all(funs(mean, sd), na.rm = TRUE)
+      ggplot(data, aes(hour, mean)) + geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), 
+                                                    color = "seagreen") + 
+        scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
+        labs(y = input$diurnal_y, x = "hour of the day", title = input$diurnal_mt) + 
+        theme2() + geom_line(size = 0.6, color = "seagreen") + facet_wrap(.~month, nrow = 3) + 
+        theme(axis.text.y = element_text(size = 12))
     }
   })
   output$plot3 <- renderPlot({
-    if (is.null(input$file1)) { NULL }
-    else {
+    if (is.null(input$file1)) { 
       data <- data_box()
-      
-      y <- as.numeric(as.character(data[[input$palleInp]]))
-      ggplot(data, aes(x = reorder(format(date,'%b %Y'), date), y)) + 
-        stat_summary(fun.data = f(), colour = "seagreen", geom = "boxplot", 
-                     width = 0.4, size = 1) + 
-        labs(y = input$box_y, x = "", title = input$box_mt) + 
-        stat_summary(aes(y = y), fun.y = "mean", colour = "seagreen", 
-                     geom = "point", size = 4)  +
-        theme2() + theme(axis.text.x = element_text(size = 10, face = "bold", angle = 90))
+    } else {
+      data <- data_box()
     }
+    y <- as.numeric(as.character(data[[input$palleInp]]))
+    ggplot(data, aes(x = reorder(format(date,'%b %Y'), date), y)) + 
+      stat_summary(fun.data = f(), colour = "seagreen", geom = "boxplot", 
+                   width = 0.4, size = 1) + 
+      labs(y = input$box_y, x = "", title = input$box_mt) + 
+      stat_summary(aes(y = y), fun.y = "mean", colour = "seagreen", 
+                   geom = "point", size = 4)  +
+      theme2() + theme(axis.text.x = element_text(size = 10, face = "bold", angle = 90))
   })
   output$plot9 <- renderPlot({
-    if (is.null(input$file1)) { NULL }
-    else {
+    if (is.null(input$file1)) { 
       data <- data_mbox()
-      y <- as.numeric(as.character(data[[input$palleInp]]))
-      ggplot(data, aes(x = reorder(format(date,'%b'), date), y)) +
-        stat_summary(fun.data = f(), colour = "seagreen", geom = "boxplot",
-                     width = 0.4, size = 1) +
-        labs(y = input$box_my, x = "", title = input$box_mmt) +
-        stat_summary(aes(y = y), fun.y = "mean", colour = "seagreen",
-                     geom = "point", size = 4)  +
-        theme2() + theme(axis.text.x = element_text(size = 13, face = "bold"))
+    } else {
+      data <- data_mbox()
     }
-  })
+    y <- as.numeric(as.character(data[[input$palleInp]]))
+    ggplot(data, aes(x = reorder(format(date,'%b'), date), y)) +
+      stat_summary(fun.data = f(), colour = "seagreen", geom = "boxplot",
+                   width = 0.4, size = 1) +
+      labs(y = input$box_my, x = "", title = input$box_mmt) +
+      stat_summary(aes(y = y), fun.y = "mean", colour = "seagreen",
+                   geom = "point", size = 4)  +
+      theme2() + theme(axis.text.x = element_text(size = 13, face = "bold"))
+    })
   output$plot4 <- renderPlot({
-    if (is.null(input$file1)) { NULL }
-    else {
+    if (is.null(input$file1)) { 
       data <- data_tv()
-      y <- as.numeric(as.character(data[[input$palleInp1]]))
-      if(input$stat_tv == "mean") {
-        openair::timeVariation(data, pollutant = input$palleInp1, 
-                               par.settings = list(fontsize = list(text = 15)))
-      } else if(input$stat_tv == "median") {
-        openair::timeVariation(data, pollutant = input$palleInp1, stati = "median", 
-                               conf.int = c(0.75, 0.99),
-                               par.settings = list(fontsize = list(text = 15)))
-      }
-      
+    } else {
+      data <- data_tv()
     }
-  })
+    y <- as.numeric(as.character(data[[input$palleInp1]]))
+    if(input$stat_tv == "mean") {
+      openair::timeVariation(data, pollutant = input$palleInp1, 
+                             par.settings = list(fontsize = list(text = 15)))
+    } else if(input$stat_tv == "median") {
+      openair::timeVariation(data, pollutant = input$palleInp1, stati = "median", 
+                             conf.int = c(0.75, 0.99),
+                             par.settings = list(fontsize = list(text = 15)))
+    }
+    })
   output$plot5 <- renderPlot({
-    if (is.null(input$file1)) { NULL }
-    else {
+    if (is.null(input$file1)) { 
       data <- data_cp()
-      y <- as.numeric(as.character(data[[input$palleInp1]]))
-      openair::calendarPlot(data, pollutant = input$palleInp1, main = input$cp_mt,
-                            cols = openColours(c("seagreen", "yellow", "red"), 10),
-                            par.settings = list(fontsize = list(text = 15)))
+    } else {
+      data <- data_cp()
     }
-  })
+    y <- as.numeric(as.character(data[[input$palleInp1]]))
+    openair::calendarPlot(data, pollutant = input$palleInp1, main = input$cp_mt,
+                          cols = openColours(c("seagreen", "yellow", "red"), 10),
+                          par.settings = list(fontsize = list(text = 15)))
+    })
   output$plot6 <- renderPlot({
-    if (is.null(input$file1)) { NULL }
-    else {
+    if (is.null(input$file1)) { 
       data <- data_freq()
-      y <- as.numeric(as.character(data[[input$palleInp2]]))
-      ggplot(data, aes(x = y)) +
-        geom_density(color = "deepskyblue", fill = "lightblue") +
-        labs(y = "density", x = input$freq_x, title = input$freq_mt) + theme2()
+    } else {
+      data <- data_freq()
     }
-  })
+    y <- as.numeric(as.character(data[[input$palleInp2]]))
+    ggplot(data, aes(x = y)) +
+      geom_density(color = "deepskyblue", fill = "lightblue") +
+      labs(y = "density", x = input$freq_x, title = input$freq_mt) + theme2()
+    })
   output$plot7 <- renderPlot({
-    if (is.null(input$file1)) { NULL }
-    else {
+    if (is.null(input$file1)) { 
       data <- data_qq()
-      y <- as.numeric(as.character(data[[input$palleInp2]]))
-      ticks <- qnorm(c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99))
-      labels <- c(1, 5, 10, 25, 50, 75, 90, 95, 99)
-      ggplot(data, aes(sample = log10(y))) +
-        stat_qq(size = 2, geom = 'point', color = "deepskyblue") +
-        stat_qq_line(size = 1, linetype = 2) + 
-        scale_x_continuous(breaks = ticks, labels = labels) +
-        labs(x = "Emperical percentiles",
-             y =  input$qq_y, title = input$qq_mt) + theme2()
+    } else {
+      data <- data_qq()
     }
-  })
+    y <- as.numeric(as.character(data[[input$palleInp2]]))
+    ticks <- qnorm(c(0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99))
+    labels <- c(1, 5, 10, 25, 50, 75, 90, 95, 99)
+    ggplot(data, aes(sample = log10(y))) +
+      stat_qq(size = 2, geom = 'point', color = "deepskyblue") +
+      stat_qq_line(size = 1, linetype = 2) + 
+      scale_x_continuous(breaks = ticks, labels = labels) +
+      labs(x = "Emperical percentiles",
+           y =  input$qq_y, title = input$qq_mt) + theme2()
+    })
   output$plot8 <- renderPlot({
-    if (is.null(input$file1)) { NULL }
-    else {
+    if (is.null(input$file1)) { 
       data <- data_reg()
-      y <- as.numeric(as.character(data[[input$DepVar]]))
-      x <- as.numeric(as.character(data[[input$InDepVar]]))
-      reg_eqn <- function(x) {
-        R_sq <- round(as.numeric(x$adj.r.squared), digits = 2)
-        int <- round(coef(x)[1], digits = 2)
-        slope <- round(coef(x)[2], digits = 2)
-        eqn <- paste("y = ", slope, "x + (", int, ")")
-        return(eqn)
-      }
-      m <- lm(y ~ x, data)
-      s <- summary(m)
-      r <- round(s$adj.r.squared, digits = 2)
-      ggplot(data = data, aes(x = x, y = y)) +
-        geom_point(alpha = 0.5, color = "red") + 
-        geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x, color = "deepskyblue") +
-        labs(x = input$reg_x,
-             y = input$reg_y, title = input$reg_mt,
-             subtitle = paste0("R square: ", r, "; Equation: ", reg_eqn(s))) + 
-        theme2()
+    } else {
+      data <- data_reg()
     }
-  })
+    y <- as.numeric(as.character(data[[input$DepVar]]))
+    x <- as.numeric(as.character(data[[input$InDepVar]]))
+    reg_eqn <- function(x) {
+      R_sq <- round(as.numeric(x$adj.r.squared), digits = 2)
+      int <- round(coef(x)[1], digits = 2)
+      slope <- round(coef(x)[2], digits = 2)
+      eqn <- paste("y = ", slope, "x + (", int, ")")
+      return(eqn)
+    }
+    m <- lm(y ~ x, data)
+    s <- summary(m)
+    r <- round(s$adj.r.squared, digits = 2)
+    ggplot(data = data, aes(x = x, y = y)) +
+      geom_point(alpha = 0.5, color = "red") + 
+      geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x, color = "deepskyblue") +
+      labs(x = input$reg_x,
+           y = input$reg_y, title = input$reg_mt,
+           subtitle = paste0("R square: ", r, "; Equation: ", reg_eqn(s))) + 
+      theme2()
+   })
   output$plot15 <- renderPlot({
-    if (is.null(input$file1) | is.null(input$file2)) { NULL }
-    else {
+    if (is.null(input$file1) | is.null(input$file2)) {
       data <- data_scatter_comp()
-      y <- as.numeric(as.character(data$`Site 1`))
-      x <- as.numeric(as.character(data$`Site 2`))
-      reg_eqn <- function(x) {
-        R_sq <- round(as.numeric(x$adj.r.squared), digits = 2)
-        int <- round(coef(x)[1], digits = 2)
-        slope <- round(coef(x)[2], digits = 2)
-        eqn <- paste("y = ", slope, "x + (", int, ")")
-        return(eqn)
+      } else {
+      data <- data_scatter_comp()
       }
-      m <- lm(y ~ x, data)
-      s <- summary(m)
-      r <- round(s$adj.r.squared, digits = 2)
-      ggplot(data = data, aes(x = x, y = y)) +
-        geom_point(alpha = 0.5, color = "red") + 
-        geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x, color = "deepskyblue") +
-        labs(x = input$reg_mx1,
-             y = input$reg_my1, title = input$reg_mt1,
-             subtitle = paste0("R square: ", r, "; Equation: ", reg_eqn(s))) + 
-        theme2()
+    y <- as.numeric(as.character(data$`Site 1`))
+    x <- as.numeric(as.character(data$`Site 2`))
+    reg_eqn <- function(x) {
+      R_sq <- round(as.numeric(x$adj.r.squared), digits = 2)
+      int <- round(coef(x)[1], digits = 2)
+      slope <- round(coef(x)[2], digits = 2)
+      eqn <- paste("y = ", slope, "x + (", int, ")")
+      return(eqn)
     }
-  })
+    m <- lm(y ~ x, data)
+    s <- summary(m)
+    r <- round(s$adj.r.squared, digits = 2)
+    ggplot(data = data, aes(x = x, y = y)) +
+      geom_point(alpha = 0.5, color = "red") + 
+      geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x, color = "deepskyblue") +
+      labs(x = input$reg_mx1,
+           y = input$reg_my1, title = input$reg_mt1,
+           subtitle = paste0("R square: ", r, "; Equation: ", reg_eqn(s))) + 
+      theme2()
+   })
   output$plot10 <- renderPlot({
-    if (is.null(input$file1)) { NULL }
-    else {
+    if (is.null(input$file1)) { 
       data <- data_boxt()
-      data <- data %>%
-        dplyr::mutate(month = format(date, "%b")) %>%
-        dplyr::select(month, "y" = input$palleInp) %>%
-        group_by(month) %>%
-        summarise_all(funs(mean, sd), na.rm = TRUE)
-      ggplot(data, aes(x = month, mean)) + 
-        geom_bar(position = position_dodge(), stat = "identity", colour = 'seagreen', 
-                 fill  = 'seagreen') + 
-        labs(y = input$box_yt, x = "", title = input$box_mtt) + 
-        geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = .2, position = 
-                        position_dodge(.9), color = 'seagreen') +
-        theme2() + theme(axis.text.x = element_text(size = 12, face = "bold"))
+    } else {
+      data <- data_boxt()
     }
+    data <- data %>%
+      dplyr::mutate(month = format(date, "%b")) %>%
+      dplyr::select(month, "y" = input$palleInp) %>%
+      group_by(month) %>%
+      summarise_all(funs(mean, sd), na.rm = TRUE)
+    ggplot(data, aes(x = month, mean)) + 
+      geom_bar(position = position_dodge(), stat = "identity", colour = 'seagreen', 
+               fill  = 'seagreen') + 
+      labs(y = input$box_yt, x = "", title = input$box_mtt) + 
+      geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = .2, position = 
+                      position_dodge(.9), color = 'seagreen') +
+      theme2() + theme(axis.text.x = element_text(size = 12, face = "bold"))
   })
   output$plot13 <- renderPlot({
-    if (is.null(input$file1)) { NULL }
-    else {
+    if (is.null(input$file1)) { 
       data <- data_ta()
-      data$date <- as.Date(data$date, "%Y-%m-%d", tz = "Asia/Kolkata")
-      if(input$avg_hour2 == "daily2") {
-        data <- data.frame(data$date, na.interp(data[[input$palleInp2]])) 
-        data_wt <- wt(data, dt = 1) 
-      } else { 
-        NULL
-      }
-      par(mfrow = c(1, 1), oma = c(0, 0, 0, 2), mar = c(5, 5, 5, 7) + 0.1) #specify the limits of margins to the plot area
-      plot.biwavelet(data_wt, form = "%Y-%m-%d", type = "power.corr.norm",
-                     plot.cb = TRUE, lwd.coi = 1, col.coi = "black",
-                     cex.lab = 1.5, cex.axis = 1.5, cex.main = 1.5, 
-                     plot.sig = 95, lwd.sig = 2, zlim = c(0, as.integer(log2(nrow(data)))), 
-                     ylab = "Period (days)", xlab = "Year")
-      }
-  })
-  output$plot14 <- renderPlot({
-    data <- data.frame(
-      pollutant = c("Sulphur dioxide", "Nitrogen dioxide", "PM10", "PM2.5", 
-                    "Ozone", "Ammonia", "Benzene"),
-      levels = c(50, 40, 60, 40, 100, 100, 5)
-    )
-    ggplot(data, aes(pollutant, levels)) +
-      geom_hline(yintercept = 50, colour = "black") +
-      geom_hline(yintercept = 40, colour = "black") +
-      geom_hline(yintercept = 60, colour = "black") +
-      geom_hline(yintercept = 40, colour = "black") +
-      geom_hline(yintercept = 100, colour = "black") +
-      geom_hline(yintercept = 100, colour = "black") +
-      geom_hline(yintercept = 5, colour = "black") +
-      labs(y = "Major Pollutants", title = expression(paste("National Ambient Air Quality Annual Standards in India" , " (", "ug", ~m^{-3}, ")")),
-           x = "") + geom_text(aes(label = paste(pollutant, "=", levels)), 
-                               nudge_x = 0, nudge_y = 3, size = 6) + theme2() +
-      theme(axis.text.x = element_blank(), 
-            plot.title = element_text(size = 22, colour = "black")) 
+    } else {
+      data <- data_ta()
+    }
+    data$date <- as.Date(data$date, "%Y-%m-%d", tz = "Asia/Kolkata")
+    if(input$avg_hour2 == "daily2") {
+      data <- data.frame(data$date, na.interp(data[[input$palleInp2]])) 
+      data_wt <- wt(data, dt = 1) 
+    } else { 
+      NULL
+    }
+    par(mfrow = c(1, 1), oma = c(0, 0, 0, 2), mar = c(5, 5, 5, 7) + 0.1) #specify the limits of margins to the plot area
+    plot.biwavelet(data_wt, form = "%Y-%m-%d", type = "power.corr.norm",
+                   plot.cb = TRUE, lwd.coi = 1, col.coi = "black",
+                   cex.lab = 1.5, cex.axis = 1.5, cex.main = 1.5, 
+                   plot.sig = 95, lwd.sig = 2, main = input$title_bi, 
+                   ylab = "Period (days)", xlab = "")
   })
   output$plot16 <- renderPlot({
-    if (is.null(input$file1)) { NULL }
-    else {
+    if (is.null(input$file1)) { 
       data <- data_da()
-      data_avail <- data %>%
-        dplyr::select(day, everything(), - date) %>%
-        group_by(day) %>%
-        summarise_all(funs(mean), na.rm = TRUE) %>%
-        pivot_longer(-day, names_to = "Parameter", values_to = "Value")
-      no_na_df <- data_avail 
-      no_na_df <- no_na_df[complete.cases(no_na_df), ]
-      ggplot(no_na_df, aes(x = day, y = Parameter, color = Parameter)) + 
-        geom_errorbarh(aes(xmax = day, xmin = day), size = 0.25) + 
-        labs(y = "", title = "Data availability plot", x = "") + 
-        scale_x_date(date_breaks = "60 days", date_labels = "%b-%y") +
-        theme2() + theme(legend.position = "none")
+    } else {
+      data <- data_da()
     }
-  })
+    data_avail <- data %>%
+      dplyr::select(day, everything(), - date) %>%
+      group_by(day) %>%
+      summarise_all(funs(mean), na.rm = TRUE) %>%
+      pivot_longer(-day, names_to = "Parameter", values_to = "Value")
+    no_na_df <- data_avail 
+    no_na_df <- no_na_df[complete.cases(no_na_df), ]
+    ggplot(no_na_df, aes(x = day, y = Parameter, color = Parameter)) + 
+      geom_errorbarh(aes(xmax = day, xmin = day), size = 0.25) + 
+      labs(y = "", title = "Data availability plot", x = "") + 
+      scale_x_date(date_breaks = "60 days", date_labels = "%b-%y") +
+      theme2() + theme(legend.position = "none")
+    })
   
   # acf(z, lag.max = ((nrow(TimeSerie))/2), na.action = na.pass)
   
@@ -1307,22 +1321,27 @@ server <- function(input, output, session) {
     y
   })
   output$plot11 <- renderPlot({
-    if (is.null(input$file1)) { NULL }
-    else {
+    if (is.null(input$file1)) { 
       data <- fortify(lm_reg())
-      y <- as.numeric(as.character(data[[input$DepVar1]]))
-      ggplot(data = data, aes(x = .fitted, y = y)) +
-        geom_point(alpha = 0.5, color = "red") + 
-        geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x, color = "deepskyblue") +
-        labs(x = input$reg_mx, y = input$reg_my, title = input$reg_mmt) + theme2()
+    } else {
+      data <- fortify(lm_reg())
     }
-  })
+    y <- as.numeric(as.character(data[[input$DepVar1]]))
+    ggplot(data = data, aes(x = .fitted, y = y)) +
+      geom_point(alpha = 0.5, color = "red") + 
+      geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x, color = "deepskyblue") +
+      labs(x = input$reg_mx, y = input$reg_my, title = input$reg_mmt) + theme2()
+   })
   output$RegOut <- renderPrint({summary(lm_reg())})
   output$DepPrint <- renderPrint({paste("Dependent variable:", input$DepVar1)})
   output$IndPrint <- renderPrint({paste("Independent variables:", input$InDepVar1)})
   
   data_summary <- reactive({
-    data <- data_joined()
+    if (is.null(input$file1)) {
+      data <- CPCB_f()
+    } else {
+      data <- data_joined()
+    }
     data <- data %>%
       dplyr::select(day, everything(), - date)
     if(input$avg == "no") {
@@ -1426,3 +1445,35 @@ shinyApp(ui, server)
 # plot(specx, specy, xlab = "Period (days)", ylab = "Spectral Density", type = "l")
 # write.csv(data_op, "data.csv")
 
+# output$plot14 <- renderPlot({
+#   data <- data.frame(
+#     pollutant = c("Sulphur dioxide", "Nitrogen dioxide", "PM10", "PM2.5", 
+#                   "Ozone", "Ammonia", "Benzene"),
+#     levels = c(50, 40, 60, 40, 100, 100, 5)
+#   )
+#   ggplot(data, aes(pollutant, levels)) +
+#     geom_hline(yintercept = 50, colour = "black") +
+#     geom_hline(yintercept = 40, colour = "black") +
+#     geom_hline(yintercept = 60, colour = "black") +
+#     geom_hline(yintercept = 40, colour = "black") +
+#     geom_hline(yintercept = 100, colour = "black") +
+#     geom_hline(yintercept = 100, colour = "black") +
+#     geom_hline(yintercept = 5, colour = "black") +
+#     labs(y = "Major Pollutants", title = expression(paste("National Ambient Air Quality Annual Standards in India" , " (", "ug", ~m^{-3}, ")")),
+#          x = "") + geom_text(aes(label = paste(pollutant, "=", levels)), 
+#                              nudge_x = 0, nudge_y = 3, size = 6) + theme2() +
+#     theme(axis.text.x = element_blank(), 
+#           plot.title = element_text(size = 22, colour = "black")) 
+# })
+# zlim = c(0, as.integer(log2(nrow(data)))), 
+
+
+# data_diurnal <- eventReactive(input$diurnal, {
+#   data <- CPCB_f()
+#   if(input$avg_hour3 == "daily3") {
+#     data <- openair::timeAverage(data, avg.time = "day")
+#   } else { 
+#     data <- CPCB_f() 
+#   }
+#   return(data)
+# })

@@ -3,6 +3,10 @@
 
 ### File
 
+**What to expect from the app?**  
+*A dummy dataset is loaded, so, without uploading the data keep clicking
+buttons to generate plots in this app.*
+
 **Where can we download these data sets from?**  
 *The datasets can be downloaded from 3 sources - [CPCB
 website](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing),
@@ -27,6 +31,10 @@ the mentioned sources.*
 **What are the different file formats which can be uploaded to this
 application?**  
 *The data can be uploaded only in .csv or .xlsx format.*
+
+**What if no quality check options are used?**  
+*The data will be as it is except that it will remove fill values from
+the data.*
 
 **What is the naming convention of downloaded files?**  
 *The File tab downloaded data is the hourly or daily average so
@@ -83,7 +91,8 @@ Write to us at <contact@ilklabs.com>. For reporting any bug/issue click
 *Depends on the user. If you find the resolution and everything usable,
 please go ahead. Remember to cite us!*
 
-**How to cite PolluCheck?**
+**How to cite PolluCheck?**  
+*We will update this soon!*
 
 **Is the theme of the application customizable?**  
 *No, the theme of the app is not customizable, if you have any
@@ -97,6 +106,10 @@ above.*
 \_average.csv*.
 
 ### Summary Plots
+
+**What is does data availability plot indicate?**  
+*The data availability plot shows the available daily data for each
+parameter.*
 
 **How to read the box plots?**  
 *A boxplot is a way to show a [five-number
@@ -222,15 +235,20 @@ since the application averages to 1 hour or daily average.*
 
 ### openair
 
-**What is the difference between “median and quantiles” and “mean and
-95% confidence intervals” in Time Variation Plot?**  
+**openair details -**  
+*We did not build openair. We use functions from openair to plot. The
+openair package usage and other details can be found
+[here](https://github.com/davidcarslaw/openair).*\*\*
+
+What is the difference between “median and quantiles” and “mean and 95%
+confidence intervals” in Time Variation Plot?\*\*  
 *Since Time Variation plot shows the variation in parameters based on
 different time resolutions. It is the same option to time variation
 plots as mean and sd or median and IQR.*
 
-**Is there a possibility to generate other openair plots?**  
-*No, right now the application cannot generate other plots which can be
-generated using openair.*
+**How many different plots can be created using openair?**  
+*Right now, this app supports only two plots - calendar plot and
+temporal variation plot.*
 
 **Where can I find the documentation of openair?**  
 *Please click
@@ -238,4 +256,6 @@ generated using openair.*
 Also, remember to cite them!*
 
 **What are the ambient levels in India?**  
-*Please check the graph below.*
+*Please check the
+[link](https://app.cpcbccr.com/ccr_docs/FINAL-REPORT_AQI_.pdf) for
+details.*
