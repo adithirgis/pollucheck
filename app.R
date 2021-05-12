@@ -274,8 +274,8 @@ ui <- fluidPage(
                                                         value = "Title"),
                                               textInput("comp_y", label = "Edit Y axis label of time-series plot", 
                                                         value = "Parameter"),
-                                              tags$br(),
-                                              tags$br(),
+                                              tags$hr(),
+                                              tags$hr(),
                                               actionButton("plot_val", "Scatter plot"),
                                               tags$br(),
                                               tags$br(),
@@ -285,6 +285,23 @@ ui <- fluidPage(
                                                         value = "Site 2"),
                                               textInput("reg_my1", label = "Edit Y axis of scatter plot", 
                                                         value = "Site 1"),
+                                              tags$hr(),
+                                              tags$hr(),
+                                              radioButtons("diurn1", "Diurnal plot",
+                                                           c("All data" = "all",
+                                                             "Monthly" = "mon"), 
+                                                           selected = "all"),
+                                              radioButtons("diur1", "Aggregation method",
+                                                           c("Mean and Std Dev" = "mesd",
+                                                             "Median and IQR" = "mediq"), 
+                                                           selected = "mesd"),
+                                              actionButton("plot_val_di", "Diurnal plot"),
+                                              tags$br(),
+                                              tags$br(),
+                                              textInput("diurnal_mt1", label = "Edit title of plot", 
+                                                        value = "Title"),
+                                              textInput("diurnal_y1", label = "Edit Y axis label", 
+                                                        value = "Parameter"),
                                               tags$hr()),
                              conditionalPanel(condition = "input.tabs1 == 5",
                                               tags$hr(),
@@ -375,7 +392,8 @@ ui <- fluidPage(
                               tabPanel(value = 7,
                                        title = "Compare",
                                        plotOutput("plot12", height = 600),
-                                       plotOutput("plot15", height = 600)),
+                                       plotOutput("plot15", height = 600),
+                                       plotOutput("plot17", height = 600)),
                               tabPanel(
                                 value = 4,
                                 title = "`openair`",
@@ -860,6 +878,15 @@ server <- function(input, output, session) {
       select(date, "Site 2" = input$Para1)
     all <- full_join(data, data1, by = "date")
   })
+  data_diurnal_comp <- eventReactive(input$plot_val_di, {
+    data <- CPCB_f()
+    data1 <- Cmp_f()
+    data <- data %>%
+      select(date, "Site 1" = input$Para)
+    data1 <- data1 %>%
+      select(date, "Site 2" = input$Para1)
+    all <- full_join(data, data1, by = "date")
+  })
   trend <- function(data, button, avg) {
     date_df <- data.frame(date = date_ts(data, "60 min"))
     data <- data %>%
@@ -1293,6 +1320,7 @@ server <- function(input, output, session) {
                    plot.sig = 95, lwd.sig = 2, main = input$title_bi, 
                    ylab = "Period (days)", xlab = "")
   })
+  # Data availability plot
   output$plot16 <- renderPlot({
     if (is.null(input$file1)) { 
       data <- data_da()
@@ -1312,7 +1340,73 @@ server <- function(input, output, session) {
       scale_x_date(date_breaks = "60 days", date_labels = "%b-%y") +
       theme2() + theme(legend.position = "none")
     })
-  
+  # Diurnal for two sites
+  output$plot17 <- renderPlot({
+    if (is.null(input$file1) | is.null(input$file2)) { 
+      data <- data_diurnal_comp()
+    } else {
+      data <- data_diurnal_comp()
+    }
+    data <- data %>%
+      dplyr::mutate(hour = format(date, "%H"),
+                    month = format(date, "%b"))
+    data <- data %>%
+      dplyr::select(hour, month, site1 = `Site 1`, site2 = `Site 2`) 
+    data$hour <- as.numeric(as.character(data$hour))
+    if (input$diur1 == "mesd" && input$diurn1 == "all") { 
+      data <- data %>%
+        dplyr::select(hour, site1, site2) %>%
+        group_by(hour) %>%
+        summarise_all(funs(mean, sd), na.rm = TRUE)
+      ggplot(data, aes(hour, site1_mean)) + 
+        geom_errorbar(aes(ymin = site1_mean - site1_sd, ymax = site1_mean + site1_sd), 
+                                                    color = "#F8766D") +
+        geom_errorbar(aes(ymin = site2_mean - site2_sd, ymax = site2_mean + site2_sd), 
+                      color = "#2596BE") + 
+        scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
+        labs(y = input$diurnal_y1, x = "Hour of the day (LT)", title = input$diurnal_mt1) + 
+        theme2() + geom_line(aes(y = site1_mean), size = 0.6, color = "#F8766D") + 
+        geom_line(aes(y = site2_mean), size = 0.6, color = "#2596BE")
+    } else if (input$diur1 == "mediq" && input$diurn1 == "all") {
+      data <- data %>%
+        dplyr::select(hour, site1, site2) %>%
+        group_by(hour) %>%
+        summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
+      ggplot(data, aes(as.numeric(hour), site1_median)) + 
+        geom_errorbar(aes(ymin = site1_p25, ymax = site1_p75), color = "#F8766D") +
+        geom_errorbar(aes(ymin = site2_p25, ymax = site2_p75), color = "#2596BE") +
+        scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
+        labs(y = input$diurnal_y1, x = "Hour of the day (LT)", title = input$diurnal_mt1) + 
+        theme2() + geom_line(aes(y = site1_median), size = 0.6, color = "#F8766D") + 
+        geom_line(aes(y = site2_median), size = 0.6, color = "#2596BE")
+    } else if (input$diur1 == "mediq" && input$diurn1 == "mon") {
+      data <- data %>%
+        group_by(month, hour) %>%
+        summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
+      ggplot(data, aes(as.numeric(hour), site1_median)) + 
+        geom_errorbar(aes(ymin = site1_p25, ymax = site1_p75), color = "#F8766D") +
+        geom_errorbar(aes(ymin = site2_p25, ymax = site2_p75), color = "#2596BE") +
+        scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
+        labs(y = input$diurnal_y1, x = "Hour of the day (LT)", title = input$diurnal_mt1) + 
+        theme2() + geom_line(aes(y = site1_median), size = 0.6, color = "#F8766D") + 
+        geom_line(aes(y = site2_median), size = 0.6, color = "#2596BE") + facet_wrap(.~month, nrow = 3) + 
+        theme(axis.text.y = element_text(size = 12))
+    } else if (input$diur1 == "mesd" && input$diurn1 == "mon") { 
+      data <- data %>%
+        group_by(month, hour) %>%
+        summarise_all(funs(mean, sd), na.rm = TRUE)
+      ggplot(data, aes(hour, site1_mean)) + 
+        geom_errorbar(aes(ymin = site1_mean - site1_sd, ymax = site1_mean + site1_sd), 
+                      color = "#F8766D") +
+        geom_errorbar(aes(ymin = site2_mean - site2_sd, ymax = site2_mean + site2_sd), 
+                      color = "#2596BE") + 
+        scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
+        labs(y = input$diurnal_y1, x = "Hour of the day (LT)", title = input$diurnal_mt1) + 
+        theme2() + geom_line(aes(y = site1_mean), size = 0.6, color = "#F8766D") + 
+        geom_line(aes(y = site2_mean), size = 0.6, color = "#2596BE") + facet_wrap(.~month, nrow = 3) + 
+        theme(axis.text.y = element_text(size = 12))
+    }
+  })
   # acf(z, lag.max = ((nrow(TimeSerie))/2), na.action = na.pass)
   
   lm_reg <- reactive({
