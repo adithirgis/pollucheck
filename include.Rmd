@@ -71,7 +71,7 @@ knitr::opts_chunk$set(echo = TRUE)
 **Can the plots generated using PolluCheck be used for publications?**  
 *Depends on the user. If you find the resolution and everything usable, please go ahead. Remember to cite us!*
 
-**How to cite PolluCheck?**   
+**How to cite PolluCheck?**  
 *We will update this soon!*
 
 **Is the theme of the application customizable?**  
@@ -153,9 +153,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ### openair
 
 **openair details -**  
-*We did not build openair. We use functions from openair to plot. The openair package usage and other details can be found [here](https://github.com/davidcarslaw/openair).***  
-  
-What is the difference between "median and quantiles" and "mean and 95% confidence intervals" in Time Variation Plot?**  
+*We did not build openair. We use functions from openair to plot. The openair package usage and other details can be found [here](https://github.com/davidcarslaw/openair).*\*\*
+
+What is the difference between "median and quantiles" and "mean and 95% confidence intervals" in Time Variation Plot?\*\*  
 *Since Time Variation plot shows the variation in parameters based on different time resolutions. It is the same option to time variation plots as mean and sd or median and IQR.*
 
 **How many different plots can be created using openair?**  
