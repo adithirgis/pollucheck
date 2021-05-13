@@ -341,6 +341,9 @@ ui <- fluidPage(
                                                                actionButton("mk", "Trend Analysis"),
                                                                tags$br(),
                                                                tags$br(),
+                                                               checkboxInput('avg_month', 'Use monthly averages'),
+                                                               tags$hr(),
+                                                               tags$hr(),
                                                                actionButton("ta", "Periodicity Analysis"),
                                                                tags$br(),
                                                                tags$br(),
@@ -1059,7 +1062,15 @@ server <- function(input, output, session) {
   })
   kenda <- reactive({
     data <- data_mk()
-    if(input$avg_hour2 == "daily2") {
+    if(input$avg_hour2 == "daily2" & !input$avg_month) {
+      x <- zoo(data[[input$palleInp2]], data$date)
+      x <- na.interp(x)
+    } else if (input$avg_month) {
+      data <- data %>%
+        mutate(date = format(date, "%Y-%m"),
+               date = as.Date(paste0(date, "-01"), format = "%Y-%m-%d", tz = "Asia/Kolkata")) %>%
+        group_by(date) %>%
+        summarise_all(funs(mean), na.rm = TRUE)
       x <- zoo(data[[input$palleInp2]], data$date)
       x <- na.interp(x)
     } else { 
