@@ -3,6 +3,7 @@ library(Cairo)
 library(openair)
 library(tidyverse)
 library(dplyr)
+library(shinyjs)
 library(bslib)
 library(forecast)
 library(biwavelet)
@@ -40,8 +41,8 @@ ui <- fluidPage(
                                                           multiple = FALSE, 
                                                           "Select"),
                                               radioButtons("avg_hour3", "Plotting data",
-                                                           c("Hourly average" = "hour3",
-                                                             "Daily average" = "daily3"), 
+                                                           c("Hourly mean" = "hour3",
+                                                             "Daily mean" = "daily3"), 
                                                            selected = "hour3"),
                                               tags$hr(),
                                               tags$hr(),
@@ -115,8 +116,8 @@ ui <- fluidPage(
                              conditionalPanel(condition = "input.tabs1 == 6",
                                               tags$hr(),
                                               radioButtons("avg_hour1", "Plotting data",
-                                                           c("Hourly average" = "hour1",
-                                                             "Daily average" = "daily1"), 
+                                                           c("Hourly mean" = "hour1",
+                                                             "Daily mean" = "daily1"), 
                                                            selected = "hour1"),
                                               tags$hr(),
                                               tags$hr(),
@@ -221,8 +222,8 @@ ui <- fluidPage(
                                                            value = 9999),
                                               tags$hr(),
                                               radioButtons("avg_hour", "Output aggregation",
-                                                           c("Hourly average" = "hour",
-                                                             "Daily average" = "daily"), 
+                                                           c("Hourly mean" = "hour",
+                                                             "Daily mean" = "daily"), 
                                                            selected = "hour"),
                                               tags$br(),
                                               actionButton("hourly", "Show Data"),
@@ -256,7 +257,7 @@ ui <- fluidPage(
                                                                             selected = "60 min")),
                                               tags$br(),
                                               fileInput("file2",
-                                                        "Upload data",
+                                                        "Upload data from another site to compare",
                                                         multiple = TRUE,
                                                         accept = c('.xlsx', '.csv')),
                                               tags$hr(),
@@ -308,8 +309,8 @@ ui <- fluidPage(
                                               selectInput("palleInp2", "Select parameter",
                                                           multiple = FALSE, "Select"),
                                               radioButtons("avg_hour2", "Plotting data",
-                                                           c("Hourly average" = "hour2",
-                                                             "Daily average" = "daily2"), 
+                                                           c("Hourly mean" = "hour2",
+                                                             "Daily mean" = "daily2"), 
                                                            selected = "hour2"),
                                               tags$hr(),
                                               tags$hr(),
@@ -337,18 +338,17 @@ ui <- fluidPage(
                                                         value = "Parameter"),
                                               tags$hr(),
                                               tags$hr(),
-                                              conditionalPanel(condition = 'input.avg_hour2 == "daily2"',
-                                                               actionButton("mk", "Trend Analysis"),
-                                                               tags$br(),
-                                                               tags$br(),
-                                                               checkboxInput('avg_month', 'Use monthly averages'),
-                                                               tags$hr(),
-                                                               tags$hr(),
-                                                               actionButton("ta", "Periodicity Analysis"),
-                                                               tags$br(),
-                                                               tags$br(),
-                                                               textInput("title_bi", label = "Edit title of the plot", 
-                                                                         value = "Title")),
+                                              actionButton("mk", "Trend Analysis"),
+                                              tags$br(),
+                                              tags$br(),
+                                              checkboxInput('avg_month', 'Use monthly means'),
+                                              tags$hr(),
+                                              tags$hr(),
+                                              actionButton("ta", "Periodicity Analysis (based on daily mean)"),
+                                              tags$br(),
+                                              tags$br(),
+                                              textInput("title_bi", label = "Edit title of the plot", 
+                                                        value = "Title"),
                                               tags$hr())),
                 mainPanel(
                   tags$a(img(src = 'logo.png', align = "right", height = 70,
@@ -407,7 +407,8 @@ ui <- fluidPage(
                                 includeMarkdown("include.md")),
                               tabPanel(
                                 title = "Disclaimer",
-                                helpText("We are not responsible for malfunction or miscalculation or bugs in the code.")))
+                                helpText("The developers and contributors are not responsible for malfunction or miscalculation or bugs in the code."),
+                                helpText("The developers and contributors of this application are not the authors of openair package used here.")))
                 )))
 
 
@@ -847,7 +848,20 @@ server <- function(input, output, session) {
       data <- openair::timeAverage(data, avg.time = "day")
     } else { data }
   }
-  
+  observeEvent(input$avg_hour2, {
+    if(input$avg_hour2 == "hour2") {
+      shinyjs::disable("mk") 
+      shinyjs::disable("avg_month") 
+      shinyjs::disable("ta") 
+      shinyjs::disable("title_bi")
+    } else if (input$avg_hour2 == "daily2") {
+      shinyjs::enable("mk") 
+      shinyjs::enable("avg_month") 
+      shinyjs::enable("ta") 
+      shinyjs::enable("title_bi") 
+    }
+  })
+ 
   data_joined <- eventReactive(input$hourly, {
     data <- mess(input$avg_hour, "daily")
   })

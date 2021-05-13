@@ -164,6 +164,14 @@ the significant periodicity at 95% significant 519 level.*
 **Why cant trend analysis be used for hourly data?**  
 *Hourly data does not have much periodicity to be captured.*
 
+**What are the time resolutions Trend Analysis can be used?**  
+*Daily mean and monthly mean is used to perform Trend Analysis by
+Mann-Kendall.*
+
+**What are the time resolutions Periodicity Analysis can be used?**  
+*Daily mean data is used to generate the biwavelet. We have used the
+default options in the biwavelet package to generate the plot.*
+
 **How Q-Q Plot is different from a Scatter Plot?**  
 *A Q-Q plot is a scatterplot created by plotting two sets of quantiles
 against one another. If both sets of quantiles came from the same
@@ -238,10 +246,10 @@ since the application averages to 1 hour or daily average.*
 **openair details -**  
 *We did not build openair. We use functions from openair to plot. The
 openair package usage and other details can be found
-[here](https://github.com/davidcarslaw/openair).*\*\*
+[here](https://github.com/davidcarslaw/openair).*
 
-What is the difference between “median and quantiles” and “mean and 95%
-confidence intervals” in Time Variation Plot?\*\*  
+**What is the difference between “median and quantiles” and “mean and
+95% confidence intervals” in Time Variation Plot?**  
 *Since Time Variation plot shows the variation in parameters based on
 different time resolutions. It is the same option to time variation
 plots as mean and sd or median and IQR.*
