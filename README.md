@@ -4,20 +4,19 @@ PolluCheck helps exploring the open source Indian air quality data.
 
 ⚡ Fun fact: Its a tidy code!
 
-The link for this app is this - https://aruapps.shinyapps.io/OpenSourceAirQualityApp/.
+The link for this app is this - <https://aruapps.shinyapps.io/OpenSourceAirQualityApp/>.
 
-- PolluCheck (currently in the development phase) is specific to India, and allows users to handle open-source air-quality datasets available from OpenAQ (https://openaq.org/#/countries/IN?_k=5ecycz), CPCB (https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing), and AirNow (https://www.airnow.gov/international/us-embassies-and-consulates/#India). 
-- Users can visualize data, analyse data, perform basic statistical operations, and generate a variety of publication-ready plots. 
-- We have also included the popular openair package in this application. 
+-   PolluCheck (currently in the development phase) is specific to India, and allows users to handle open-source air-quality datasets available from OpenAQ (<https://openaq.org/#/countries/IN?_k=5ecycz>), CPCB (<https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing>), and AirNow (<https://www.airnow.gov/international/us-embassies-and-consulates/#India>).
+-   Users can visualize data, analyse data, perform basic statistical operations, and generate a variety of publication-ready plots.
+-   We have also included the popular openair package in this application.
 
- 
 # Have a look at the app!
 
 ### We are in this together!
 
 A walk through to use this app for everyone -
 
-How to Download Data from the CPCB website?
+#### How to download data from the CPCB website?
 
 -   Example - Where do you live in India?
 
@@ -50,6 +49,50 @@ How to Download Data from the CPCB website?
 -   Download that data (15, 30, 60 min resolution would be good).
 
 ![](WWW/CPCB_Station_TA.jpeg)
+
+#### How to download data from the OpenAQ website?
+
+-   Click on [OpenAQ](https://openaq.org/#/countries/IN?_k=5ecycz) in the app to download the OpenAQ dataset.
+
+    <img src="WWW/oaq_1.jpg" width="286"/>
+
+-   Now, click on the "*Download*" option on your browser.
+
+    <img src="WWW/oaq_2.jpg" width="517"/>
+
+-   In data download, you can download the data by "Locations" or by "*Datasets*".
+
+    <img src="WWW/oaq_3.jpg" width="484"/>
+
+-   Now select the desired, "*Country*", "*City/Region*" and "*Location*" using the dropdown.
+
+    <img src="WWW/oaq_4.jpg" width="306"/><img src="WWW/oaq_5.jpg" width="103"/><img src="WWW/oaq_6.jpg" width="215"/>
+
+-   To proceed further select the "*Start Date***"** and the "*End Date***"** for the data.
+
+    <img src="WWW/oaq_7.jpg" width="525"/>
+
+-   Now select which type of sensor is available at that location. Is it a "*Low-cost Sensor*" or "*Reference Grade*" monitor?
+
+    ![](WWW/oaq_8.jpg)
+
+-   Finally, select the parameters from the list of "*Core"* and "*Additional Parameters"* which you wish to download from that particular location and click on "*Download Selection*". The file will be saved in your local disk in .csv format.
+
+    <img src="WWW/oaq_9.jpg" width="519"/>
+
+#### How to download data from the AirNow website?
+
+-   Click on [AirNow-US Embassies](https://www.airnow.gov/international/us-embassies-and-consulates/) to visit official website to download the data.
+
+    <img src="WWW/a_1.JPG" width="557"/>
+
+-   Select the desired city and the parameters.
+
+    <img src="WWW/a_2.JPG" width="554"/>
+
+-   Now Go to the **"***Historical***"** sub-menu on the Homepage and download the desired file.
+
+    <img src="WWW/a_3.JPG" width="557"/>
 
 ### Have a look at the app usage
 
@@ -173,7 +216,7 @@ How to Download Data from the CPCB website?
     ![](WWW/image_24.JPG)
 
     ![](WWW/image_25.JPG)
-    
+
     ![](WWW/image_26.JPG)
 
 ##### `openair` tab allows users use the package's widely used functions for the selected parameter.
@@ -181,10 +224,9 @@ How to Download Data from the CPCB website?
 -   Calendar plot
 
     ![](WWW/image_27.JPG)
-    
+
     ![](WWW/image_28.JPG)
 
 -   Time variation plot
 
     ![](WWW/image_29.JPG)
-
