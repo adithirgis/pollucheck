@@ -467,7 +467,6 @@ server <- function(input, output, session) {
     }
   }
   
-  
   #### How to assign functions returning two variables
   ':=' <- function(lhs, rhs) {
     frame <- parent.frame()
@@ -510,10 +509,8 @@ server <- function(input, output, session) {
     all <- all %>%
       select(date, everything())
     col_interest <- 2:ncol(all)
-    all[ , col_interest] <- sapply(X = all[ , col_interest], 
-                                             FUN = function(x) as.numeric(as.character(x)))
-    all[ , col_interest] <- sapply(X = all[ , col_interest], 
-                                             FUN = function(x) ifelse(x == -999, NA, x))
+    all[ , col_interest] <- sapply(X = all[ , col_interest], FUN = function(x) as.numeric(as.character(x)))
+    all[ , col_interest] <- sapply(X = all[ , col_interest], FUN = function(x) ifelse(x == -999, NA, x))
     return(list(all, date))
   }
   
@@ -532,10 +529,8 @@ server <- function(input, output, session) {
     all <- all %>%
       select(date, everything())
     col_interest <- 2:ncol(all)
-    all[ , col_interest] <- sapply(X = all[ , col_interest], 
-                                   FUN = function(x) as.numeric(as.character(x)))
-    all[ , col_interest] <- sapply(X = all[ , col_interest], 
-                                   FUN = function(x) ifelse(x == -999, NA, x))
+    all[ , col_interest] <- sapply(X = all[ , col_interest], FUN = function(x) as.numeric(as.character(x)))
+    all[ , col_interest] <- sapply(X = all[ , col_interest], FUN = function(x) ifelse(x == -999, NA, x))
     return(list(all, date))
   }
   
@@ -579,23 +574,17 @@ server <- function(input, output, session) {
   #### Function to remove negative values
   neg <- function(site1_join_f1) {
     col_interest <- 3:ncol(site1_join_f1)
-    site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
-                                             FUN = function(x) as.numeric(as.character(x)))
-    site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
-                                             FUN = function(x) ifelse(x < 0, NA, x))
+    site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], FUN = function(x) as.numeric(as.character(x)))
+    site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], FUN = function(x) ifelse(x < 0, NA, x))
     site1_join_f1
   }
   
   #### Function to remove repeated values
   repeat_ed <- function(site1_join_f1) {
     col_interest <- 3:ncol(site1_join_f1)
-    site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[, col_interest], 
-                                             FUN = function(j)
-                                               ifelse(c(FALSE, diff(as.numeric(j), 1, 1) == 0), 
+    site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[, col_interest], FUN = function(j) ifelse(c(FALSE, diff(as.numeric(j), 1, 1) == 0), 
                                                       NA, j))
-    site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
-                                             FUN = function(x) 
-                                               as.numeric(as.character(x)))
+    site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], FUN = function(x) as.numeric(as.character(x)))
     site1_join_f1
   }
   
@@ -744,8 +733,7 @@ server <- function(input, output, session) {
         dplyr::select(date, day, everything())
       col_interest <- 3:ncol(site1_join_f1)
       if(log_op) {
-        site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
-                                                 FUN = function(x) log(x))
+        site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], FUN = function(x) log(x))
       } else { site1_join_f1 } 
       if(exclude) {
         site1_join_f1 <- outlier(site1_join_f1, name, date, ey)
@@ -753,16 +741,14 @@ server <- function(input, output, session) {
           site1_join_f1 <- site1_join_f1 %>%
             dplyr::select(date, day, everything())
           col_interest <- 3:ncol(site1_join_f1)
-          site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
-                                                   FUN = function(x) exp(x))
+          site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], FUN = function(x) exp(x))
         }
       } else { site1_join_f1 } 
       
       site1_join_f1 <- site1_join_f1 %>%
         dplyr::select(date, day, everything())
       col_interest <- 3:ncol(site1_join_f1)
-      site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], 
-                                               FUN = function(x) as.numeric(as.character(x)))
+      site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], FUN = function(x) as.numeric(as.character(x)))
       if(percent) {
         site1_join_f1 <- compl(name, site1_join_f1, date, file, per)
       } else { site1_join_f1 }
@@ -788,7 +774,7 @@ server <- function(input, output, session) {
       data <- data_file(75, "cpcb", "TN_CMN_19.xlsx", "TN_CMN_19.xlsx",
                         "60 min", TRUE, TRUE, TRUE,
                         3, TRUE, 999, FALSE)
-    } else {
+    } else if(!is.null(input$file1)) {
       data <- data_file(input$per, input$type, input$file1$datapath, input$file1,
                         input$file, input$remove_9, input$repeated, input$percent, 
                         input$ey, input$exclude, input$high_number, input$log_op) 
@@ -799,7 +785,7 @@ server <- function(input, output, session) {
       data <- data_file(75, "cpcb", "TN_CMN_19.xlsx", "TN_CMN_19.xlsx",
                         "60 min", TRUE, TRUE, TRUE,
                         3, TRUE, 999, FALSE)
-    } else {
+    } else if(!is.null(input$file2)) {
     data <- data_file(input$per, input$type2, input$file2$datapath, input$file2,
                       input$file12, input$remove_9, input$repeated, input$percent, 
                       input$ey, input$exclude, input$high_number, input$log_op)
@@ -828,7 +814,7 @@ server <- function(input, output, session) {
   showModal(query_modal)
   
   observe({
-    if (is.null(input$file1 | input$file2)) {
+    if (is.null(input$file1) & is.null(input$file2)) {
       data <- CPCB_f()
       data1 <- Cmp_f()
      } else {
@@ -914,7 +900,7 @@ server <- function(input, output, session) {
     } else { data }
   }
   output$plot12 <- renderPlot({
-    if (is.null(input$file1) | is.null(input$file2)) { 
+    if (is.null(input$file1) & is.null(input$file2)) { 
       all <- data_joined_comp()
       }
     else {
@@ -1023,8 +1009,7 @@ server <- function(input, output, session) {
       data_joined <- data_joined()  
     }
     cols <- names(data_joined)[3:ncol(data_joined)]
-    data_joined[ , cols] <- sapply(X = data_joined[ , cols], 
-                                   FUN = function(x) as.numeric(as.character(x)))
+    data_joined[ , cols] <- sapply(X = data_joined[ , cols], FUN = function(x) as.numeric(as.character(x)))
     setDT(data_joined)
     data_joined[,(cols) := round(.SD, 2), .SDcols = cols]
     if(input$avg_hour == "daily") {
@@ -1281,7 +1266,7 @@ server <- function(input, output, session) {
       theme2()
    })
   output$plot15 <- renderPlot({
-    if (is.null(input$file1) | is.null(input$file2)) {
+    if (is.null(input$file1) & is.null(input$file2)) {
       data <- data_scatter_comp()
       } else {
       data <- data_scatter_comp()
@@ -1367,7 +1352,7 @@ server <- function(input, output, session) {
     })
   # Diurnal for two sites
   output$plot17 <- renderPlot({
-    if (is.null(input$file1) | is.null(input$file2)) { 
+    if (is.null(input$file1) & is.null(input$file2)) { 
       data <- data_diurnal_comp()
     } else {
       data <- data_diurnal_comp()
