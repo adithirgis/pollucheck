@@ -3,72 +3,81 @@
 
 ### File
 
-**What to expect from the app?**  
-*A dummy dataset is loaded, so, without uploading the data keep clicking
-buttons to generate plots in this app.*
+**What does the app do?**  
+*This app helps to analyze and visualize open source air quality data
+available. An example dataset is already loaded to help you walk through
+all the features of the app. If you need help with downloading your own,
+go to the next question.*
 
-**Where can we download these data sets from?**  
-*The datasets can be downloaded from 3 sources - [CPCB
+**Where can we download the air quality e data from?**  
+*Air Quality data from India can be downloaded from 3 sources - [CPCB
 website](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing),
 [OpenAQ](https://openaq.org/#/countries/IN?_k=5ecycz), and
 [AirNow](https://www.airnow.gov/international/us-embassies-and-consulates/#India).*
 
-**Does this application work for Countries other than India?**  
-*Yes, Any dataset from the 3 mentioned sources can be used in this
-application to analyze the data, the only important thing to remember is
-to choose the right time zone.*
+**Can I use this app to analyze app work for data from countries other
+than India?**  
+*Yes, two of the sources mentioned above OpenAQ, and AirNow have
+datasets from many other countries. CPCB is specific to India. Make sure
+you specify the correct timezone in the app when analyzing data from
+different countries.*
 
-**How to use the application?**  
+**How to use the app?**  
 *Please check
 [here](https://github.com/adithirgis/OpenSourceAirQualityApp) for a walk
 through.*
 
 **Will this application read data from a reference monitor which is not
-from the sources mentioned in the application?**  
-*No, this application can do post-processing of the data downloaded from
+from the sources mentioned in the app?**  
+*No, this app can only do post-processing of the data downloaded from
 the mentioned sources.*
 
 **What are the different file formats which can be uploaded to this
-application?**  
+app?**  
 *The data can be uploaded only in .csv or .xlsx format.*
 
-**What if no quality check options are used?**  
-*The data will be as it is except that it will remove fill values from
-the data.*
+**What if I do not use any quality check options?**  
+*Data from sources specified here, sometimes contains fill values which
+can be due to instrument malfunction or unavailability of data. The data
+will be as it is except that it will remove fill values from the data.*
 
 **What is the naming convention of downloaded files?**  
 *The File tab downloaded data is the hourly or daily average so
-“average.csv”, while the summary statistics file has an extension of
-“summary.csv”, and the diurnal table download will have an extension of
-“diurnal.csv”.*
+\_average.csv, while the summary statistics file has an extension of
+\_summary.csv, and the diurnal table download will have an suffix of
+\_diurnal.csv.*
 
-**What are the different packages used in the application?**  
+**What are the different packages used in the app?**  
 *The different packages we use here are - tidyverse, ggplot2, openair,
 lubridate, shiny, bslib, forecast, biwavelet, readxl, DT, data.table,
 nortest, janitor, zoo.*
 
 **Can the input file be manipulated/edited?**  
-*No. our application is currently designed to read the preset format of
-the input file.* *Any alterations in the input file may lead to the
-malfunctioning of the application.*
+*No. This app is currently designed to read the preset format of the
+input file. Any alterations in the input file may lead to unpredictable
+results.*
 
 **What is the standard outlier condition?**  
-*The standard outlier detection condition is to find the daily mean and
-standard deviation and then removing values which are lower then Mean -
-x \* SD and greater than Mean + x \* SD, where x is any real number.*
+*The standard outlier detection condition is to calculate the daily mean
+and standard deviation and then removing values that are lower than Mean
+subtracted by x times SD and greater than Mean added to x times SD,
+where x is any real number.*
 
 **Why should we remove repeated consecutive measurements?**  
 *Sometimes when the instrument breaks down, it tends to show exactly the
-same consecutive values, it is advised to remove these as well.*
+same consecutive values (often this value is the last measured value),
+it is suggested that such consecutive values be removed from the
+dataset*
 
 **Why should we remove values above 9999 from the data?**  
 *Usually, values above 9999 are incorrect, also because the instruments
 usually measure only up to 999 values in PM instruments. This can be
-removed using this filter option.*
+removed using this filter option, along with this 9999 could also be a
+fill value.*
 
 **What are the available time resolutions for plots and tables?**  
 *Only hourly and daily average plots can be generated in this
-application, although the data table can be of 60, 30, and 15 minutes
+application, although the input data can be of 60, 30, and 15 minutes
 time resolution.*
 
 **How to export plots?**  
@@ -96,20 +105,19 @@ please go ahead. Remember to cite us!*
 
 **Is the theme of the application customizable?**  
 *No, the theme of the app is not customizable, if you have any
-suggestions and resources, please PR in the github repo link provided
-above.*
+suggestions and resources, please Pull Request in the github repo link
+provided above.*
 
 ### Summary
 
 **What is the naming convention of the file downloaded?**  
-*The data downloaded in this tab will have an extension of
-\_average.csv*.
+*The data downloaded in this tab will have an suffix of \_average.csv.*
 
 ### Summary Plots
 
-**What is does data availability plot indicate?**  
-*The data availability plot shows the available daily data for each
-parameter.*
+**What does data availability plot indicate?**  
+*The data availability plot shows the available percentage of daily data
+points for each parameter.*
 
 **How to read the box plots?**  
 *A boxplot is a way to show a [five-number
@@ -130,9 +138,9 @@ center of the box.
 **What are the bars in the diurnal plot and why are there two
 options?**  
 *Diurnal plots represent the time of the day variability using mean (of
-that hour) and sd or median (of that hour) and IQR. So when you choose
-mean and sd the bars represent sd, while when you choose median and IQR,
-the bars represent IQR.*
+that hour) and sd or median (of that hour) and IQR (InterQuartile
+Range). So when you choose mean and sd the bars represent sd, while when
+you choose median and IQR, the bars represent IQR.*
 
 **Can we plot ratios of different pollutants on a time series?**  
 *No, this feature is not implemented yet.*
@@ -142,7 +150,8 @@ the bars represent IQR.*
 **What is the difference between the Shapiro-Wilk normality test and the
 Anderson- Darling normality test?**  
 *Shapiro-Wilk test is used to check for normality when the sample size
-is below 5000, while if you have data points above 5000, please check
+is below 5000, while Anderson- Darling test is used when sample size is
+greater than 5000 if you have data points above 5000, please check
 Anderson-Darling test.*
 
 **How is the data imputed for trend analysis?**  
@@ -164,28 +173,29 @@ the significant periodicity at 95% significant 519 level.*
 **Why cant trend analysis be used for hourly data?**  
 *Hourly data does not have much periodicity to be captured.*
 
-**What are the time resolutions Trend Analysis can be used?**  
+**What are the time resolutions used for Trend Analysis?**  
 *Daily mean and monthly mean is used to perform Trend Analysis by
-Mann-Kendall.*
+Mann-Kendall test.*
 
-**What are the time resolutions Periodicity Analysis can be used?**  
+**What are the time resolutions used for Periodicity Analysis?**  
 *Daily mean data is used to generate the biwavelet. We have used the
 default options in the biwavelet package to generate the plot.*
 
-**How Q-Q Plot is different from a Scatter Plot?**  
+**How is Q-Q Plot different from a Scatter Plot?**  
 *A Q-Q plot is a scatterplot created by plotting two sets of quantiles
-against one another. If both sets of quantiles came from the same
+against one another. If both sets of quantiles come from the same
 distribution, we should see the points forming a line that’s roughly
 straight.
 ([Source](https://data.library.virginia.edu/understanding-q-q-plots/#:~:text=A%20Q%2DQ%20plot%20is%20a,truly%20come%20from%20Normal%20distributions.))*
 
 ### Linear Regression
 
-**What are univariate and multivariate?**  
-*Univariate regression is which consist of single independent variable
-while multivariate consist of three or more variables.*
+**What are univariable and multivariable?**  
+*univariable regression is which consist of single independent variable
+while multivariable consist of three or more variables.*
 
-**What is the difference between multiple R- square and R- square?**  
+**What is the difference between multiple R- square and adjusted R-
+square?**  
 *Multiple R squared is simply a measure of Rsquared for models that have
 multiple predictor variables. Therefore it measures the amount of
 variation in the response variable that can be explained by the
@@ -202,16 +212,14 @@ Rsquared that indicates you may have overfit your model.
 **How to check if the data is significant or not?**  
 *The p-value in the last column tells you the significance of the
 regression coefficient for a given parameter. If the p-value is small
-enough to claim statistical significance, that just means there is
-strong evidence that the coefficient is different from 0, or else you
-could also try t-test.
+enough to claim statistical significance, that means there is strong
+evidence that the coefficient is different from 0.
 [source](https://stats.stackexchange.com/questions/37912/how-to-determine-which-variables-are-statistically-significant-in-multiple-regre)*
 
 **What are residuals?**  
-*The data points usually don’t fall exactly on this regression equation
+*The data points usually don’t fall exactly on the regression equation
 line; they are scattered around. A residual is the vertical distance
-between a data point and the regression line. It tells us how well a
-line fits with an individual data point.
+between a data point and the regression line.
 [source](https://www.statisticshowto.com/residual/)*
 
 **What are degrees of freedom?**  
@@ -222,37 +230,40 @@ can vary in an analysis without breaking any constraints.
 ### Compare
 
 **Can I compare two datasets of different timezone?**  
-*No, right now the comparison is with data from same timezone.*
+*No, right now the app allows for comparison with data from the same
+time zone.*
 
 **Can I compare two datasets of different time periods?**  
-*Yes, you can check the time-series of both the datasets, but the
+*Yes, you can compare the time-series of both the datasets, but the
 scatter plot will not be generated as they belong to different time
 series.*
 
-**Can I compare datasets from different downloading sources?**  
+**Can I compare datasets from different downloading sources (different
+websites)?**  
 *Yes, you can definitely compare from different available sources.*
 
-**How many datasets can be compared at a time in the application?**  
-*As of now, only one single file can be compared to the uploaded
+**How many datasets can be compared at a time in the app?**  
+*As of now, only one single file can be compared with the uploaded
 dataset.*
 
 **Is it possible to compare two datasets with different time
 resolutions?**  
-*Yes! It is possible to compare datasets from different time resolution
+*Yes! It is possible to compare datasets with different time resolutions
 since the application averages to 1 hour or daily average.*
 
 ### openair
 
-**openair details -**  
-*We did not build openair. We use functions from openair to plot. The
-openair package usage and other details can be found
-[here](https://github.com/davidcarslaw/openair).*
+**What is openair?**  
+*openair is an R package developed for the purpose of analysing air
+quality data - or more generally atmospheric composition data. We use
+functions from openair to plot. The openair package usage and other
+details can be found [here](https://github.com/davidcarslaw/openair).*
 
 **What is the difference between “median and quantiles” and “mean and
 95% confidence intervals” in Time Variation Plot?**  
-*Since Time Variation plot shows the variation in parameters based on
-different time resolutions. It is the same option to time variation
-plots as mean and sd or median and IQR.*
+*Since the Time Variation plot shows the variation in parameters based
+on different time resolutions. It is the same option as time variation
+plots to plot mean and sd or median and IQR.*
 
 **How many different plots can be created using openair?**  
 *Right now, this app supports only two plots - calendar plot and
