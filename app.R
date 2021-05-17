@@ -715,6 +715,14 @@ server <- function(input, output, session) {
         all <- data.frame(all) 
         date <- data.frame(date)
       }
+      all <- all %>% 
+        rename_at(
+          vars(ends_with(".x")),
+          ~str_replace(., "\\..$","")
+        ) %>% 
+        select_at(
+          vars(-ends_with(c(".y", ".1")))
+        )
       site1_join_f1 <- all %>%
         dplyr::mutate(day = as.Date(date, format = '%Y-%m-%d', tz = input$timezone)) %>%
         dplyr::select(date, day, everything())
