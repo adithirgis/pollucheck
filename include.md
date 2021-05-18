@@ -42,10 +42,10 @@ can be due to instrument malfunction or unavailability of data. The data
 will be as it is except that it will remove fill values from the data.*
 
 **What is the naming convention of downloaded files?**  
-*The File tab downloaded data is the hourly or daily average so
+\*The File tab downloaded data is the hourly or daily average so
 \_average.csv, while the summary statistics file has an extension of
-\_summary.csv, and the diurnal table download will have an suffix of
-\_diurnal.csv.*
+\_summary.csv, and the diurnal table download will have a suffix of
+\_diurnal.csv.\*
 
 **What are the different packages used in the app?**  
 *The different packages we use here are - tidyverse, ggplot2, openair,
@@ -111,7 +111,7 @@ provided above.*
 ### Summary
 
 **What is the naming convention of the file downloaded?**  
-*The data downloaded in this tab will have an suffix of \_average.csv.*
+\*The data downloaded in this tab will have a suffix of \_average.csv.\*
 
 ### Summary Plots
 
@@ -134,6 +134,10 @@ center of the box.
 
 **What do the bars in the vertical bar plots indicate?**  
 *The vertical bars represent mean + sd and mean - sd.*
+
+**What is the difference between month-yearly plot and monthly plot?**  
+*The month-yearly plot displays box plot based on each month and year,
+while monthly plot displays the plot for all months in multiple years.*
 
 **What are the bars in the diurnal plot and why are there two
 options?**  
@@ -169,9 +173,6 @@ For continuous wavelet transform we use [biwavelet
 package](https://cran.r-project.org/web/packages/biwavelet/biwavelet.pdf).
 In periodicity analysis, the contours covered by black lines represent
 the significant periodicity at 95% significant 519 level.*
-
-**Why cant trend analysis be used for hourly data?**  
-*Hourly data does not have much periodicity to be captured.*
 
 **What are the time resolutions used for Trend Analysis?**  
 *Daily mean and monthly mean is used to perform Trend Analysis by
