@@ -338,10 +338,12 @@ ui <- fluidPage(
                                                         value = "Parameter"),
                                               tags$hr(),
                                               tags$hr(),
-                                              actionButton("acf", "Autocorrelogram plot (based on daily mean)"),
+                                              actionButton("acf", "Autocorrelogram plot (based on monthly mean)"),
+                                              textInput("acf_main", label = "Edit title of plot", 
+                                                        value = "Title"),
                                               tags$hr(),
                                               tags$hr(),
-                                              actionButton("mk", "Trend Analysis"),
+                                              actionButton("mk", "Trend Analysis (based on daily mean)"),
                                               tags$br(),
                                               tags$br(),
                                               checkboxInput('avg_month', 'Use monthly means'),
@@ -411,6 +413,7 @@ ui <- fluidPage(
                                 includeMarkdown("include.md")),
                               tabPanel(
                                 title = "Disclaimer",
+                                helpText("Wind Direction data is valid only if downloaded at hourly value and used at the same resoluton."),
                                 helpText("The developers and contributors are not responsible for malfunction or miscalculation or bugs in the code."),
                                 helpText("The developers and contributors of this application are not the authors of openair package used here.")))
                 )))
@@ -792,7 +795,7 @@ server <- function(input, output, session) {
   
   CPCB_f <- reactive({
     if (is.null(input$file1)) {
-      data <- data_file(75, "cpcb", "TN_CMN_19.xlsx", "TN_CMN_19.xlsx",
+      data <- data_file(75, "cpcb", "BWSSB.xlsx", "BWSSB.xlsx",
                         "60 min", TRUE, TRUE, TRUE,
                         3, TRUE, 999, FALSE)
     } else if(!is.null(input$file1)) {
@@ -803,7 +806,7 @@ server <- function(input, output, session) {
   })
   Cmp_f <- reactive({
     if (is.null(input$file2)) {
-      data <- data_file(75, "cpcb", "TN_CMN_19.xlsx", "TN_CMN_19.xlsx",
+      data <- data_file(75, "cpcb", "BWSSB.xlsx", "BWSSB.xlsx",
                         "60 min", TRUE, TRUE, TRUE,
                         3, TRUE, 999, FALSE)
     } else if(!is.null(input$file2)) {
@@ -1078,7 +1081,7 @@ server <- function(input, output, session) {
     } else if (input$avg_month) {
       data <- data %>%
         mutate(date = format(date, "%Y-%m"),
-               date = as.Date(paste0(date, "-01"), format = "%Y-%m-%d", tz = "Asia/Kolkata")) %>%
+               date = as.Date(paste0(date, "-01"), format = "%Y-%m-%d", tz = input$timezone)) %>%
         group_by(date) %>%
         summarise_all(funs(mean), na.rm = TRUE)
       x <- zoo(data[[input$palleInp2]], data$date)
@@ -1302,11 +1305,12 @@ server <- function(input, output, session) {
       data <- data_boxt()
     }
     data <- data %>%
-      dplyr::mutate(month = format(date, "%b")) %>%
-      dplyr::select(month, "y" = input$palleInp) %>%
-      group_by(month) %>%
+      dplyr::mutate(date = format(date, "%Y-%m-01"),
+                    date = as.Date(date, format = "%Y-%m-%d", tz = input$timezone)) %>%
+      dplyr::select(date, "y" = input$palleInp) %>%
+      group_by(date) %>%
       summarise_all(funs(mean, sd), na.rm = TRUE)
-    ggplot(data, aes(x = month, mean)) + 
+    ggplot(data, aes(x = reorder(format(date,'%b %Y'), date), mean)) + 
       geom_bar(position = position_dodge(), stat = "identity", colour = 'seagreen', 
                fill  = 'seagreen') + 
       labs(y = input$box_yt, x = "", title = input$box_mtt) + 
@@ -1321,7 +1325,7 @@ server <- function(input, output, session) {
     } else {
       data <- data_ta()
     }
-    data$date <- as.Date(data$date, "%Y-%m-%d", tz = "Asia/Kolkata")
+    data$date <- as.Date(data$date, "%Y-%m-%d", tz = input$timezone)
     data <- data.frame(data$date, na.interp(data[[input$palleInp2]])) 
     data_wt <- wt(data, dt = 1) 
     par(mfrow = c(1, 1), oma = c(0, 0, 0, 2), mar = c(5, 5, 5, 7) + 0.1) #specify the limits of margins to the plot area
@@ -1425,10 +1429,18 @@ server <- function(input, output, session) {
     } else {
       data <- data_acf()
     }
-    data$date <- as.Date(data$date, "%Y-%m-%d", tz = "Asia/Kolkata")
-    data <- data.frame(na.interp(data[[input$palleInp2]])) 
-    names(data) <- c("Parameter")
-    plot_acf <- acf(data, lag.max = 31, plot = TRUE)
+    data <- data.frame(data$date, na.interp(data[[input$palleInp2]]))
+    names(data) <- c("date", "Parameter")
+    month <- as.numeric(nrow(unique(data %>%
+                                      mutate(month = format(date, "%Y-%m")) %>%
+                                      select(month)))) - 1
+    data <- data %>%
+      mutate(month = format(date, "%Y-%m")) %>%
+      select(month, Parameter) %>%
+      group_by(month) %>%
+      summarise_all(funs(mean), na.rm = TRUE) %>%
+      select(Parameter)
+    plot_acf <- acf(data, lag.max = month, plot = TRUE, main = input$acf_main)
     plot_acf
   })
   
