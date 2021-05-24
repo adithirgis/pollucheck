@@ -13,14 +13,16 @@ other time-resolution is used then the app will not be process wind
 direction correctly.*
 
 **What parameters are applied to pre-loaded data?**  
-*The pre-loaded data, downloaded from CPCB has all the conditions
-applied ie: removed negative values and repeated consecutive
-measurements, removed outliers using mean and 3 times std dev and also
-checked for 75% of completeness of data in a day for all parameters.*
+*The pre-loaded data, downloaded from
+[CPCB](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing)
+has all the conditions applied ie: removed negative values and repeated
+consecutive measurements, removed outliers using mean and 3 times std
+dev and also checked for 75% of completeness of data in a day for all
+parameters.*
 
 **Where can we download the air quality e data from?**  
-*Air Quality data from India can be downloaded from 3 sources - [CPCB
-website](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing),
+*Air Quality data from India can be downloaded from 3 sources -
+[CPCB](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing),
 [OpenAQ](https://openaq.org/#/countries/IN?_k=5ecycz), and
 [AirNow](https://www.airnow.gov/international/us-embassies-and-consulates/#India).*
 
@@ -217,9 +219,9 @@ default options in the biwavelet package to generate the plot.*
 
 ### Linear Regression
 
-**What are univariable and multivariable?**  
-*univariable regression is which consist of single independent variable
-while multivariable consist of three or more variables.*
+**What are Linear and Multi linear regression?**  
+*Linear regression is which consist of single independent variable while
+Multi linear regression consist of three or more variables.*
 
 **What is the difference between multiple R- square and adjusted R-
 square?**  

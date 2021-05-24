@@ -18,10 +18,10 @@ knitr::opts_chunk$set(echo = TRUE)
 *This app helps to analyze and visualize open source air quality data available. An example dataset is already loaded to help you walk through all the features of the app. If you need help with downloading your own, go to the next question. This app can process all parameters except Wind Direction which when downloaded at 1 hour is processed correctly, any other time-resolution is used then the app will not be process wind direction correctly.*
 
 **What parameters are applied to pre-loaded data?**  
-*The pre-loaded data, downloaded from CPCB has all the conditions applied ie: removed negative values and repeated consecutive measurements, removed outliers using mean and 3 times std dev and also checked for 75% of completeness of data in a day for all parameters.*
+*The pre-loaded data, downloaded from [CPCB](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing) has all the conditions applied ie: removed negative values and repeated consecutive measurements, removed outliers using mean and 3 times std dev and also checked for 75% of completeness of data in a day for all parameters.*
 
 **Where can we download the air quality e data from?**  
-*Air Quality data from India can be downloaded from 3 sources - [CPCB website](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing), [OpenAQ](https://openaq.org/#/countries/IN?_k=5ecycz), and [AirNow](https://www.airnow.gov/international/us-embassies-and-consulates/#India).*
+*Air Quality data from India can be downloaded from 3 sources - [CPCB](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing), [OpenAQ](https://openaq.org/#/countries/IN?_k=5ecycz), and [AirNow](https://www.airnow.gov/international/us-embassies-and-consulates/#India).*
 
 **Can I use this app to analyze app work for data from countries other than India?**  
 *Yes, two of the sources mentioned above OpenAQ, and AirNow have datasets from many other countries. CPCB is specific to India. Make sure you specify the correct timezone in the app when analyzing data from different countries.*
@@ -136,8 +136,8 @@ The File tab downloaded data is the hourly or daily average so \_average.csv, wh
 
 ### Linear Regression
 
-**What are univariable and multivariable?**  
-*univariable regression is which consist of single independent variable while multivariable consist of three or more variables.*
+**What are Linear and Multi linear regression?**  
+*Linear regression is which consist of single independent variable while Multi linear regression consist of three or more variables.*
 
 **What is the difference between multiple R- square and adjusted R- square?**  
 *Multiple R squared is simply a measure of Rsquared for models that have multiple predictor variables. Therefore it measures the amount of variation in the response variable that can be explained by the predictor variables. The fundamental point is that when you add predictors to your model, the multiple Rsquared will always increase, as a predictor will always explain some portion of the variance. Adjusted Rsquared controls against this increase, and adds penalties for the number of predictors in the model. Therefore it shows a balance between the most parsimonious model, and the best fitting model. Generally, if you have a large difference between your multiple and your adjusted Rsquared that indicates you may have overfit your model. [source](https://stats.stackexchange.com/questions/241283/what-is-the-main-difference-between-multiple-r-squared-and-adjusted-r-squared/241298)*

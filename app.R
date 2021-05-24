@@ -127,7 +127,7 @@ ui <- fluidPage(
                                               selectInput("InDepVar", 
                                                           "Independent variable", 
                                                           multiple = FALSE, "Select"),
-                                              actionButton("reg", "Univariate regression"),
+                                              actionButton("reg", "Linear regression"),
                                               tags$br(),
                                               tags$br(),
                                               textInput("reg_mt", label = "Edit title of plot", 
@@ -144,7 +144,7 @@ ui <- fluidPage(
                                               selectInput("InDepVar1", 
                                                           "Independent variable(s)", 
                                                           multiple = TRUE, "Select"),
-                                              actionButton("mulreg", "Multivariate regression "),
+                                              actionButton("mulreg", "Multiple linear regression"),
                                               tags$br(),
                                               tags$br(),
                                               textInput("reg_mmt", label = "Edit title of plot", 
@@ -277,7 +277,7 @@ ui <- fluidPage(
                                                         value = "Parameter"),
                                               tags$hr(),
                                               tags$hr(),
-                                              actionButton("plot_val", "Scatter plot"),
+                                              actionButton("plot_val", "Linear regression"),
                                               tags$br(),
                                               tags$br(),
                                               textInput("reg_mt1", label = "Edit title of scatter plot", 
@@ -329,7 +329,7 @@ ui <- fluidPage(
                                                         value = "Parameter"),
                                               tags$hr(),
                                               tags$hr(),
-                                              actionButton("qq", "QQ plot"),
+                                              actionButton("qq", "Q-Q plot"),
                                               tags$br(),
                                               tags$br(),
                                               textInput("qq_mt", label = "Edit title of plot", 
@@ -834,7 +834,7 @@ server <- function(input, output, session) {
     easyClose = F
   )
   
-  # Show the model on start up ...
+  # Show the model on start up
   showModal(query_modal)
   
   observe({

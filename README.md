@@ -183,27 +183,31 @@ A walk through to use this app for everyone -
 
     ![](WWW/image_15.JPG)
 
--   QQ plot
+-   Q-Q plot
 
     ![](WWW/image_16.JPG)
 
     ![](WWW/image_17.JPG)
 
--   Trend Analysis is also available for daily values. For trend analysis using Mann-Kendall test we use [mk.test](https://www.rdocumentation.org/packages/trend/versions/1.1.4/topics/mk.test). For imputing values in the discontinuous data set we use [forecast package](https://cran.r-project.org/web/packages/forecast/forecast.pdf). For continuous wavelet transform we use [biwavelet package](https://cran.r-project.org/web/packages/biwavelet/biwavelet.pdf). In periodicity analysis, the contours covered by black lines represent the significant periodicity at 95% significant 519 level.
+-   Trend Analysis is also available for daily values. For trend analysis using Mann-Kendall test we use [mk.test](https://www.rdocumentation.org/packages/trend/versions/1.1.4/topics/mk.test). For imputing values in the discontinuous data set we use [forecast package](https://cran.r-project.org/web/packages/forecast/forecast.pdf). For continuous wavelet transform we use [biwavelet package](https://cran.r-project.org/web/packages/biwavelet/biwavelet.pdf). In periodicity analysis, the contours covered by black lines represent the significant periodicity at 95% significant 519 level.\\
 
-    ![](WWW/image_19.JPG)
+-   Autocorrelogram plot can also be generated using the
 
-    ![](WWW/image_18.JPG)
+    ![](WWW/image_30.JPG)
 
-##### Linear Regression tab does univariate and multivariate linear regression for selected parameter(s).
+    <img src="WWW/image_31.JPG" width="590"/>
 
--   There is an option of plotting univariate linear regression plots between various parameters available.
+    <img src="WWW/image_18.JPG" width="590"/>
+
+##### Linear Regression tab does linear and multi linear regression for selected parameter(s).
+
+-   There is an option of plotting linear regression plots between various parameters available.
 
     ![](WWW/image_20.JPG)
 
     ![](WWW/image_21.JPG)
 
--   Also multivariate linear regression can be performed.
+-   Also multi linear regression can be performed.
 
     ![](WWW/image_22.JPG)
 
@@ -215,7 +219,7 @@ A walk through to use this app for everyone -
 
     ![](WWW/image_24.JPG)
 
-    ![](WWW/image_25.JPG)
+    <img src="WWW/image_32.JPG" width="397"/>
 
     ![](WWW/image_26.JPG)
 
