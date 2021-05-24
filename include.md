@@ -111,7 +111,7 @@ provided above.*
 ### Summary
 
 **What is the naming convention of the file downloaded?**  
-\*The data downloaded in this tab will have a suffix of \_average.csv.\*
+*The data downloaded in this tab will have a suffix of \_average.csv.*
 
 ### Summary Plots
 
@@ -158,6 +158,13 @@ is below 5000, while Anderson- Darling test is used when sample size is
 greater than 5000 if you have data points above 5000, please check
 Anderson-Darling test.*
 
+**How is Q-Q Plot different from a Scatter Plot?**  
+*A Q-Q plot is a scatterplot created by plotting two sets of quantiles
+against one another. If both sets of quantiles come from the same
+distribution, we should see the points forming a line that’s roughly
+straight.
+([Source](https://data.library.virginia.edu/understanding-q-q-plots/#:~:text=A%20Q%2DQ%20plot%20is%20a,truly%20come%20from%20Normal%20distributions.))*
+
 **How is the data imputed for trend analysis?**  
 *For imputing values in the discontinuous data set we use [forecast
 package](https://cran.r-project.org/web/packages/forecast/forecast.pdf),
@@ -178,16 +185,16 @@ the significant periodicity at 95% significant 519 level.*
 *Daily mean and monthly mean is used to perform Trend Analysis by
 Mann-Kendall test.*
 
+**What is Autocorrelogram plot?**  
+*Autocorrelations or lagged correlations are used to assess whether a
+time series is dependent on its past. These are generated using daily
+mean values. To have continuous data we imputed using the same method
+discussed above.
+[source](https://www.rdocumentation.org/packages/stats/versions/3.3.1/topics/acf)*
+
 **What are the time resolutions used for Periodicity Analysis?**  
 *Daily mean data is used to generate the biwavelet. We have used the
 default options in the biwavelet package to generate the plot.*
-
-**How is Q-Q Plot different from a Scatter Plot?**  
-*A Q-Q plot is a scatterplot created by plotting two sets of quantiles
-against one another. If both sets of quantiles come from the same
-distribution, we should see the points forming a line that’s roughly
-straight.
-([Source](https://data.library.virginia.edu/understanding-q-q-plots/#:~:text=A%20Q%2DQ%20plot%20is%20a,truly%20come%20from%20Normal%20distributions.))*
 
 ### Linear Regression
 

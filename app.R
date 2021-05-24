@@ -338,6 +338,9 @@ ui <- fluidPage(
                                                         value = "Parameter"),
                                               tags$hr(),
                                               tags$hr(),
+                                              actionButton("acf", "Autocorrelogram plot (based on daily mean)"),
+                                              tags$hr(),
+                                              tags$hr(),
                                               actionButton("mk", "Trend Analysis"),
                                               tags$br(),
                                               tags$br(),
@@ -382,6 +385,7 @@ ui <- fluidPage(
                                 verbatimTextOutput("normality_test"),
                                 plotOutput("plot6", width = 800),
                                 plotOutput("plot7", width = 800),
+                                plotOutput("plot18", width = 800),
                                 verbatimTextOutput("kendal_test"),
                                 plotOutput("plot13", width = 800)),
                               tabPanel(
@@ -696,6 +700,15 @@ server <- function(input, output, session) {
       dplyr::mutate(day = as.Date(date, format = '%Y-%m-%d', tz = input$timezone)) 
   }
   
+  #### Regression equation function
+  reg_eqn <- function(x) {
+    R_sq <- round(as.numeric(x$adj.r.squared), digits = 2)
+    int <- round(coef(x)[1], digits = 2)
+    slope <- round(coef(x)[2], digits = 2)
+    eqn <- paste("y = ", slope, "x + (", int, ")")
+    return(eqn)
+  }
+  
   #### Functions to be applied on the data set in a sequence
   data_file <- function(per, type, file_data_path, file_1, file, remove_9, repeated, 
                         percent, ey, exclude, high_number, log_op) {
@@ -807,7 +820,7 @@ server <- function(input, output, session) {
   
   query_modal <- modalDialog(
     title = "What to expect?",
-    HTML("First visit here? Dummy data is loaded click on buttons and generate the figures!<br>"),
+    HTML("First visit here? There is pre-loaded data click on buttons and generate the figures!<br>"),
     footer = tagList(
       actionButton("help_link", "Read Me",
                    onclick = "window.open('https://github.com/adithirgis/OpenSourceAirQualityApp#have-a-look-at-the-app',
@@ -842,20 +855,7 @@ server <- function(input, output, session) {
       data <- openair::timeAverage(data, avg.time = "day")
     } else { data }
   }
-  observeEvent(input$avg_hour2, {
-    if(input$avg_hour2 == "hour2") {
-      shinyjs::disable("mk") 
-      shinyjs::disable("avg_month") 
-      shinyjs::disable("ta") 
-      shinyjs::disable("title_bi")
-    } else if (input$avg_hour2 == "daily2") {
-      shinyjs::enable("mk") 
-      shinyjs::enable("avg_month") 
-      shinyjs::enable("ta") 
-      shinyjs::enable("title_bi") 
-    }
-  })
- 
+  
   data_joined <- eventReactive(input$hourly, {
     data <- mess(input$avg_hour, "daily")
   })
@@ -898,15 +898,14 @@ server <- function(input, output, session) {
       select(date, "Site 2" = input$Para1)
     all <- full_join(data, data1, by = "date")
   })
-  trend <- function(data, button, avg) {
+  trend <- function(data) {
     date_df <- data.frame(date = date_ts(data, "60 min"))
     data <- data %>%
       distinct(date, .keep_all = TRUE) %>%
       right_join(date_df, by = "date")
-    if(button == avg) {
-      data <- openair::timeAverage(data, avg.time = "day")
-    } else { data }
+    data <- openair::timeAverage(data, avg.time = "day")
   }
+  # Plot for ts of two sites
   output$plot12 <- renderPlot({
     if (is.null(input$file1) & is.null(input$file2)) { 
       all <- data_joined_comp()
@@ -953,11 +952,15 @@ server <- function(input, output, session) {
   })
   data_mk <- eventReactive(input$mk, {
     data <- CPCB_f()
-    data <- trend(data, input$avg_hour2, "daily2")
+    data <- trend(data)
   })
   data_ta <- eventReactive(input$ta, {
     data <- CPCB_f()
-    data <- trend(data, input$avg_hour2, "daily2")
+    data <- trend(data)
+  })
+  data_acf <- eventReactive(input$acf, {
+    data <- CPCB_f()
+    data <- trend(data)
   })
   data_reg <- eventReactive(input$reg, {
     data <- mess(input$avg_hour1, "daily1")
@@ -1069,7 +1072,7 @@ server <- function(input, output, session) {
   })
   kenda <- reactive({
     data <- data_mk()
-    if(input$avg_hour2 == "daily2" & !input$avg_month) {
+    if(!input$avg_month) {
       x <- zoo(data[[input$palleInp2]], data$date)
       x <- na.interp(x)
     } else if (input$avg_month) {
@@ -1090,14 +1093,11 @@ server <- function(input, output, session) {
   })
   output$kendal_test <- renderPrint({
     # validate(need(try(all(is.na(y)) == TRUE), "Sorry no data!"))
-    if(input$avg_hour2 != "daily2") {
-      "Trend analysis are not prominent with hourly values."
-    } else {
-      y <- kenda()
-      c <- trend::mk.test(y)
-      c
-    }
+    y <- kenda()
+    c <- trend::mk.test(y)
+    c
   })
+  # Plot ts for one parameter
   output$plot1 <- renderPlot({
     if (is.null(input$file1)) { 
       data <- data_plot()
@@ -1109,6 +1109,7 @@ server <- function(input, output, session) {
       labs(y = input$ts_y, title = input$ts_mt,
            x = "") + theme2() + geom_line(size = 0.6, color = "seagreen")
   })
+  # Diurnal plot for one parameter
   output$plot2 <- renderPlot({
     if (is.null(input$file1)) { 
       data <- data_diurnal()
@@ -1129,7 +1130,7 @@ server <- function(input, output, session) {
       ggplot(data, aes(hour, mean)) + geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), 
                                                     color = "seagreen") + 
         scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
-        labs(y = input$diurnal_y, x = "Hour of the day (LT)'", title = input$diurnal_mt) + 
+        labs(y = input$diurnal_y, x = "Hour of the day (LT)", title = input$diurnal_mt) + 
         theme2() + geom_line(size = 0.6, color = "seagreen")
     } else if (input$diur == "mediq" && input$diurn == "all") {
       data <- data %>%
@@ -1163,6 +1164,7 @@ server <- function(input, output, session) {
         theme(axis.text.y = element_text(size = 12))
     }
   })
+  # Month-yearly plot for one parameter
   output$plot3 <- renderPlot({
     if (is.null(input$file1)) { 
       data <- data_box()
@@ -1178,6 +1180,7 @@ server <- function(input, output, session) {
                    geom = "point", size = 4)  +
       theme2() + theme(axis.text.x = element_text(size = 10, face = "bold", angle = 90))
   })
+  # Monthly plot for one parameter
   output$plot9 <- renderPlot({
     if (is.null(input$file1)) { 
       data <- data_mbox()
@@ -1193,6 +1196,7 @@ server <- function(input, output, session) {
                    geom = "point", size = 4)  +
       theme2() + theme(axis.text.x = element_text(size = 13, face = "bold"))
     })
+  # timeVariation plot for one parameter
   output$plot4 <- renderPlot({
     if (is.null(input$file1)) { 
       data <- data_tv()
@@ -1209,6 +1213,7 @@ server <- function(input, output, session) {
                              par.settings = list(fontsize = list(text = 15)))
     }
     })
+  # Calendar plot for one parameter
   output$plot5 <- renderPlot({
     if (is.null(input$file1)) { 
       data <- data_cp()
@@ -1220,6 +1225,7 @@ server <- function(input, output, session) {
                           cols = openColours(c("seagreen", "yellow", "red"), 10),
                           par.settings = list(fontsize = list(text = 15)))
     })
+  # Density plot for one parameter
   output$plot6 <- renderPlot({
     if (is.null(input$file1)) { 
       data <- data_freq()
@@ -1231,6 +1237,7 @@ server <- function(input, output, session) {
       geom_density(color = "deepskyblue", fill = "lightblue") +
       labs(y = "density", x = input$freq_x, title = input$freq_mt) + theme2()
     })
+  # qq plot for one parameter
   output$plot7 <- renderPlot({
     if (is.null(input$file1)) { 
       data <- data_qq()
@@ -1247,6 +1254,7 @@ server <- function(input, output, session) {
       labs(x = "Emperical percentiles",
            y =  input$qq_y, title = input$qq_mt) + theme2()
     })
+  # Linear regression plot for one file
   output$plot8 <- renderPlot({
     if (is.null(input$file1)) { 
       data <- data_reg()
@@ -1255,13 +1263,6 @@ server <- function(input, output, session) {
     }
     y <- as.numeric(as.character(data[[input$DepVar]]))
     x <- as.numeric(as.character(data[[input$InDepVar]]))
-    reg_eqn <- function(x) {
-      R_sq <- round(as.numeric(x$adj.r.squared), digits = 2)
-      int <- round(coef(x)[1], digits = 2)
-      slope <- round(coef(x)[2], digits = 2)
-      eqn <- paste("y = ", slope, "x + (", int, ")")
-      return(eqn)
-    }
     m <- lm(y ~ x, data)
     s <- summary(m)
     r <- round(s$adj.r.squared, digits = 2)
@@ -1273,6 +1274,7 @@ server <- function(input, output, session) {
            subtitle = paste0("R square: ", r, "; Equation: ", reg_eqn(s))) + 
       theme2()
    })
+  # Linear regression plot for two files
   output$plot15 <- renderPlot({
     if (is.null(input$file1) & is.null(input$file2)) {
       data <- data_scatter_comp()
@@ -1281,13 +1283,6 @@ server <- function(input, output, session) {
       }
     y <- as.numeric(as.character(data$`Site 1`))
     x <- as.numeric(as.character(data$`Site 2`))
-    reg_eqn <- function(x) {
-      R_sq <- round(as.numeric(x$adj.r.squared), digits = 2)
-      int <- round(coef(x)[1], digits = 2)
-      slope <- round(coef(x)[2], digits = 2)
-      eqn <- paste("y = ", slope, "x + (", int, ")")
-      return(eqn)
-    }
     m <- lm(y ~ x, data)
     s <- summary(m)
     r <- round(s$adj.r.squared, digits = 2)
@@ -1299,6 +1294,7 @@ server <- function(input, output, session) {
            subtitle = paste0("R square: ", r, "; Equation: ", reg_eqn(s))) + 
       theme2()
    })
+  # Vertical bar plot for one parameter
   output$plot10 <- renderPlot({
     if (is.null(input$file1)) { 
       data <- data_boxt()
@@ -1318,6 +1314,7 @@ server <- function(input, output, session) {
                       position_dodge(.9), color = 'seagreen') +
       theme2() + theme(axis.text.x = element_text(size = 12, face = "bold"))
   })
+  # biwavelet plot for one parameter
   output$plot13 <- renderPlot({
     if (is.null(input$file1)) { 
       data <- data_ta()
@@ -1325,12 +1322,8 @@ server <- function(input, output, session) {
       data <- data_ta()
     }
     data$date <- as.Date(data$date, "%Y-%m-%d", tz = "Asia/Kolkata")
-    if(input$avg_hour2 == "daily2") {
-      data <- data.frame(data$date, na.interp(data[[input$palleInp2]])) 
-      data_wt <- wt(data, dt = 1) 
-    } else { 
-      NULL
-    }
+    data <- data.frame(data$date, na.interp(data[[input$palleInp2]])) 
+    data_wt <- wt(data, dt = 1) 
     par(mfrow = c(1, 1), oma = c(0, 0, 0, 2), mar = c(5, 5, 5, 7) + 0.1) #specify the limits of margins to the plot area
     plot.biwavelet(data_wt, form = "%Y-%m-%d", type = "power.corr.norm",
                    plot.cb = TRUE, lwd.coi = 1, col.coi = "black",
@@ -1425,13 +1418,26 @@ server <- function(input, output, session) {
         theme(axis.text.y = element_text(size = 12))
     }
   })
-  # acf(z, lag.max = ((nrow(TimeSerie))/2), na.action = na.pass)
+  # Autocorrelogram plot for one parameter
+  output$plot18 <- renderPlot({
+    if (is.null(input$file1)) { 
+      data <- data_acf()
+    } else {
+      data <- data_acf()
+    }
+    data$date <- as.Date(data$date, "%Y-%m-%d", tz = "Asia/Kolkata")
+    data <- data.frame(na.interp(data[[input$palleInp2]])) 
+    names(data) <- c("Parameter")
+    plot_acf <- acf(data, lag.max = 31, plot = TRUE)
+    plot_acf
+  })
   
   lm_reg <- reactive({
     data <- data_mreg()
     y <- lm(as.formula(paste(input$DepVar1, " ~ ", paste(input$InDepVar1, collapse = "+"))), data)
     y
   })
+  # MLR plot
   output$plot11 <- renderPlot({
     if (is.null(input$file1)) { 
       data <- fortify(lm_reg())
