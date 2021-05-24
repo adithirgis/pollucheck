@@ -7,7 +7,16 @@
 *This app helps to analyze and visualize open source air quality data
 available. An example dataset is already loaded to help you walk through
 all the features of the app. If you need help with downloading your own,
-go to the next question.*
+go to the next question. This app can process all parameters except Wind
+Direction which when downloaded at 1 hour is processed correctly, any
+other time-resolution is used then the app will not be process wind
+direction correctly.*
+
+**What parameters are applied to pre-loaded data?**  
+*The pre-loaded data, downloaded from CPCB has all the conditions
+applied ie: removed negative values and repeated consecutive
+measurements, removed outliers using mean and 3 times std dev and also
+checked for 75% of completeness of data in a day for all parameters.*
 
 **Where can we download the air quality e data from?**  
 *Air Quality data from India can be downloaded from 3 sources - [CPCB
@@ -42,10 +51,10 @@ can be due to instrument malfunction or unavailability of data. The data
 will be as it is except that it will remove fill values from the data.*
 
 **What is the naming convention of downloaded files?**  
-\*The File tab downloaded data is the hourly or daily average so
+The File tab downloaded data is the hourly or daily average so
 \_average.csv, while the summary statistics file has an extension of
 \_summary.csv, and the diurnal table download will have a suffix of
-\_diurnal.csv.\*
+\_diurnal.csv.
 
 **What are the different packages used in the app?**  
 *The different packages we use here are - tidyverse, ggplot2, openair,
@@ -130,7 +139,7 @@ mark) and the third quartile (the 75% mark). The whiskers on the far
 most of the box plots show the minimum and maximum values in the
 datasets. Finally, the median is represented by a vertical bar in the
 center of the box.
-([Source](https://www.statisticshowto.com/probability-and-statistics/descriptive-statistics/box-plot/))*
+[source](https://www.statisticshowto.com/probability-and-statistics/descriptive-statistics/box-plot/)*
 
 **What do the bars in the vertical bar plots indicate?**  
 *The vertical bars represent mean + sd and mean - sd.*
@@ -187,10 +196,20 @@ Mann-Kendall test.*
 
 **What is Autocorrelogram plot?**  
 *Autocorrelations or lagged correlations are used to assess whether a
-time series is dependent on its past. These are generated using daily
+time series is dependent on its past. These are generated using monthly
 mean values. To have continuous data we imputed using the same method
 discussed above.
 [source](https://www.rdocumentation.org/packages/stats/versions/3.3.1/topics/acf)*
+
+**What are the blue dashed lines in the Autocorrelogram plot?**  
+*The lines give the values beyond which the autocorrelations are
+(statistically) significantly different from zero.
+[source](https://stats.stackexchange.com/questions/49571/understanding-the-blue-dotted-lines-in-an-acf-from-r#:~:text=The%20lines%20give%20the%20values,ACF%20seems%20to%20indicate%20seasonality.)*
+
+**What are the unit of the Lag in the Autocorrelogram plot?**  
+*The lag is effectively a time lag and is dependent of the frequency you
+choose to build the time series. Each bar on the graph correspond to one
+time unit.*
 
 **What are the time resolutions used for Periodicity Analysis?**  
 *Daily mean data is used to generate the biwavelet. We have used the
