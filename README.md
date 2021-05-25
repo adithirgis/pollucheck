@@ -217,6 +217,8 @@ A walk through to use this app for everyone -
 
 -   The Compare tab allows user to upload data from another site for comparison and generate time series and a scatter plot between parameters selected from different sites.
 
+-   There are options to generate time series, scatter plot / linear regression and diurnal plots for both the sites.
+
     ![](WWW/image_24.JPG)
 
     <img src="WWW/image_32.JPG" width="397"/>

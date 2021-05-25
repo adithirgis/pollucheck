@@ -129,7 +129,7 @@ The File tab downloaded data is the hourly or daily average so \_average.csv, wh
 *The lines give the values beyond which the autocorrelations are (statistically) significantly different from zero. [source](https://stats.stackexchange.com/questions/49571/understanding-the-blue-dotted-lines-in-an-acf-from-r#:~:text=The%20lines%20give%20the%20values,ACF%20seems%20to%20indicate%20seasonality.)*
 
 **What are the unit of the Lag in the Autocorrelogram plot?**  
-*The lag is effectively a time lag and is dependent of the frequency you choose to build the time series. Each bar on the graph correspond to one time unit.*
+*The lag is effectively a time lag and is dependent of the frequency you choose to build the time series. Each bar on the graph correspond to one time unit. The unit here is month for Lag in x axis.*
 
 **What are the time resolutions used for Periodicity Analysis?**  
 *Daily mean data is used to generate the biwavelet. We have used the default options in the biwavelet package to generate the plot.*

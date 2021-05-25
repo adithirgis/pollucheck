@@ -211,7 +211,7 @@ discussed above.
 **What are the unit of the Lag in the Autocorrelogram plot?**  
 *The lag is effectively a time lag and is dependent of the frequency you
 choose to build the time series. Each bar on the graph correspond to one
-time unit.*
+time unit. The unit here is month for Lag in x axis.*
 
 **What are the time resolutions used for Periodicity Analysis?**  
 *Daily mean data is used to generate the biwavelet. We have used the
