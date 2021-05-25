@@ -1316,7 +1316,7 @@ server <- function(input, output, session) {
       labs(y = input$box_yt, x = "", title = input$box_mtt) + 
       geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = .2, position = 
                       position_dodge(.9), color = 'seagreen') +
-      theme2() + theme(axis.text.x = element_text(size = 12, face = "bold"))
+      theme2() + theme(axis.text.x = element_text(size = 10, face = "bold", angle = 90))
   })
   # biwavelet plot for one parameter
   output$plot13 <- renderPlot({
