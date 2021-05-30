@@ -10,7 +10,7 @@
 #' @examples
 #' \dontrun{
 #' library(pollucheck)
-#' pollucheck::pollucheck_run()
+#' pollucheck_run()
 #' }
 #'
 #' @export

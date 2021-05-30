@@ -18,7 +18,7 @@ the app will not be process wind direction correctly.
 \examples{
 \dontrun{
 library(pollucheck)
-pollucheck::pollucheck_run()
+pollucheck_run()
 }
 
 }
