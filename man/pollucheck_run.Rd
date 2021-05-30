@@ -7,7 +7,13 @@
 pollucheck_run()
 }
 \description{
-pollucheck: Explore Open-Source Air-Quality Data
+This app helps to analyze and visualize open source air
+quality data available.  An example dataset is already loaded to help
+you walk through all the features of the app.  If you need help with
+downloading your own, check the ReadMe file on github.  This app can
+process all parameters except Wind Direction which when downloaded at
+1 hour is processed correctly, any other time-resolution is used then
+the app will not be process wind direction correctly.
 }
 \examples{
 \dontrun{
