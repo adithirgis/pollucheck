@@ -24,21 +24,21 @@ A walk through to use this app for everyone -
 
 -   Visit [CPCB website](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing) to access the Central/State Pollution Control Board Data.
 
-![](WWW/CPCB_data_down_S.jpeg)
+![](inst/shiny/WWW/CPCB_data_down_S.jpeg)
 
 -   Select the Indian state from the "State Name" dropdown.
 
-![](WWW/CPCB_Station.jpeg)
+![](inst/shiny/WWW/CPCB_Station.jpeg)
 
 -   Now select the city for which the data needs to be downloaded using the "City Name" dropdown menu.
 
-![](WWW/CPCB_Station_city.jpeg)
+![](inst/shiny/WWW/CPCB_Station_city.jpeg)
 
 -   Now from the "Station Name" drop-down select the desired station.
 
 -   Select the Parameters. Note- Multiple parameters can be selected at a time.
 
-![](WWW/CPCB_Station_parameters.jpeg)
+![](inst/shiny/WWW/CPCB_Station_parameters.jpeg)
 
 -   Report Format- To use the PolluCheck app, Please keep the format as "tabular".
 
@@ -48,58 +48,58 @@ A walk through to use this app for everyone -
 
 -   Download that data (15, 30, 60 min resolution would be good).
 
-![](WWW/CPCB_Station_TA.jpeg)
+![](inst/shiny/WWW/CPCB_Station_TA.jpeg)
 
 #### How to download data from the OpenAQ website?
 
 -   Click on [OpenAQ](https://openaq.org/#/countries/IN?_k=5ecycz) in the app to download the OpenAQ dataset.
 
-    <img src="WWW/oaq_1.jpg" width="286"/>
+    <img src="inst/shiny/WWW/oaq_1.jpg" width="286"/>
 
 -   Now, click on the "*Download*" option on your browser.
 
-    <img src="WWW/oaq_2.jpg" width="517"/>
+    <img src="inst/shiny/WWW/oaq_2.jpg" width="517"/>
 
 -   In data download, you can download the data by "Locations" or by "*Datasets*".
 
-    <img src="WWW/oaq_3.jpg" width="484"/>
+    <img src="inst/shiny/WWW/oaq_3.jpg" width="484"/>
 
 -   Now select the desired, "*Country*", "*City/Region*" and "*Location*" using the dropdown.
 
-    <img src="WWW/oaq_4.jpg" width="306"/><img src="WWW/oaq_5.jpg" width="103"/><img src="WWW/oaq_6.jpg" width="215"/>
+    <img src="inst/shiny/WWW/oaq_4.jpg" width="306"/><img src="inst/shiny/WWW/oaq_5.jpg" width="103"/><img src="inst/shiny/WWW/oaq_6.jpg" width="215"/>
 
 -   To proceed further select the "*Start Date***"** and the "*End Date***"** for the data.
 
-    <img src="WWW/oaq_7.jpg" width="525"/>
+    <img src="inst/shiny/WWW/oaq_7.jpg" width="525"/>
 
 -   Now select which type of sensor is available at that location. Is it a "*Low-cost Sensor*" or "*Reference Grade*" monitor?
 
-    ![](WWW/oaq_8.jpg)
+    ![](inst/shiny/WWW/oaq_8.jpg)
 
 -   Finally, select the parameters from the list of "*Core"* and "*Additional Parameters"* which you wish to download from that particular location and click on "*Download Selection*". The file will be saved in your local disk in .csv format.
 
-    <img src="WWW/oaq_9.jpg" width="519"/>
+    <img src="inst/shiny/WWW/oaq_9.jpg" width="519"/>
 
 #### How to download data from the AirNow website?
 
 -   Click on [AirNow-US Embassies](https://www.airnow.gov/international/us-embassies-and-consulates/) to visit official website to download the data.
 
-    <img src="WWW/a_1.JPG" width="557"/>
+    <img src="inst/shiny/WWW/a_1.JPG" width="557"/>
 
 -   Select the desired city and the parameters.
 
-    <img src="WWW/a_2.JPG" width="554"/>
+    <img src="inst/shiny/WWW/a_2.JPG" width="554"/>
 
 -   Now Go to the **"***Historical***"** sub-menu on the Homepage and download the desired file.
 
-    <img src="WWW/a_3.JPG" width="557"/>
+    <img src="inst/shiny/WWW/a_3.JPG" width="557"/>
 
 ### Have a look at the app usage
 
 -   Select the source from where the data was downloaded.
 -   Now select the time resolution at which the data was downloaded.
 
-<img src="WWW/image_1.JPG" width="315"/>
+<img src="inst/shiny/WWW/image_1.JPG" width="315"/>
 
 -   Select the check box according to your need.
 
@@ -113,13 +113,13 @@ A walk through to use this app for everyone -
 
     -   Remove PM2.5 and PM10 above- Usually, values above 9999 are incorrect, also because the instruments usually measure only to 999 values in PM instruments. This can be removed using this filter option.
 
-    <img src="WWW/image_2.JPG" width="410"/>
+    <img src="inst/shiny/WWW/image_2.JPG" width="410"/>
 
 -   Output aggregation- The uploaded data can be converted into daily or hourly mean values.
 
 -   "Download as csv" or click on "Show Data" to see the data in the app.
 
-![](WWW/image_3.JPG)
+![](inst/shiny/WWW/image_3.JPG)
 
 -   Look at the time series of pollutant concentrations in the **Plots** tab (time series are plots with x axis representing time). Do you see patterns? Are there times of the month or times of the day where concentrations are particularly higher or lower? Are there particular months in a year that are more polluted than others?
 -   Think about sources in the particular location: traffic, industries, garbage burning, etc.
@@ -131,47 +131,47 @@ A walk through to use this app for everyone -
 
 ##### File tab displays the data after cleaning process.
 
-![](WWW/image_4.JPG)
+![](inst/shiny/WWW/image_4.JPG)
 
 ##### Summary tab displays the summary statistics for daily, monthly or for the entire dataset.
 
-![](WWW/image_5.JPG)
+![](inst/shiny/WWW/image_5.JPG)
 
 ##### Summary Plots tab generates time series, box plot, and diurnal plot of the selected parameter.
 
 -   Data availability plot of all the pollutants after the cleaning process can be generated.
 
-    ![](WWW/DA_plot.JPG)
+    ![](inst/shiny/WWW/DA_plot.JPG)
 
 -   The parameter to plot and the data aggregation options are available.
 
-![](WWW/image_6.JPG)
+![](inst/shiny/WWW/image_6.JPG)
 
 -   Options to edit the Title and axis labels are available.
 
 -   Time-series plot
 
-    ![](WWW/image_7.JPG)
+    ![](inst/shiny/WWW/image_7.JPG)
 
-    ![](WWW/image_8.JPG)
+    ![](inst/shiny/WWW/image_8.JPG)
 
 -   Month and year box plot
 
-    ![](WWW/image_9.JPG)
+    ![](inst/shiny/WWW/image_9.JPG)
 
 -   Monthly box plot
 
-    ![](WWW/image_10.JPG)
+    ![](inst/shiny/WWW/image_10.JPG)
 
 -   Vertical bar plot
 
-    ![](WWW/image_11.JPG)
+    ![](inst/shiny/WWW/image_11.JPG)
 
 -   Diurnal pot using hourly values - has two types using all data or distributed month wise. There is an option to plot point and bars as Median and IQR respectively or Mean and Standard Deviation. The data used for plotting can be downloaded as csv file.
 
-    ![](WWW/image_12.JPG)
+    ![](inst/shiny/WWW/image_12.JPG)
 
-    ![](WWW/image_13.JPG)
+    ![](inst/shiny/WWW/image_13.JPG)
 
 ##### Statistical Plots tab tests for normality, pattern and generates density plot, qq plot of the selected parameter.
 
@@ -179,39 +179,39 @@ A walk through to use this app for everyone -
 
 -   Density plot
 
-    ![](WWW/image_14.JPG)
+    ![](inst/shiny/WWW/image_14.JPG)
 
-    ![](WWW/image_15.JPG)
+    ![](inst/shiny/WWW/image_15.JPG)
 
 -   Q-Q plot
 
-    ![](WWW/image_16.JPG)
+    ![](inst/shiny/WWW/image_16.JPG)
 
-    ![](WWW/image_17.JPG)
+    ![](inst/shiny/WWW/image_17.JPG)
 
 -   Trend Analysis is also available for daily values. For trend analysis using Mann-Kendall test we use [mk.test](https://www.rdocumentation.org/packages/trend/versions/1.1.4/topics/mk.test). For imputing values in the discontinuous data set we use [forecast package](https://cran.r-project.org/web/packages/forecast/forecast.pdf). For continuous wavelet transform we use [biwavelet package](https://cran.r-project.org/web/packages/biwavelet/biwavelet.pdf). In periodicity analysis, the contours covered by black lines represent the significant periodicity at 95% significant 519 level.\\
 
 -   Autocorrelogram plot can also be generated using the
 
-    ![](WWW/image_30.JPG)
+    ![](inst/shiny/WWW/image_30.JPG)
 
-    <img src="WWW/image_31.JPG" width="590"/>
+    <img src="inst/shiny/WWW/image_31.JPG" width="590"/>
 
-    <img src="WWW/image_18.JPG" width="590"/>
+    <img src="inst/shiny/WWW/image_18.JPG" width="590"/>
 
 ##### Linear Regression tab does linear and multi linear regression for selected parameter(s).
 
 -   There is an option of plotting linear regression plots between various parameters available.
 
-    ![](WWW/image_20.JPG)
+    ![](inst/shiny/WWW/image_20.JPG)
 
-    ![](WWW/image_21.JPG)
+    ![](inst/shiny/WWW/image_21.JPG)
 
 -   Also multi linear regression can be performed.
 
-    ![](WWW/image_22.JPG)
+    ![](inst/shiny/WWW/image_22.JPG)
 
-    ![](WWW/image_23.JPG)
+    ![](inst/shiny/WWW/image_23.JPG)
 
 ##### Compare tab allows users to upload another file for comparision with the loaded data.
 
@@ -219,20 +219,30 @@ A walk through to use this app for everyone -
 
 -   There are options to generate time series, scatter plot / linear regression and diurnal plots for both the sites.
 
-    ![](WWW/image_24.JPG)
+    ![](inst/shiny/WWW/image_24.JPG)
 
-    <img src="WWW/image_32.JPG" width="397"/>
+    <img src="inst/shiny/WWW/image_32.JPG" width="397"/>
 
-    ![](WWW/image_26.JPG)
+    ![](inst/shiny/WWW/image_26.JPG)
 
 ##### `openair` tab allows users use the package's widely used functions for the selected parameter.
 
 -   Calendar plot
 
-    ![](WWW/image_27.JPG)
+    ![](inst/shiny/WWW/image_27.JPG)
 
-    ![](WWW/image_28.JPG)
+    ![](inst/shiny/WWW/image_28.JPG)
 
 -   Time variation plot
 
-    ![](WWW/image_29.JPG)
+    ![](inst/shiny/WWW/image_29.JPG)
+
+## Community guidelines
+
+1.  Contribute to the software
+
+-   Please open an issue in the issue tracker of the project that describes the changes you would like to make to the software and open a pull request with the changes.
+
+1.  Report issues or problems with the software / Seek Support
+
+-   Please open an issue in the [issue tracker of the project.](https://github.com/adithirgis/OpenSourceAirQualityApp/issues)

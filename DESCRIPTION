@@ -1,14 +1,57 @@
-Package: OpenSourceAirQualityApp
-Title: What the Package Does (One Line, Title Case)
+Package: pollucheck
+Title: Explore Open-Source Air-Quality Data
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    c(person(given = "Adithi R.",
+             family = "Upadhya",
+             role = c("aut", "cre", "cph"),
+             email = "adithi@ilklabs.com"),
+      person(given = "Pratyush",
+             family = "Agrawal",
+             role = "dtc",
+             email = "pratyush@ilklabs.com"),
+      person(given = "Sreekanth",
+             family = "Vakacherla",
+             role = c("aui", "ctb"),
+             email = "sree.hcu@gmail.com"),
+      person(given = "Meenakshi",
+             family = "Kushwaha",
+             role = c("aut", "cph"),
+             email = "meenakshi@ilklabs.com"))
+Description: This app helps to analyze and visualize open source air
+    quality data available.  An example dataset is already loaded to help
+    you walk through all the features of the app.  If you need help with
+    downloading your own, check the ReadMe file on github.  This app can
+    process all parameters except Wind Direction which when downloaded at
+    1 hour is processed correctly, any other time-resolution is used then
+    the app will not be process wind direction correctly.
 License: MIT + file LICENSE
+URL: https://github.com/adithirgis/OpenSourceAirQualityApp
+BugReports: https://github.com/adithirgis/OpenSourceAirQualityApp/issues
+Depends: 
+    R (>= 3.6.0)
+Imports: 
+    biwavelet,
+    bslib,
+    Cairo,
+    data.table,
+    dplyr,
+    DT,
+    forecast,
+    ggplot2,
+    janitor,
+    nortest,
+    openair,
+    readxl,
+    shiny,
+    shinyjs,
+    tidyverse,
+    zoo
+Suggests:
+    devtools,
+    shinytest,
+    testthat,
+    usethis
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
