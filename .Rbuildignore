@@ -3,5 +3,7 @@
 ^\.Rproj\.user$
 ^\.github$
 ^CODE_OF_CONDUCT\.md$
-[.]md$
+^README\.md$
+^CONTRIBUTING\.md$
+^paper\.md$
 [.]bib$

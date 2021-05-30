@@ -410,7 +410,7 @@ ui <- fluidPage(
                                 plotOutput("plot4", height = 600)),
                               tabPanel(
                                 title = "FAQ's",
-                                includeMarkdown("WWW/include.md")),
+                                includeMarkdown(paste0(system.file("shiny/WWW", package = "pollucheck"), "/include.md"))),
                               tabPanel(
                                 title = "Disclaimer",
                                 helpText("Wind Direction data is valid only if downloaded at hourly value and used at the same resoluton."),

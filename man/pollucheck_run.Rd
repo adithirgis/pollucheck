@@ -7,16 +7,16 @@
 pollucheck_run()
 }
 \description{
-This app helps to analyze and visualize open source air
-quality data available.  An example dataset is already loaded to help
-you walk through all the features of the app.  If you need help with
-downloading your own, check the ReadMe file on github.  This app can
-process all parameters except Wind Direction which when downloaded at
-1 hour is processed correctly, any other time-resolution is used then
-the app will not be process wind direction correctly.
+Helps to analyze and visualize open source air quality data available
+online which are - Central Pollution Control Board (India), OpenAQ, AirNow.
+An example dataset is already loaded for user to walk through all the features of the app.
+If any assistance is required with downloading dataset, check the ReadMe file on github.
+This app can process all parameters except Wind Direction which when downloaded at
+1 hour is processed correctly, and if any other time-resolution is used then
+the app will not process wind direction correctly.
 }
 \examples{
-\dontrun{
+if(interactive()){
 library(pollucheck)
 pollucheck_run()
 }
