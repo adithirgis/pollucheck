@@ -49,7 +49,7 @@ The output is displayed in five different tabs.
 6) `Compare` allows users to upload another set of data to compare selected parameters and generate plots.
 7) `openair` allows users to use the package's widely used functions for the selected parameters.
 8) `FAQ's` helps users to understand this software.
-9) `Disclaimer` contains disclaimer to use this package.
+9) `Disclaimer` contains a disclaimer to use this package.
 
 
 ## Limitations
