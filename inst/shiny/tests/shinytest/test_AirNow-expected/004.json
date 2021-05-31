@@ -24,9 +24,9 @@
     "DepVar": "PM2.5",
     "DepVar1": "PM2.5",
     "diur": "mesd",
-    "diur1": "mesd",
+    "diur1": "mediq",
     "diurn": "mon",
-    "diurn1": "all",
+    "diurn1": "mon",
     "diurnal": 2,
     "diurnal_mt": "Title",
     "diurnal_mt1": "Title",
@@ -50,7 +50,20 @@
       ]
     },
     "file12": "60 min",
-    "file2": null,
+    "file2": {
+      "name": [
+        "AirNow.csv"
+      ],
+      "size": [
+        727582
+      ],
+      "type": [
+        "text/csv"
+      ],
+      "datapath": [
+        "0.csv"
+      ]
+    },
     "freq": 1,
     "freq_mt": "Title",
     "freq_x": "Parameter",
@@ -71,9 +84,9 @@
     "Para1": "PM2.5",
     "per": 75,
     "percent": false,
-    "plot_val": 0,
-    "plot_val_di": 0,
-    "plot_values": 0,
+    "plot_val": 1,
+    "plot_val_di": 2,
+    "plot_values": 1,
     "qq": 1,
     "qq_mt": "Title",
     "qq_y": "Parameter",
@@ -460,7 +473,7 @@
     "table1_rows_selected": null,
     "table1_search": "",
     "table1_state": null,
-    "tabs1": "5",
+    "tabs1": "7",
     "timezone": "Asia/Kolkata",
     "timezone1": "Asia/Kolkata",
     "title_bi": "Title",
@@ -469,7 +482,7 @@
     "ts_y": "Parameter",
     "tv": 0,
     "type": "an",
-    "type2": "cpcb"
+    "type2": "an"
   },
   "output": {
     "kendal_test": "\n\tMann-Kendall trend test\n\ndata:  y\nz = -0.61522, n = 305, p-value = 0.5384\nalternative hypothesis: true S is not equal to 0\nsample estimates:\n            S          varS           tau \n-1.096000e+03  3.167873e+06 -2.365587e-02 ",
@@ -572,6 +585,49 @@
         }
       }
     },
+    "plot12": {
+      "src": "[image data sha1: e8eb0ee363919813eb2b4471a82d5c150a33a8b4]",
+      "width": 631,
+      "height": 600,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "panel": 1,
+            "row": 1,
+            "col": 1,
+            "panel_vars": {
+
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": 1576503720,
+              "right": 1605395880,
+              "bottom": -5.72462121212121,
+              "top": 162.217045454545
+            },
+            "mapping": {
+              "x": "as.POSIXct(date)",
+              "y": "value",
+              "colour": "parameter"
+            },
+            "range": {
+              "left": 65.1506849315068,
+              "right": 531.843287671233,
+              "bottom": 549.849315068493,
+              "top": 24.958904109589
+            }
+          }
+        ],
+        "dims": {
+          "width": 631,
+          "height": 600
+        }
+      }
+    },
     "plot13": {
       "src": "[image data sha1: 1503b4a29bc49a4cdf5c100b2f4b2701517c36af]",
       "width": 800,
@@ -604,6 +660,48 @@
         "dims": {
           "width": 800,
           "height": 400
+        }
+      }
+    },
+    "plot15": {
+      "src": "[image data sha1: 3e605a9428d46d1f48049d5247f07a0c4423b3df]",
+      "width": 631,
+      "height": 600,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "panel": 1,
+            "row": 1,
+            "col": 1,
+            "panel_vars": {
+
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": -5.7246212121212,
+              "right": 162.217045454545,
+              "bottom": -5.72462121212121,
+              "top": 162.217045454545
+            },
+            "mapping": {
+              "x": "x",
+              "y": "y"
+            },
+            "range": {
+              "left": 65.1506849315068,
+              "right": 625.520547945205,
+              "bottom": 549.849315068493,
+              "top": 41.4383561643836
+            }
+          }
+        ],
+        "dims": {
+          "width": 631,
+          "height": 600
         }
       }
     },
@@ -652,6 +750,330 @@
         "dims": {
           "width": 800,
           "height": 400
+        }
+      }
+    },
+    "plot17": {
+      "src": "[image data sha1: e4dca13703220d3db0869d03ac88ec3407699fef]",
+      "width": 631,
+      "height": 600,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "panel": 1,
+            "row": 1,
+            "col": 1,
+            "panel_vars": {
+              "panelvar1": "Apr"
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": -2.25,
+              "right": 25.25,
+              "bottom": -2.25,
+              "top": 91.25
+            },
+            "mapping": {
+              "ymin": "site1_p25",
+              "ymax": "site1_p75",
+              "x": "as.numeric(hour)",
+              "y": "site1_median",
+              "panelvar1": "month"
+            },
+            "range": {
+              "left": 46.1506849315069,
+              "right": 186.883561643836,
+              "bottom": 196.269406392694,
+              "top": 42.7260273972603
+            }
+          },
+          {
+            "panel": 2,
+            "row": 1,
+            "col": 2,
+            "panel_vars": {
+              "panelvar1": "Aug"
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": -2.25,
+              "right": 25.25,
+              "bottom": -2.25,
+              "top": 91.25
+            },
+            "mapping": {
+              "ymin": "site1_p25",
+              "ymax": "site1_p75",
+              "x": "as.numeric(hour)",
+              "y": "site1_median",
+              "panelvar1": "month"
+            },
+            "range": {
+              "left": 192.36301369863,
+              "right": 333.095890410959,
+              "bottom": 196.269406392694,
+              "top": 42.7260273972603
+            }
+          },
+          {
+            "panel": 3,
+            "row": 1,
+            "col": 3,
+            "panel_vars": {
+              "panelvar1": "Feb"
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": -2.25,
+              "right": 25.25,
+              "bottom": -2.25,
+              "top": 91.25
+            },
+            "mapping": {
+              "ymin": "site1_p25",
+              "ymax": "site1_p75",
+              "x": "as.numeric(hour)",
+              "y": "site1_median",
+              "panelvar1": "month"
+            },
+            "range": {
+              "left": 338.575342465753,
+              "right": 479.308219178082,
+              "bottom": 196.269406392694,
+              "top": 42.7260273972603
+            }
+          },
+          {
+            "panel": 4,
+            "row": 1,
+            "col": 4,
+            "panel_vars": {
+              "panelvar1": "Jan"
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": -2.25,
+              "right": 25.25,
+              "bottom": -2.25,
+              "top": 91.25
+            },
+            "mapping": {
+              "ymin": "site1_p25",
+              "ymax": "site1_p75",
+              "x": "as.numeric(hour)",
+              "y": "site1_median",
+              "panelvar1": "month"
+            },
+            "range": {
+              "left": 484.787671232877,
+              "right": 625.520547945205,
+              "bottom": 196.269406392694,
+              "top": 42.7260273972603
+            }
+          },
+          {
+            "panel": 5,
+            "row": 2,
+            "col": 1,
+            "panel_vars": {
+              "panelvar1": "Jul"
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": -2.25,
+              "right": 25.25,
+              "bottom": -2.25,
+              "top": 91.25
+            },
+            "mapping": {
+              "ymin": "site1_p25",
+              "ymax": "site1_p75",
+              "x": "as.numeric(hour)",
+              "y": "site1_median",
+              "panelvar1": "month"
+            },
+            "range": {
+              "left": 46.1506849315069,
+              "right": 186.883561643836,
+              "bottom": 373.059360730594,
+              "top": 219.51598173516
+            }
+          },
+          {
+            "panel": 6,
+            "row": 2,
+            "col": 2,
+            "panel_vars": {
+              "panelvar1": "Jun"
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": -2.25,
+              "right": 25.25,
+              "bottom": -2.25,
+              "top": 91.25
+            },
+            "mapping": {
+              "ymin": "site1_p25",
+              "ymax": "site1_p75",
+              "x": "as.numeric(hour)",
+              "y": "site1_median",
+              "panelvar1": "month"
+            },
+            "range": {
+              "left": 192.36301369863,
+              "right": 333.095890410959,
+              "bottom": 373.059360730594,
+              "top": 219.51598173516
+            }
+          },
+          {
+            "panel": 7,
+            "row": 2,
+            "col": 3,
+            "panel_vars": {
+              "panelvar1": "Mar"
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": -2.25,
+              "right": 25.25,
+              "bottom": -2.25,
+              "top": 91.25
+            },
+            "mapping": {
+              "ymin": "site1_p25",
+              "ymax": "site1_p75",
+              "x": "as.numeric(hour)",
+              "y": "site1_median",
+              "panelvar1": "month"
+            },
+            "range": {
+              "left": 338.575342465753,
+              "right": 479.308219178082,
+              "bottom": 373.059360730594,
+              "top": 219.51598173516
+            }
+          },
+          {
+            "panel": 8,
+            "row": 2,
+            "col": 4,
+            "panel_vars": {
+              "panelvar1": "May"
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": -2.25,
+              "right": 25.25,
+              "bottom": -2.25,
+              "top": 91.25
+            },
+            "mapping": {
+              "ymin": "site1_p25",
+              "ymax": "site1_p75",
+              "x": "as.numeric(hour)",
+              "y": "site1_median",
+              "panelvar1": "month"
+            },
+            "range": {
+              "left": 484.787671232877,
+              "right": 625.520547945205,
+              "bottom": 373.059360730594,
+              "top": 219.51598173516
+            }
+          },
+          {
+            "panel": 9,
+            "row": 3,
+            "col": 1,
+            "panel_vars": {
+              "panelvar1": "Oct"
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": -2.25,
+              "right": 25.25,
+              "bottom": -2.25,
+              "top": 91.25
+            },
+            "mapping": {
+              "ymin": "site1_p25",
+              "ymax": "site1_p75",
+              "x": "as.numeric(hour)",
+              "y": "site1_median",
+              "panelvar1": "month"
+            },
+            "range": {
+              "left": 46.1506849315069,
+              "right": 186.883561643836,
+              "bottom": 549.849315068493,
+              "top": 396.305936073059
+            }
+          },
+          {
+            "panel": 10,
+            "row": 3,
+            "col": 2,
+            "panel_vars": {
+              "panelvar1": "Sep"
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": -2.25,
+              "right": 25.25,
+              "bottom": -2.25,
+              "top": 91.25
+            },
+            "mapping": {
+              "ymin": "site1_p25",
+              "ymax": "site1_p75",
+              "x": "as.numeric(hour)",
+              "y": "site1_median",
+              "panelvar1": "month"
+            },
+            "range": {
+              "left": 192.36301369863,
+              "right": 333.095890410959,
+              "bottom": 549.849315068493,
+              "top": 396.305936073059
+            }
+          }
+        ],
+        "dims": {
+          "width": 631,
+          "height": 600
         }
       }
     },

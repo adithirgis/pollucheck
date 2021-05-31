@@ -18,7 +18,7 @@
     "boxt": 1,
     "comp_mt": "Title",
     "comp_y": "Parameter",
-    "cp": 0,
+    "cp": 1,
     "cp_mt": "Title",
     "da": 1,
     "DepVar": "PM2.5",
@@ -102,7 +102,7 @@
     "reg_y": "Parameter",
     "remove_9": true,
     "repeated": false,
-    "stat_tv": "mean",
+    "stat_tv": "median",
     "switch_tab": 0,
     "ta": 1,
     "table_cell_clicked": {
@@ -473,14 +473,14 @@
     "table1_rows_selected": null,
     "table1_search": "",
     "table1_state": null,
-    "tabs1": "7",
+    "tabs1": "4",
     "timezone": "Asia/Kolkata",
     "timezone1": "Asia/Kolkata",
     "title_bi": "Title",
     "ts": 1,
     "ts_mt": "Title",
     "ts_y": "Parameter",
-    "tv": 0,
+    "tv": 1,
     "type": "an",
     "type2": "an"
   },
@@ -1489,6 +1489,76 @@
         "dims": {
           "width": 800,
           "height": 400
+        }
+      }
+    },
+    "plot4": {
+      "src": "[image data sha1: 4881e117eedb74d86040b5982e39f6bb7e626502]",
+      "width": 631,
+      "height": 600,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 631,
+              "bottom": 599,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 631,
+          "height": 600
+        }
+      }
+    },
+    "plot5": {
+      "src": "[image data sha1: b5085722bc70dac1ad4710a8bcce2a55a73983b3]",
+      "width": 631,
+      "height": 600,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 631,
+              "bottom": 599,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 631,
+          "height": 600
         }
       }
     },

@@ -9,3 +9,4 @@
 [.]bib$
 ^.*\.JPG$
 ^.*\.jpg$
+^LICENSE\.md$
