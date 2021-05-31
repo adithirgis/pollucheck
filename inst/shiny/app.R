@@ -795,7 +795,7 @@ server <- function(input, output, session) {
   
   CPCB_f <- reactive({
     if (is.null(input$file1)) {
-      data <- data_file(75, "cpcb", "BWSSB.xlsx", "BWSSB.xlsx",
+      data <- data_file(75, "cpcb", "tests/shinytest/BWSSB.xlsx", "tests/shinytest/BWSSB.xlsx",
                         "60 min", TRUE, TRUE, TRUE,
                         3, TRUE, 999, FALSE)
     } else if(!is.null(input$file1)) {
@@ -806,7 +806,7 @@ server <- function(input, output, session) {
   })
   Cmp_f <- reactive({
     if (is.null(input$file2)) {
-      data <- data_file(75, "cpcb", "BWSSB.xlsx", "BWSSB.xlsx",
+      data <- data_file(75, "cpcb", "tests/shinytest/BWSSB.xlsx", "tests/shinytest/BWSSB.xlsx",
                         "60 min", TRUE, TRUE, TRUE,
                         3, TRUE, 999, FALSE)
     } else if(!is.null(input$file2)) {

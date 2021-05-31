@@ -3,7 +3,7 @@
     "acf": 0,
     "acf_main": "Title",
     "avg": "no",
-    "avg_hour": "hour",
+    "avg_hour": "daily",
     "avg_hour1": "hour1",
     "avg_hour2": "hour2",
     "avg_hour3": "hour3",
@@ -56,7 +56,7 @@
     "freq_x": "Parameter",
     "help_link": 1,
     "high_number": 9999,
-    "hourly": 1,
+    "hourly": 2,
     "InDepVar": "PM2.5",
     "InDepVar1": null,
     "log_op": false,
@@ -92,6 +92,46 @@
     "stat_tv": "mean",
     "switch_tab": 1,
     "ta": 0,
+    "table_cell_clicked": {
+
+    },
+    "table_cells_selected": [
+
+    ],
+    "table_columns_selected": null,
+    "table_rows_all": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "table_rows_current": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "table_rows_selected": null,
+    "table_search": "",
+    "table_state": null,
     "table1_cell_clicked": {
 
     },
@@ -10177,7 +10217,7 @@
     "table1_rows_selected": null,
     "table1_search": "",
     "table1_state": null,
-    "tabs1": "FAQ's",
+    "tabs1": "2",
     "timezone": "Asia/Kolkata",
     "timezone1": "Asia/Kolkata",
     "title_bi": "Title",
@@ -10189,6 +10229,106 @@
     "type2": "cpcb"
   },
   "output": {
+    "table": {
+      "x": {
+        "filter": "none",
+        "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>PM2.5<\/th>\n      <th>CO<\/th>\n      <th>SO2<\/th>\n      <th>NO2<\/th>\n      <th>O3<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>",
+        "options": {
+          "pageLength": 13,
+          "columnDefs": [
+            {
+              "className": "dt-right",
+              "targets": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "orderable": false,
+              "targets": 0
+            }
+          ],
+          "order": [
+
+          ],
+          "autoWidth": false,
+          "orderClasses": false,
+          "lengthMenu": [
+            10,
+            13,
+            25,
+            50,
+            100
+          ],
+          "ajax": {
+            "type": "POST",
+            "data": "function(d) {\nd.search.caseInsensitive = true;\nd.search.smart = true;\nd.escape = true;\nvar encodeAmp = function(x) { x.value = x.value.replace(/&/g, \"%26\"); }\nencodeAmp(d.search);\n$.each(d.columns, function(i, v) {encodeAmp(v.search);});\n}"
+          },
+          "serverSide": true,
+          "processing": true
+        },
+        "selection": {
+          "mode": "multiple",
+          "selected": null,
+          "target": "row",
+          "selectable": null
+        }
+      },
+      "evals": [
+        "options.ajax.data"
+      ],
+      "jsHooks": [
+
+      ],
+      "deps": [
+        {
+          "name": "dt-core",
+          "version": "1.10.20",
+          "src": {
+            "href": "dt-core-1.10.20"
+          },
+          "meta": null,
+          "script": "js/jquery.dataTables.min.js",
+          "stylesheet": [
+            "css/jquery.dataTables.min.css",
+            "css/jquery.dataTables.extra.css"
+          ],
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": false
+        },
+        {
+          "name": "jquery",
+          "version": "3.5.1",
+          "src": {
+            "href": "jquery-3.5.1"
+          },
+          "meta": null,
+          "script": "jquery.min.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        },
+        {
+          "name": "crosstalk",
+          "version": "1.1.1",
+          "src": {
+            "href": "crosstalk-1.1.1"
+          },
+          "meta": null,
+          "script": "js/crosstalk.min.js",
+          "stylesheet": "css/crosstalk.css",
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        }
+      ]
+    },
     "table1": {
       "x": {
         "filter": "none",

@@ -5,7 +5,7 @@
     "avg": "no",
     "avg_hour": "hour",
     "avg_hour1": "hour1",
-    "avg_hour2": "hour2",
+    "avg_hour2": "daily2",
     "avg_hour3": "hour3",
     "avg_month": false,
     "box": 2,
@@ -18,7 +18,7 @@
     "boxt": 1,
     "comp_mt": "Title",
     "comp_y": "Parameter",
-    "cp": 0,
+    "cp": 1,
     "cp_mt": "Title",
     "da": 1,
     "DepVar": "PM2.5",
@@ -57,12 +57,15 @@
     "help_link": 1,
     "high_number": 9999,
     "hourly": 1,
-    "InDepVar": "PM2.5",
-    "InDepVar1": null,
+    "InDepVar": "PM10",
+    "InDepVar1": [
+      "PM10",
+      "ratio"
+    ],
     "log_op": false,
     "mbox": 1,
     "mk": 1,
-    "mulreg": 0,
+    "mulreg": 1,
     "normality": "ad",
     "palleInp": "PM2.5",
     "palleInp1": "PM2.5",
@@ -77,7 +80,7 @@
     "qq": 1,
     "qq_mt": "Title",
     "qq_y": "Parameter",
-    "reg": 0,
+    "reg": 1,
     "reg_mmt": "Title",
     "reg_mt": "Title",
     "reg_mt1": "Title",
@@ -89,7 +92,7 @@
     "reg_y": "Parameter",
     "remove_9": true,
     "repeated": true,
-    "stat_tv": "mean",
+    "stat_tv": "median",
     "switch_tab": 1,
     "ta": 1,
     "table_cell_clicked": {
@@ -10217,20 +10220,22 @@
     "table1_rows_selected": null,
     "table1_search": "",
     "table1_state": null,
-    "tabs1": "5",
+    "tabs1": "4",
     "timezone": "Asia/Kolkata",
     "timezone1": "Asia/Kolkata",
     "title_bi": "Title",
     "ts": 1,
     "ts_mt": "Title",
     "ts_y": "Parameter",
-    "tv": 0,
+    "tv": 1,
     "type": "cpcb",
     "type2": "cpcb"
   },
   "output": {
+    "DepPrint": "[1] \"Dependent variable: PM2.5\"",
+    "IndPrint": "[1] \"Independent variables: PM10\"  \"Independent variables: ratio\"",
     "kendal_test": "\n\tMann-Kendall trend test\n\ndata:  y\nz = 13.635, n = 419, p-value < 2.2e-16\nalternative hypothesis: true S is not equal to 0\nsample estimates:\n           S         varS          tau \n3.905200e+04 8.202150e+06 4.461786e-01 ",
-    "normality_test": "\n\tAnderson-Darling normality test\n\ndata:  y\nA = 361.03, p-value < 2.2e-16",
+    "normality_test": "\n\tAnderson-Darling normality test\n\ndata:  y\nA = 7.9571, p-value < 2.2e-16",
     "plot1": {
       "src": "[image data sha1: d3759611e398e746d63a3f3089d9a6896db2e50e]",
       "width": 800,
@@ -10323,6 +10328,48 @@
               "left": 54.1506849315069,
               "right": 794.520547945205,
               "bottom": 318.849315068493,
+              "top": 24.958904109589
+            }
+          }
+        ],
+        "dims": {
+          "width": 800,
+          "height": 400
+        }
+      }
+    },
+    "plot11": {
+      "src": "[image data sha1: 6e53d86b3498cd9e727af56130cc21ed96e1725f]",
+      "width": 800,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "panel": 1,
+            "row": 1,
+            "col": 1,
+            "panel_vars": {
+
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": -30.0762020468344,
+              "right": 197.727235424949,
+              "bottom": -30.0762020468345,
+              "top": 197.727235424949
+            },
+            "mapping": {
+              "x": ".fitted",
+              "y": "y"
+            },
+            "range": {
+              "left": 65.1506849315069,
+              "right": 794.520547945205,
+              "bottom": 349.849315068493,
               "top": 24.958904109589
             }
           }
@@ -10561,8 +10608,78 @@
         }
       }
     },
+    "plot4": {
+      "src": "[image data sha1: 74998510eef0046966e982db1074027fe5c50878]",
+      "width": 631,
+      "height": 600,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 631,
+              "bottom": 599,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 631,
+          "height": 600
+        }
+      }
+    },
+    "plot5": {
+      "src": "[image data sha1: 06f983473b5c4ba3492135530a58f61d665a4b11]",
+      "width": 631,
+      "height": 600,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 631,
+              "bottom": 599,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 631,
+          "height": 600
+        }
+      }
+    },
     "plot6": {
-      "src": "[image data sha1: 9dc4b1faa5a56ec79ae496145321c85edaa1ee1b]",
+      "src": "[image data sha1: 862763081c9a07b123dec488b0cae7dce3256929]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10580,10 +10697,10 @@
               "y": null
             },
             "domain": {
-              "left": -34.6385,
-              "right": 740.3885,
-              "bottom": -0.0017509585236902,
-              "top": 0.0367701289974943
+              "left": -0.626179166666651,
+              "right": 156.4467625,
+              "bottom": -0.00130369427231263,
+              "top": 0.0273775797185651
             },
             "mapping": {
               "y": null,
@@ -10604,7 +10721,7 @@
       }
     },
     "plot7": {
-      "src": "[image data sha1: 63a534a02128200471bcfb0003f1aab7dad33ebb]",
+      "src": "[image data sha1: 5550f3b01cd1e650b0363e3395d9fa5f96fb54a1]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10622,10 +10739,10 @@
               "y": null
             },
             "domain": {
-              "left": -4.17710296194385,
-              "right": 4.17710296194399,
-              "bottom": -0.383990876560394,
-              "top": 3.02255266389544
+              "left": -3.22643575819418,
+              "right": 3.22643575819418,
+              "bottom": 0.201946755888637,
+              "top": 2.6304139039844
             },
             "mapping": {
               "x": null,
@@ -10633,10 +10750,52 @@
               "sample": "log10(y)"
             },
             "range": {
-              "left": 43.1506849315069,
+              "left": 59.1506849315069,
               "right": 794.520547945205,
               "bottom": 349.849315068493,
               "top": 24.958904109589
+            }
+          }
+        ],
+        "dims": {
+          "width": 800,
+          "height": 400
+        }
+      }
+    },
+    "plot8": {
+      "src": "[image data sha1: b0b35a1a02144ad6f6c285c3dfd2b22300bf77e6]",
+      "width": 800,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "panel": 1,
+            "row": 1,
+            "col": 1,
+            "panel_vars": {
+
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": -23.6,
+              "right": 596.36,
+              "bottom": -34.6385,
+              "top": 740.3885
+            },
+            "mapping": {
+              "x": "x",
+              "y": "y"
+            },
+            "range": {
+              "left": 65.1506849315069,
+              "right": 794.520547945205,
+              "bottom": 349.849315068493,
+              "top": 41.4383561643836
             }
           }
         ],
@@ -10704,6 +10863,7 @@
         }
       }
     },
+    "RegOut": "\nCall:\nlm(formula = as.formula(paste(input$DepVar1, \" ~ \", paste(input$InDepVar1, \n    collapse = \"+\"))), data = data)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-143.433   -1.361    0.757    3.331   39.568 \n\nCoefficients:\n              Estimate Std. Error t value Pr(>|t|)    \n(Intercept) -34.376333   0.699985  -49.11   <2e-16 ***\nPM10          0.378138   0.004076   92.77   <2e-16 ***\nratio        89.204282   1.036776   86.04   <2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 9.068 on 2747 degrees of freedom\n  (7306 observations deleted due to missingness)\nMultiple R-squared:  0.8292,\tAdjusted R-squared:  0.8291 \nF-statistic:  6669 on 2 and 2747 DF,  p-value: < 2.2e-16",
     "table": {
       "x": {
         "filter": "none",

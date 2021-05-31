@@ -51,7 +51,7 @@
     },
     "file12": "60 min",
     "file2": null,
-    "freq": 0,
+    "freq": 1,
     "freq_mt": "Title",
     "freq_x": "Parameter",
     "help_link": 1,
@@ -74,7 +74,7 @@
     "plot_val": 0,
     "plot_val_di": 0,
     "plot_values": 0,
-    "qq": 0,
+    "qq": 1,
     "qq_mt": "Title",
     "qq_y": "Parameter",
     "reg": 0,
@@ -92,6 +92,46 @@
     "stat_tv": "mean",
     "switch_tab": 1,
     "ta": 0,
+    "table_cell_clicked": {
+
+    },
+    "table_cells_selected": [
+
+    ],
+    "table_columns_selected": null,
+    "table_rows_all": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "table_rows_current": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "table_rows_selected": null,
+    "table_search": "",
+    "table_state": null,
     "table1_cell_clicked": {
 
     },
@@ -10177,7 +10217,7 @@
     "table1_rows_selected": null,
     "table1_search": "",
     "table1_state": null,
-    "tabs1": "FAQ's",
+    "tabs1": "5",
     "timezone": "Asia/Kolkata",
     "timezone1": "Asia/Kolkata",
     "title_bi": "Title",
@@ -10189,6 +10229,216 @@
     "type2": "cpcb"
   },
   "output": {
+    "kendal_test": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "normality_test": "\n\tAnderson-Darling normality test\n\ndata:  y\nA = 0.46031, p-value = 0.2528",
+    "plot13": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "plot18": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "plot6": {
+      "src": "[image data sha1: 4c419aa2ae08ea13f8d0588c6c5ebe8d2fcb094a]",
+      "width": 800,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "panel": 1,
+            "row": 1,
+            "col": 1,
+            "panel_vars": {
+
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": 14.4826666666667,
+              "right": 33.124,
+              "bottom": -0.00470968295045988,
+              "top": 0.0989033419596574
+            },
+            "mapping": {
+              "y": null,
+              "x": "y"
+            },
+            "range": {
+              "left": 81.1506849315069,
+              "right": 794.520547945205,
+              "bottom": 349.849315068493,
+              "top": 24.958904109589
+            }
+          }
+        ],
+        "dims": {
+          "width": 800,
+          "height": 400
+        }
+      }
+    },
+    "plot7": {
+      "src": "[image data sha1: d65c3204b3463664e39afe0236704c6b8d353c67]",
+      "width": 800,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "panel": 1,
+            "row": 1,
+            "col": 1,
+            "panel_vars": {
+
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": -2.6655158145094,
+              "right": 2.6655158145094,
+              "bottom": 1.13184147268268,
+              "top": 1.52684330591698
+            },
+            "mapping": {
+              "x": null,
+              "y": null,
+              "sample": "log10(y)"
+            },
+            "range": {
+              "left": 59.1506849315069,
+              "right": 794.520547945205,
+              "bottom": 349.849315068493,
+              "top": 24.958904109589
+            }
+          }
+        ],
+        "dims": {
+          "width": 800,
+          "height": 400
+        }
+      }
+    },
+    "table": {
+      "x": {
+        "filter": "none",
+        "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>PM2.5<\/th>\n      <th>CO<\/th>\n      <th>SO2<\/th>\n      <th>NO2<\/th>\n      <th>O3<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>",
+        "options": {
+          "pageLength": 13,
+          "columnDefs": [
+            {
+              "className": "dt-right",
+              "targets": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "orderable": false,
+              "targets": 0
+            }
+          ],
+          "order": [
+
+          ],
+          "autoWidth": false,
+          "orderClasses": false,
+          "lengthMenu": [
+            10,
+            13,
+            25,
+            50,
+            100
+          ],
+          "ajax": {
+            "type": "POST",
+            "data": "function(d) {\nd.search.caseInsensitive = true;\nd.search.smart = true;\nd.escape = true;\nvar encodeAmp = function(x) { x.value = x.value.replace(/&/g, \"%26\"); }\nencodeAmp(d.search);\n$.each(d.columns, function(i, v) {encodeAmp(v.search);});\n}"
+          },
+          "serverSide": true,
+          "processing": true
+        },
+        "selection": {
+          "mode": "multiple",
+          "selected": null,
+          "target": "row",
+          "selectable": null
+        }
+      },
+      "evals": [
+        "options.ajax.data"
+      ],
+      "jsHooks": [
+
+      ],
+      "deps": [
+        {
+          "name": "dt-core",
+          "version": "1.10.20",
+          "src": {
+            "href": "dt-core-1.10.20"
+          },
+          "meta": null,
+          "script": "js/jquery.dataTables.min.js",
+          "stylesheet": [
+            "css/jquery.dataTables.min.css",
+            "css/jquery.dataTables.extra.css"
+          ],
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": false
+        },
+        {
+          "name": "jquery",
+          "version": "3.5.1",
+          "src": {
+            "href": "jquery-3.5.1"
+          },
+          "meta": null,
+          "script": "jquery.min.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        },
+        {
+          "name": "crosstalk",
+          "version": "1.1.1",
+          "src": {
+            "href": "crosstalk-1.1.1"
+          },
+          "meta": null,
+          "script": "js/crosstalk.min.js",
+          "stylesheet": "css/crosstalk.css",
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        }
+      ]
+    },
     "table1": {
       "x": {
         "filter": "none",
