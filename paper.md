@@ -42,14 +42,14 @@ We have implemented two functions from a widely used package in air quality `ope
 The output is displayed in five different tabs.
 
 1) `File` displays cleaned data.
-2) `Summary` displays summary statistics for all parameters and an ption of daily and monthly summary statistics is also available.
+2) `Summary` displays summary statistics for all parameters and an option of daily and monthly summary statistics is also available.
 3) `Summary Plots` generates data availability plot for all parameters, time series, monthly box-plots, vertical bar plots and diurnal plots for the selected parameter.
 4) `Statistical Plots` checks for normality, generates density, Q-Q plot along with checks for trends in the time series for the selected parameter.
 5) `Linear Regression` implements linear or multilinear regression using the selected parameters.
 6) `Compare` allows users to upload another set of data to compare selected parameters and generate plots.
 7) `openair` allows users to use the package's widely used functions for the selected parameters.
 8) `FAQ's` helps users to understand this software.
-9) `Disclaimer` contains diclaimer to use this package.
+9) `Disclaimer` contains disclaimer to use this package.
 
 
 ## Limitations

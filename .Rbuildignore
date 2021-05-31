@@ -9,3 +9,6 @@
 [.]bib$
 ^.*\.JPG$
 ^.*\.jpg$
+^.*\.jpeg$
+^logo\.md$
+^.*\.rar$
