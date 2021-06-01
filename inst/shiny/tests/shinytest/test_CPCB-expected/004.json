@@ -10237,7 +10237,7 @@
     "kendal_test": "\n\tMann-Kendall trend test\n\ndata:  y\nz = 13.635, n = 419, p-value < 2.2e-16\nalternative hypothesis: true S is not equal to 0\nsample estimates:\n           S         varS          tau \n3.905200e+04 8.202150e+06 4.461786e-01 ",
     "normality_test": "\n\tAnderson-Darling normality test\n\ndata:  y\nA = 7.9571, p-value < 2.2e-16",
     "plot1": {
-      "src": "[image data sha1: d3759611e398e746d63a3f3089d9a6896db2e50e]",
+      "src": "[image data sha1: b661271ab4d3cb5fe1094380e5a32545d347cedf]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10279,7 +10279,7 @@
       }
     },
     "plot10": {
-      "src": "[image data sha1: 1a2baf91427d7339ad6c42a94d91bab8abf16a8a]",
+      "src": "[image data sha1: efc1f5ef90dabdbef8bb64b782f50385f6a51ca4]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10339,7 +10339,7 @@
       }
     },
     "plot11": {
-      "src": "[image data sha1: 6e53d86b3498cd9e727af56130cc21ed96e1725f]",
+      "src": "[image data sha1: 714f543ef8b3760fb9d8a5ec5a1d7cf15a7f38e8]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10381,7 +10381,7 @@
       }
     },
     "plot13": {
-      "src": "[image data sha1: 7aeff2d879657bf759ddfab8d2f5619366d792fa]",
+      "src": "[image data sha1: e35db9d4d488d37e17cf109849cd059fab1ce8ac]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10416,7 +10416,7 @@
       }
     },
     "plot16": {
-      "src": "[image data sha1: ab1ecf33594cb8734d3953d4195adf8cba236078]",
+      "src": "[image data sha1: 91506c2a4881ae8feac27bb9dea6faa2c28b8384]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10470,7 +10470,7 @@
       }
     },
     "plot18": {
-      "src": "[image data sha1: 8fda1f9e6e63f1ca45bb47b57d11cd2338011b6b]",
+      "src": "[image data sha1: deb6a3c1575364c296e9b96301fd4ef958dcd9dc]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10505,7 +10505,7 @@
       }
     },
     "plot2": {
-      "src": "[image data sha1: 162a18dabf1788766744f66137c43d32d2ae3da9]",
+      "src": "[image data sha1: 766ad3d18b154fa2786f2945d6321931dce5d2d0]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10549,7 +10549,7 @@
       }
     },
     "plot3": {
-      "src": "[image data sha1: b14b4e6a8138797d8239ad8666c0c4d8d658b70a]",
+      "src": "[image data sha1: 504fcbe45210d90e2f1ce14cb70d8e2633997a79]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10609,7 +10609,7 @@
       }
     },
     "plot4": {
-      "src": "[image data sha1: 74998510eef0046966e982db1074027fe5c50878]",
+      "src": "[image data sha1: ef69620ca7d30212c4d745c550f438f5202f5b60]",
       "width": 631,
       "height": 600,
       "alt": "Plot object",
@@ -10644,7 +10644,7 @@
       }
     },
     "plot5": {
-      "src": "[image data sha1: 06f983473b5c4ba3492135530a58f61d665a4b11]",
+      "src": "[image data sha1: 5d02a255363b3c850859f519a7e1eb14c2c9c12d]",
       "width": 631,
       "height": 600,
       "alt": "Plot object",
@@ -10679,7 +10679,7 @@
       }
     },
     "plot6": {
-      "src": "[image data sha1: 862763081c9a07b123dec488b0cae7dce3256929]",
+      "src": "[image data sha1: ea19b7dfa3232859097fa309debc2edbb6bd876b]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10721,7 +10721,7 @@
       }
     },
     "plot7": {
-      "src": "[image data sha1: 5550f3b01cd1e650b0363e3395d9fa5f96fb54a1]",
+      "src": "[image data sha1: a72164c191ef790bc4621a40dd9ba599b40cbfed]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10764,7 +10764,7 @@
       }
     },
     "plot8": {
-      "src": "[image data sha1: b0b35a1a02144ad6f6c285c3dfd2b22300bf77e6]",
+      "src": "[image data sha1: 78acf5ebf65d5c822df2848411547133e4e1d7a4]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10806,7 +10806,7 @@
       }
     },
     "plot9": {
-      "src": "[image data sha1: 5bcfd3a5bf2c7a1cd3a7bbb48642495163eb87e3]",
+      "src": "[image data sha1: 0d9ed1fefb64496ec3c08b41eec27a850d427f4d]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",

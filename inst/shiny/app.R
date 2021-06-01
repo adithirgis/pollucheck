@@ -349,7 +349,7 @@ ui <- fluidPage(
                                               checkboxInput('avg_month', 'Use monthly means'),
                                               tags$hr(),
                                               tags$hr(),
-                                              actionButton("ta", "Periodicity Analysis (based on daily mean)"),
+                                              actionButton("ta", "Wavelet Analysis (based on daily mean)"),
                                               tags$br(),
                                               tags$br(),
                                               textInput("title_bi", label = "Edit title of the plot", 
