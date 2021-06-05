@@ -17,6 +17,9 @@ knitr::opts_chunk$set(echo = TRUE)
 **What does the app do?**  
 *This app helps to analyze and visualize open source air quality data available. An example dataset is already loaded to help you walk through all the features of the app. If you need help with downloading your own, go to the next question. This app can process all parameters except Wind Direction which when downloaded at 1 hour is processed correctly, any other time-resolution is used then the app will not be process wind direction correctly.*
 
+**What is ratio_PM?**  
+*ratio_PM is = PM2.5 / PM10 or ratio of PM2.5 and PM10.*
+
 **What parameters are applied to pre-loaded data?**  
 *The pre-loaded data, downloaded from [CPCB](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing) has all the conditions applied ie: removed negative values and repeated consecutive measurements, removed outliers using mean and 3 times std dev and also checked for 75% of completeness of data in a day for all parameters.*
 
@@ -152,6 +155,9 @@ The File tab downloaded data is the hourly or daily average so \_average.csv, wh
 *The degrees of freedom indicate the number of independent values that can vary in an analysis without breaking any constraints. [source](https://statisticsbyjim.com/hypothesis-testing/degrees-freedom-statistics/)*
 
 ### Compare
+
+**What conditions are applied on the data for comparison?**  
+*The same conditions applied for the original data uploaded in **File** tab will be applied example - remove negative values, or averaging period of hourly or daily.*
 
 **Can I compare two datasets of different timezone?**  
 *No, right now the app allows for comparison with data from the same time zone.*

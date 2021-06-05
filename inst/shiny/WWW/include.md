@@ -12,6 +12,9 @@ Direction which when downloaded at 1 hour is processed correctly, any
 other time-resolution is used then the app will not be process wind
 direction correctly.*
 
+**What is ratio\_PM?**  
+*ratio\_PM is = PM2.5 / PM10 or ratio of PM2.5 and PM10.*
+
 **What parameters are applied to pre-loaded data?**  
 *The pre-loaded data, downloaded from
 [CPCB](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing)
@@ -257,6 +260,11 @@ can vary in an analysis without breaking any constraints.
 [source](https://statisticsbyjim.com/hypothesis-testing/degrees-freedom-statistics/)*
 
 ### Compare
+
+**What conditions are applied on the data for comparison?**  
+*The same conditions applied for the original data uploaded in **File**
+tab will be applied example - remove negative values, or averaging
+period of hourly or daily.*
 
 **Can I compare two datasets of different timezone?**  
 *No, right now the app allows for comparison with data from the same

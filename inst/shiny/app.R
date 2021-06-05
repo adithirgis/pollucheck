@@ -20,7 +20,7 @@ library(zoo)
 ui <- fluidPage(
   shinyjs::useShinyjs(),
   theme = bslib::bs_theme(bootswatch = "pulse"), 
-  h1("PolluCheck - Analyse open source air quality data of India"),
+  h1("pollucheck - Analyse open-source air-quality data"),
   tags$head(
     tags$style(HTML(".sidebar {
                     height : 10vh; overflow-y : auto; font-size : 13px; 
@@ -133,9 +133,9 @@ ui <- fluidPage(
                                               textInput("reg_mt", label = "Edit title of plot", 
                                                         value = "Title"),
                                               textInput("reg_x", label = "Edit X axis label", 
-                                                        value = "Parameter"),
+                                                        value = "Independent variable"),
                                               textInput("reg_y", label = "Edit Y axis label", 
-                                                        value = "Parameter"),
+                                                        value = "Dependent variable"),
                                               tags$hr(),
                                               tags$hr(),
                                               selectInput("DepVar1", 
@@ -152,7 +152,7 @@ ui <- fluidPage(
                                               textInput("reg_mx", label = "Edit X axis label", 
                                                         value = "Fitted"),
                                               textInput("reg_my", label = "Edit Y axis label", 
-                                                        value = "Parameter"),
+                                                        value = "Dependent variable"),
                                               tags$hr()),
                              conditionalPanel(condition = "input.tabs1 == 4",
                                               tags$hr(),
@@ -249,7 +249,7 @@ ui <- fluidPage(
                                                           choices = OlsonNames(),
                                                           selected = "Asia/Kolkata"),
                                               tags$hr(),
-                                              conditionalPanel(condition = "input.type == 'cpcb'",
+                                              conditionalPanel(condition = "input.type2 == 'cpcb'",
                                                                radioButtons("file12", "Input data time resolution",
                                                                             c("15 minutes" = "15 min",
                                                                               "30 minutes" = "30 min",
@@ -284,7 +284,7 @@ ui <- fluidPage(
                                                         value = "Title"),
                                               textInput("reg_mx1", label = "Edit X axis of scatter plot", 
                                                         value = "Site 2"),
-                                              textInput("reg_my1", label = "Edit Y axis of scatter plot", 
+                                              textInput("reg_my1", label = "Edit Y axisof scatter plot", 
                                                         value = "Site 1"),
                                               tags$hr(),
                                               tags$hr(),
@@ -430,6 +430,10 @@ server <- function(input, output, session) {
     if (input$type == "cpcb") shinyjs::disable(id = "timezone")  
     else shinyjs::enable(id = "timezone") 
   })
+  observeEvent(input$type2, {
+    if (input$type2 == "cpcb") shinyjs::disable(id = "timezone1")  
+    else shinyjs::enable(id = "timezone1") 
+  })
   
   #### Function to remove outliers
   LLD <- function(x, y, z, ey) {
@@ -502,6 +506,8 @@ server <- function(input, output, session) {
              set     = cumsum(new_set)) %>%
       filter(!is.na(`To Date`))
     trial[ , c('From Date', 'To Date')] <- list(NULL)
+    site_name <- read_excel(path = sf, skip = 5) 
+    site_name <- as.character(site_name[1, 2]) 
     dt_s <- split(trial, trial$set)
     PM <- data.frame(dt_s$`0`) %>%
       dplyr::mutate(date = as.POSIXct(date, format = '%d-%m-%Y %H:%M:%S', tz = input$timezone))
@@ -514,8 +520,9 @@ server <- function(input, output, session) {
     Bent <- make_df(dt_s$`3`, tseries_df)
     all <- list(site1_join, Ben, Beny, Bent) %>% reduce(left_join, by = "date")
     all <- all %>%
-      select(date, everything())
-    col_interest <- 2:ncol(all)
+      mutate(Location = site_name) %>%
+      select(date, Location, everything())
+    col_interest <- 3:ncol(all)
     all[ , col_interest] <- sapply(X = all[ , col_interest], FUN = function(x) as.numeric(as.character(x)))
     all[ , col_interest] <- sapply(X = all[ , col_interest], FUN = function(x) ifelse(x == -999, NA, x))
     return(list(all, date))
@@ -526,16 +533,18 @@ server <- function(input, output, session) {
     trial <- read.csv(sdw, header = TRUE, sep = ",", 
                       row.names = NULL)
     trial <- trial %>%
-      dplyr::select("date" = Date..LT., "PM2.5" = Raw.Conc., "Valid" = QC.Name) %>%
+      dplyr::select("date" = Date..LT., "PM2.5" = Raw.Conc., "Valid" = QC.Name, "Location" = Site) %>%
       dplyr::mutate(date  = as.POSIXct(date, format = '%Y-%m-%d %I:%M %p', tz = input$timezone)) %>%
       dplyr::filter(Valid == "Valid")
+    site_name <- as.character(trial[1, "Location"])
     trial$Valid <- NULL
     date <- date_ts(trial, "60 min")
     tseries_df <- data.frame(date)
     all <- left_join(tseries_df, trial, by = "date")
     all <- all %>%
-      select(date, everything())
-    col_interest <- 2:ncol(all)
+      mutate(Location = site_name) %>%
+      select(date, Location, everything())
+    col_interest <- 3:ncol(all)
     all[ , col_interest] <- sapply(X = all[ , col_interest], FUN = function(x) as.numeric(as.character(x)))
     all[ , col_interest] <- sapply(X = all[ , col_interest], FUN = function(x) ifelse(x == -999, NA, x))
     return(list(all, date))
@@ -546,13 +555,14 @@ server <- function(input, output, session) {
     trial <- read.csv(sgf, header = TRUE, sep = ",", 
                       row.names = NULL)
     trial <- trial %>%
-      dplyr::select("date" = local, "parameter" = parameter, "value" = value) %>%
+      dplyr::select("date" = local, "parameter" = parameter, "value" = value, "Location" = location) %>%
       dplyr::mutate(date  = as.POSIXct(date, format = '%Y-%m-%dT%H:%M:%S+05:30', tz = input$timezone))
+    site_name <- as.character(trial[1, "Location"])
     trial <- trial[order(trial$date), ]
     date <- date_ts(trial, "1 min")
     tseries_df <- data.frame(date)
     trial <- trial %>%
-      pivot_wider(names_from = parameter, values_from = value)
+      pivot_wider(id_cols = c(date), names_from = parameter, values_from = value)
     all <- left_join(tseries_df, trial, by = "date") 
     all$hour <- lubridate::ceiling_date(all$date, "hour")
     all <- all %>%
@@ -562,16 +572,17 @@ server <- function(input, output, session) {
       dplyr::select("date" = hour, everything())
     names(all) <- toupper(names(all))
     all <- all %>%
-      dplyr::select(everything(), "date" = DATE)
+      dplyr::select(everything(), "date" = DATE) %>%
+      mutate(Location = site_name)
     if("PM25" %in% colnames(all))
     {
       all <- all %>%
-        dplyr::select(date, everything(), "PM2.5" = PM25)
+        dplyr::select(date, Location, everything(), "PM2.5" = PM25)
     }
     if("NOX" %in% colnames(all))
     {
       all <- all %>%
-        dplyr::select(date, everything(), "NOx" = nox)
+        dplyr::select(date, Location, everything(), "NOx" = nox)
     }
     date <- all %>%
       select(date)
@@ -580,7 +591,7 @@ server <- function(input, output, session) {
   
   #### Function to remove negative values
   neg <- function(site1_join_f1) {
-    col_interest <- 3:ncol(site1_join_f1)
+    col_interest <- 4:ncol(site1_join_f1)
     site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], FUN = function(x) as.numeric(as.character(x)))
     site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], FUN = function(x) ifelse(x < 0, NA, x))
     site1_join_f1
@@ -588,9 +599,9 @@ server <- function(input, output, session) {
   
   #### Function to remove repeated values
   repeat_ed <- function(site1_join_f1) {
-    col_interest <- 3:ncol(site1_join_f1)
+    col_interest <- 4:ncol(site1_join_f1)
     site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[, col_interest], FUN = function(j) ifelse(c(FALSE, diff(as.numeric(j), 1, 1) == 0), 
-                                                      NA, j))
+                                                                                                         NA, j))
     site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], FUN = function(x) as.numeric(as.character(x)))
     site1_join_f1
   }
@@ -609,12 +620,12 @@ server <- function(input, output, session) {
     b <- as.numeric(as.character(site1_join_f1$PM10)) > as.numeric(as.character(high_number))
     site1_join_f1$PM10 <- ifelse(b, as.numeric(as.character(NA)), 
                                  as.numeric(as.character(site1_join_f1$PM10)))
-    site1_join_f1$ratio <- as.numeric(as.character(site1_join_f1$PM2.5)) / 
+    site1_join_f1$ratio_PM <- as.numeric(as.character(site1_join_f1$PM2.5)) / 
       as.numeric(as.character(site1_join_f1$PM10))
-    site1_join_f1$PM2.5 <- ifelse(site1_join_f1$ratio >= 1 & !is.na(site1_join_f1$ratio), 
+    site1_join_f1$PM2.5 <- ifelse(site1_join_f1$ratio_PM >= 1 & !is.na(site1_join_f1$ratio_PM), 
                                   as.numeric(as.character(NA)), 
                                   as.numeric(as.character(site1_join_f1$PM2.5)))
-    site1_join_f1$PM10 <- ifelse(site1_join_f1$ratio >= 1 & !is.na(site1_join_f1$ratio), 
+    site1_join_f1$PM10 <- ifelse(site1_join_f1$ratio_PM >= 1 & !is.na(site1_join_f1$ratio_PM), 
                                  as.numeric(as.character(NA)), 
                                  as.numeric(as.character(site1_join_f1$PM10)))
     site1_join_f1
@@ -623,12 +634,12 @@ server <- function(input, output, session) {
   #### Function to remove outliers based on LLD function
   outlier <- function(site1_join_f1, name, date, eq) {
     site1_join_f1 <- site1_join_f1 %>%
-      group_by(day) %>%
+      group_by(day, Location) %>%
       dplyr::mutate_all(funs(mean, sd), na.rm = TRUE) %>%
       ungroup() %>%
-      dplyr::select(date, day, everything(), -date_mean, -date_sd)
+      dplyr::select(date, day, Location, everything(), -date_mean, -date_sd)
     tseries_df <- site1_join_f1 %>%
-      dplyr::select(date)
+      dplyr::select(date, Location)
     for(i in names(name)) {
       data_list <- site1_join_f1 %>% 
         dplyr::select(starts_with(i))
@@ -659,7 +670,7 @@ server <- function(input, output, session) {
       tseries_df <- bind_cols(tseries_df, data_list)
     }
     site1_join_f1 <- tseries_df %>%
-      dplyr::select(date, everything(), -contains(c("_sd", "_mean")))
+      dplyr::select(date, Location, everything(), -contains(c("_sd", "_mean")))
     tseries_df <- data.frame(date)
     site1_join_f1 <- left_join(tseries_df, site1_join_f1, by = "date") %>%
       dplyr::mutate(day = as.Date(date, format = '%Y-%m-%d', tz = input$timezone)) 
@@ -669,7 +680,7 @@ server <- function(input, output, session) {
   #### Function to remove values which are incomplete in a day
   compl <- function(name, site1_join_f1, date, fi, per1) {
     tseries_df <- site1_join_f1 %>%
-      dplyr::select(date)
+      dplyr::select(date, Location)
     for(i in names(name)){
       data_list <- site1_join_f1 %>% 
         dplyr::select(date, day, starts_with(i))
@@ -741,7 +752,7 @@ server <- function(input, output, session) {
         )
       site1_join_f1 <- all %>%
         dplyr::mutate(day = as.Date(date, format = '%Y-%m-%d', tz = input$timezone)) %>%
-        dplyr::select(date, day, everything())
+        dplyr::select(date, day, Location, everything())
       if(remove_9) {
         site1_join_f1 <- neg(site1_join_f1)
       } else { site1_join_f1 }  
@@ -751,11 +762,11 @@ server <- function(input, output, session) {
       } else { site1_join_f1 }  
       
       name <- site1_join_f1 %>%
-        dplyr::select(everything(), -day, -date)
+        dplyr::select(everything(), -day, -date, -Location)
       site1_join_f1 <- site1_join_f1 %>%
-        dplyr::mutate(ratio = NA) %>%
-        dplyr::select(date, day, everything())
-      col_interest <- 3:ncol(site1_join_f1)
+        dplyr::mutate(ratio_PM = NA) %>%
+        dplyr::select(date, day, Location, everything())
+      col_interest <- 4:ncol(site1_join_f1)
       if(log_op) {
         site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], FUN = function(x) log(x))
       } else { site1_join_f1 } 
@@ -763,15 +774,15 @@ server <- function(input, output, session) {
         site1_join_f1 <- outlier(site1_join_f1, name, date, ey)
         if(log_op) {
           site1_join_f1 <- site1_join_f1 %>%
-            dplyr::select(date, day, everything())
-          col_interest <- 3:ncol(site1_join_f1)
+            dplyr::select(date, day, Location, everything())
+          col_interest <- 4:ncol(site1_join_f1)
           site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], FUN = function(x) exp(x))
         }
       } else { site1_join_f1 } 
       
       site1_join_f1 <- site1_join_f1 %>%
-        dplyr::select(date, day, everything())
-      col_interest <- 3:ncol(site1_join_f1)
+        dplyr::select(date, day, Location, everything())
+      col_interest <- 4:ncol(site1_join_f1)
       site1_join_f1[ , col_interest] <- sapply(X = site1_join_f1[ , col_interest], FUN = function(x) as.numeric(as.character(x)))
       if(percent) {
         site1_join_f1 <- compl(name, site1_join_f1, date, file, per)
@@ -783,11 +794,11 @@ server <- function(input, output, session) {
         {
           site1_join_f1 <- ratio(site1_join_f1, high_number)
         } else {
-          site1_join_f1$ratio <- NA
+          site1_join_f1$ratio_PM <- NA
         }
       } else { site1_join_f1 }
       site1_join_f1 <- site1_join_f1 %>%
-        dplyr::select(date, day, everything()) %>%
+        dplyr::select(date, day, Location, everything()) %>%
         janitor::remove_empty("cols")
       site1_join_f1
     }
@@ -802,7 +813,7 @@ server <- function(input, output, session) {
       data <- data_file(input$per, input$type, input$file1$datapath, input$file1,
                         input$file, input$remove_9, input$repeated, input$percent, 
                         input$ey, input$exclude, input$high_number, input$log_op) 
-      }
+    }
   })
   Cmp_f <- reactive({
     if (is.null(input$file2)) {
@@ -810,9 +821,9 @@ server <- function(input, output, session) {
                         "60 min", TRUE, TRUE, TRUE,
                         3, TRUE, 999, FALSE)
     } else if(!is.null(input$file2)) {
-    data <- data_file(input$per, input$type2, input$file2$datapath, input$file2,
-                      input$file12, input$remove_9, input$repeated, input$percent, 
-                      input$ey, input$exclude, input$high_number, input$log_op)
+      data <- data_file(input$per, input$type2, input$file2$datapath, input$file2,
+                        input$file12, input$remove_9, input$repeated, input$percent, 
+                        input$ey, input$exclude, input$high_number, input$log_op)
     }
   })
   
@@ -841,17 +852,17 @@ server <- function(input, output, session) {
     if (is.null(input$file1) & is.null(input$file2)) {
       data <- CPCB_f()
       data1 <- Cmp_f()
-     } else {
+    } else {
       data <- CPCB_f()
       data1 <- Cmp_f()
     }
     data <- data %>% 
-      dplyr::select(- date, - day)
+      dplyr::select(- date, - day, - Location)
     data1 <- data1 %>%
-      dplyr::select(- date, - day)
+      dplyr::select(- date, - day, - Location)
     updateSelectInput(session, "Para", choices = names(data))
     updateSelectInput(session, "Para1", choices = names(data1))
-    })
+  })
   mess <- function(button, da) {
     data <- CPCB_f()
     if(button == da) {
@@ -860,7 +871,10 @@ server <- function(input, output, session) {
   }
   
   data_joined <- eventReactive(input$hourly, {
-    data <- mess(input$avg_hour, "daily")
+    data <- CPCB_f()
+    if(input$avg_hour == "daily") {
+      data <- openair::timeAverage(data, avg.time = "day", type = "Location")
+    } else { data }
   })
   data_joined_comp <- eventReactive(input$plot_values, {
     data <- CPCB_f()
@@ -906,13 +920,13 @@ server <- function(input, output, session) {
     data <- data %>%
       distinct(date, .keep_all = TRUE) %>%
       right_join(date_df, by = "date")
-    data <- openair::timeAverage(data, avg.time = "day")
+    data <- openair::timeAverage(data, avg.time = "day", type = "Location")
   }
   # Plot for ts of two sites
   output$plot12 <- renderPlot({
     if (is.null(input$file1) & is.null(input$file2)) { 
       all <- data_joined_comp()
-      }
+    }
     else {
       all <- data_joined_comp()
     }
@@ -921,7 +935,7 @@ server <- function(input, output, session) {
     ggplot(all, aes(as.POSIXct(date), value, colour = parameter)) +
       labs(y = input$comp_y, title = input$comp_mt,
            x = "") + theme2() + geom_line(size = 0.6) + theme(legend.title = element_blank())
-   })
+  })
   data_da <- eventReactive(input$da, {
     data <- mess(input$avg_hour3, "daily3")
   })
@@ -945,7 +959,6 @@ server <- function(input, output, session) {
   })
   data_cp <- eventReactive(input$cp, {
     data <- CPCB_f()
-    
   })
   data_qq <- eventReactive(input$qq, {
     data <- mess(input$avg_hour2, "daily2")
@@ -989,12 +1002,13 @@ server <- function(input, output, session) {
     if (is.null(input$file1)) {
       data_joined <- CPCB_f()
       data_joined <- data_joined %>%
-        dplyr::select(- date, - day)
+        dplyr::select(everything(), - date, - day, - Location)
     } else {
       data_joined <- data_joined()
       data_joined <- data_joined %>%
-        dplyr::select(- date, - day)
+        dplyr::select(everything(), - date, - day, - Location)
     }
+    data_joined$Location <- NULL
     updateSelectInput(session, "palleInp", choices = names(data_joined))
     updateSelectInput(session, "palleInp1", choices = names(data_joined))
     updateSelectInput(session, "palleInp2", choices = names(data_joined))
@@ -1008,8 +1022,8 @@ server <- function(input, output, session) {
     if (is.null(input$file1)) {
       file_n <- "file"
     } else {
-    file_n <- gsub(".xlsx", "", input$file1)
-    file_n <- gsub(".csv", "", file_n)
+      file_n <- gsub(".xlsx", "", input$file1)
+      file_n <- gsub(".csv", "", file_n)
     }
   })
   
@@ -1017,19 +1031,19 @@ server <- function(input, output, session) {
     if (is.null(input$file1)) {
       data_joined <- CPCB_f()
       if(input$avg_hour == "daily") {
-        data_joined <- openair::timeAverage(data_joined, avg.time = "day")
+        data_joined <- openair::timeAverage(data_joined, avg.time = "day", type = "Location")
       } else { data_joined }
     } else {
       data_joined <- data_joined()  
     }
-    cols <- names(data_joined)[3:ncol(data_joined)]
+    cols <- names(data_joined)[4:ncol(data_joined)]
     data_joined[ , cols] <- sapply(X = data_joined[ , cols], FUN = function(x) as.numeric(as.character(x)))
     setDT(data_joined)
     data_joined[,(cols) := round(.SD, 2), .SDcols = cols]
     if(input$avg_hour == "daily") {
       data_joined <- data_joined %>%
         dplyr::mutate(date = as.Date(date, tz = input$timezone)) %>%
-        dplyr::select(date, everything(), - day)
+        dplyr::select(date, Location, everything(), - day)
       datatable(data_joined, options = list("pageLength" = 15)) %>% formatDate(1, "toLocaleDateString")
     } else { datatable(data_joined, options = list("pageLength" = 15)) %>% formatDate(1, "toLocaleString") }
   })
@@ -1082,7 +1096,7 @@ server <- function(input, output, session) {
       data <- data %>%
         mutate(date = format(date, "%Y-%m"),
                date = as.Date(paste0(date, "-01"), format = "%Y-%m-%d", tz = input$timezone)) %>%
-        group_by(date) %>%
+        group_by(date, Location) %>%
         summarise_all(funs(mean), na.rm = TRUE)
       x <- zoo(data[[input$palleInp2]], data$date)
       x <- na.interp(x)
@@ -1104,7 +1118,7 @@ server <- function(input, output, session) {
   output$plot1 <- renderPlot({
     if (is.null(input$file1)) { 
       data <- data_plot()
-      } else {
+    } else {
       data <- data_plot()
     }
     y <- as.numeric(as.character(data[[input$palleInp]]))
@@ -1198,7 +1212,7 @@ server <- function(input, output, session) {
       stat_summary(aes(y = y), fun.y = "mean", colour = "seagreen",
                    geom = "point", size = 4)  +
       theme2() + theme(axis.text.x = element_text(size = 13, face = "bold"))
-    })
+  })
   # timeVariation plot for one parameter
   output$plot4 <- renderPlot({
     if (is.null(input$file1)) { 
@@ -1215,7 +1229,7 @@ server <- function(input, output, session) {
                              conf.int = c(0.75, 0.99),
                              par.settings = list(fontsize = list(text = 15)))
     }
-    })
+  })
   # Calendar plot for one parameter
   output$plot5 <- renderPlot({
     if (is.null(input$file1)) { 
@@ -1227,7 +1241,7 @@ server <- function(input, output, session) {
     openair::calendarPlot(data, pollutant = input$palleInp1, main = input$cp_mt,
                           cols = openColours(c("seagreen", "yellow", "red"), 10),
                           par.settings = list(fontsize = list(text = 15)))
-    })
+  })
   # Density plot for one parameter
   output$plot6 <- renderPlot({
     if (is.null(input$file1)) { 
@@ -1239,7 +1253,7 @@ server <- function(input, output, session) {
     ggplot(data, aes(x = y)) +
       geom_density(color = "deepskyblue", fill = "lightblue") +
       labs(y = "density", x = input$freq_x, title = input$freq_mt) + theme2()
-    })
+  })
   # qq plot for one parameter
   output$plot7 <- renderPlot({
     if (is.null(input$file1)) { 
@@ -1256,7 +1270,7 @@ server <- function(input, output, session) {
       scale_x_continuous(breaks = ticks, labels = labels) +
       labs(x = "Emperical percentiles",
            y =  input$qq_y, title = input$qq_mt) + theme2()
-    })
+  })
   # Linear regression plot for one file
   output$plot8 <- renderPlot({
     if (is.null(input$file1)) { 
@@ -1276,14 +1290,14 @@ server <- function(input, output, session) {
            y = input$reg_y, title = input$reg_mt,
            subtitle = paste0("R square: ", r, "; Equation: ", reg_eqn(s))) + 
       theme2()
-   })
+  })
   # Linear regression plot for two files
   output$plot15 <- renderPlot({
     if (is.null(input$file1) & is.null(input$file2)) {
       data <- data_scatter_comp()
-      } else {
+    } else {
       data <- data_scatter_comp()
-      }
+    }
     y <- as.numeric(as.character(data$`Site 1`))
     x <- as.numeric(as.character(data$`Site 2`))
     m <- lm(y ~ x, data)
@@ -1296,7 +1310,7 @@ server <- function(input, output, session) {
            y = input$reg_my1, title = input$reg_mt1,
            subtitle = paste0("R square: ", r, "; Equation: ", reg_eqn(s))) + 
       theme2()
-   })
+  })
   # Vertical bar plot for one parameter
   output$plot10 <- renderPlot({
     if (is.null(input$file1)) { 
@@ -1354,7 +1368,7 @@ server <- function(input, output, session) {
       labs(y = "", title = "Data availability plot", x = "") + 
       scale_x_date(date_breaks = "60 days", date_labels = "%b-%y") +
       theme2() + theme(legend.position = "none")
-    })
+  })
   # Diurnal for two sites
   output$plot17 <- renderPlot({
     if (is.null(input$file1) & is.null(input$file2)) { 
@@ -1368,58 +1382,63 @@ server <- function(input, output, session) {
     data <- data %>%
       dplyr::select(hour, month, site1 = `Site 1`, site2 = `Site 2`) 
     data$hour <- as.numeric(as.character(data$hour))
+    cols <- c("Site 1" = "#F8766D", "Site 2" = "#2596BE")
     if (input$diur1 == "mesd" && input$diurn1 == "all") { 
       data <- data %>%
         dplyr::select(hour, site1, site2) %>%
         group_by(hour) %>%
         summarise_all(funs(mean, sd), na.rm = TRUE)
       ggplot(data, aes(hour, site1_mean)) + 
-        geom_errorbar(aes(ymin = site1_mean - site1_sd, ymax = site1_mean + site1_sd), 
-                                                    color = "#F8766D") +
-        geom_errorbar(aes(ymin = site2_mean - site2_sd, ymax = site2_mean + site2_sd), 
-                      color = "#2596BE") + 
+        geom_errorbar(aes(ymin = site1_mean - site1_sd, ymax = site1_mean + site1_sd, 
+                          colour = "Site 1")) +
+        geom_errorbar(aes(ymin = site2_mean - site2_sd, ymax = site2_mean + site2_sd, 
+                          colour = "Site 2")) + 
         scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
         labs(y = input$diurnal_y1, x = "Hour of the day (LT)", title = input$diurnal_mt1) + 
-        theme2() + geom_line(aes(y = site1_mean), size = 0.6, color = "#F8766D") + 
-        geom_line(aes(y = site2_mean), size = 0.6, color = "#2596BE")
+        theme2() + geom_line(aes(y = site1_mean, colour = "Site 1"), size = 0.6) + 
+        geom_line(aes(y = site2_mean, colour = "Site 2"), size = 0.6) + 
+        scale_colour_manual(name = "", values = cols)
     } else if (input$diur1 == "mediq" && input$diurn1 == "all") {
       data <- data %>%
         dplyr::select(hour, site1, site2) %>%
         group_by(hour) %>%
         summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
       ggplot(data, aes(as.numeric(hour), site1_median)) + 
-        geom_errorbar(aes(ymin = site1_p25, ymax = site1_p75), color = "#F8766D") +
-        geom_errorbar(aes(ymin = site2_p25, ymax = site2_p75), color = "#2596BE") +
+        geom_errorbar(aes(ymin = site1_p25, ymax = site1_p75, colour = "Site 1")) +
+        geom_errorbar(aes(ymin = site2_p25, ymax = site2_p75, colour = "Site 2")) +
         scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
         labs(y = input$diurnal_y1, x = "Hour of the day (LT)", title = input$diurnal_mt1) + 
-        theme2() + geom_line(aes(y = site1_median), size = 0.6, color = "#F8766D") + 
-        geom_line(aes(y = site2_median), size = 0.6, color = "#2596BE")
+        theme2() + geom_line(aes(y = site1_median, colour = "Site 1"), size = 0.6) + 
+        geom_line(aes(y = site2_median, colour = "Site 2"), size = 0.6) + 
+        scale_colour_manual(name = "", values = cols)
     } else if (input$diur1 == "mediq" && input$diurn1 == "mon") {
       data <- data %>%
         group_by(month, hour) %>%
         summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
       ggplot(data, aes(as.numeric(hour), site1_median)) + 
-        geom_errorbar(aes(ymin = site1_p25, ymax = site1_p75), color = "#F8766D") +
-        geom_errorbar(aes(ymin = site2_p25, ymax = site2_p75), color = "#2596BE") +
+        geom_errorbar(aes(ymin = site1_p25, ymax = site1_p75, colour = "Site 1")) +
+        geom_errorbar(aes(ymin = site2_p25, ymax = site2_p75, colour = "Site 2")) +
         scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
         labs(y = input$diurnal_y1, x = "Hour of the day (LT)", title = input$diurnal_mt1) + 
-        theme2() + geom_line(aes(y = site1_median), size = 0.6, color = "#F8766D") + 
-        geom_line(aes(y = site2_median), size = 0.6, color = "#2596BE") + facet_wrap(.~month, nrow = 3) + 
-        theme(axis.text.y = element_text(size = 12))
+        theme2() + geom_line(aes(y = site1_median, colour = "Site 1"), size = 0.6) + 
+        geom_line(aes(y = site2_median, colour = "Site 2"), size = 0.6) + facet_wrap(.~month, nrow = 3) + 
+        theme(axis.text.y = element_text(size = 12)) + 
+        scale_colour_manual(name = "", values = cols)
     } else if (input$diur1 == "mesd" && input$diurn1 == "mon") { 
       data <- data %>%
         group_by(month, hour) %>%
         summarise_all(funs(mean, sd), na.rm = TRUE)
       ggplot(data, aes(hour, site1_mean)) + 
-        geom_errorbar(aes(ymin = site1_mean - site1_sd, ymax = site1_mean + site1_sd), 
-                      color = "#F8766D") +
-        geom_errorbar(aes(ymin = site2_mean - site2_sd, ymax = site2_mean + site2_sd), 
-                      color = "#2596BE") + 
+        geom_errorbar(aes(ymin = site1_mean - site1_sd, ymax = site1_mean + site1_sd, 
+                          colour = "Site 1")) +
+        geom_errorbar(aes(ymin = site2_mean - site2_sd, ymax = site2_mean + site2_sd, 
+                          colour = "Site 2")) + 
         scale_x_continuous(limits = c(-1, 24), breaks = c(0, 6, 12, 18)) +
         labs(y = input$diurnal_y1, x = "Hour of the day (LT)", title = input$diurnal_mt1) + 
-        theme2() + geom_line(aes(y = site1_mean), size = 0.6, color = "#F8766D") + 
-        geom_line(aes(y = site2_mean), size = 0.6, color = "#2596BE") + facet_wrap(.~month, nrow = 3) + 
-        theme(axis.text.y = element_text(size = 12))
+        theme2() + geom_line(aes(y = site1_mean, colour = "Site 1"), size = 0.6) + 
+        geom_line(aes(y = site2_mean, colour = "Site 2"), size = 0.6) + facet_wrap(.~month, nrow = 3) + 
+        theme(axis.text.y = element_text(size = 12)) + 
+        scale_colour_manual(name = "", values = cols)
     }
   })
   # Autocorrelogram plot for one parameter
@@ -1461,7 +1480,7 @@ server <- function(input, output, session) {
       geom_point(alpha = 0.5, color = "red") + 
       geom_smooth(method = lm, size = 1.2, se = FALSE, formula = y ~ x, color = "deepskyblue") +
       labs(x = input$reg_mx, y = input$reg_my, title = input$reg_mmt) + theme2()
-   })
+  })
   output$RegOut <- renderPrint({summary(lm_reg())})
   output$DepPrint <- renderPrint({paste("Dependent variable:", input$DepVar1)})
   output$IndPrint <- renderPrint({paste("Independent variables:", input$InDepVar1)})
@@ -1474,6 +1493,7 @@ server <- function(input, output, session) {
     }
     data <- data %>%
       dplyr::select(day, everything(), - date)
+    data$Location <- NULL
     if(input$avg == "no") {
       data <- data %>%
         dplyr::select(everything(), - day)
@@ -1547,7 +1567,7 @@ server <- function(input, output, session) {
     filename <- function() {
       name_file <- paste0(name_file(), "_stats")
       paste(name_file, "csv", sep = ".")
-      },
+    },
     content <- function(fname) {
       data_summary <- data_summary()
       write.csv(data_summary, fname)
