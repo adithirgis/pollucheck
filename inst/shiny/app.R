@@ -263,18 +263,20 @@ ui <- fluidPage(
                                               tags$hr(),
                                               tags$hr(),
                                               selectInput("Para", 
-                                                          "Parameter to plot in original data", 
+                                                          "Parameter to plot in original (Site 1) data", 
                                                           multiple = FALSE, "Select"),
                                               selectInput("Para1", 
-                                                          "Parameter to plot in comparision data", 
+                                                          "Parameter to plot in comparision (Site 2) data", 
                                                           multiple = FALSE, "Select"),
                                               actionButton("plot_values", "Plot time series"),
                                               tags$br(),
                                               tags$br(),
                                               textInput("comp_mt", label = "Edit title of time-series plot", 
                                                         value = "Title"),
-                                              textInput("comp_y", label = "Edit Y axis label of time-series plot", 
-                                                        value = "Parameter"),
+                                              textInput("comp_ytr", label = "Edit sec Y axis label (Site 1) of time-series plot", 
+                                                        value = "Site 1"),
+                                              textInput("comp_y", label = "Edit Y axis label (Site 2) of time-series plot", 
+                                                        value = "Site 2"),
                                               tags$hr(),
                                               tags$hr(),
                                               actionButton("plot_val", "Linear regression"),
@@ -284,7 +286,7 @@ ui <- fluidPage(
                                                         value = "Title"),
                                               textInput("reg_mx1", label = "Edit X axis of scatter plot", 
                                                         value = "Site 2"),
-                                              textInput("reg_my1", label = "Edit Y axisof scatter plot", 
+                                              textInput("reg_my1", label = "Edit Y axis of scatter plot", 
                                                         value = "Site 1"),
                                               tags$hr(),
                                               tags$hr(),
@@ -930,11 +932,17 @@ server <- function(input, output, session) {
     else {
       all <- data_joined_comp()
     }
-    all <- all %>%
-      pivot_longer(-date, names_to = "parameter", values_to = "value") 
-    ggplot(all, aes(as.POSIXct(date), value, colour = parameter)) +
-      labs(y = input$comp_y, title = input$comp_mt,
-           x = "") + theme2() + geom_line(size = 0.6) + theme(legend.title = element_blank())
+    cols <- c("Site 1" = "#F8766D", "Site 2" = "#2596BE")
+    scaleFactor <- max(all$`Site 2`, na.rm = TRUE) / max(all$`Site 1`, na.rm = TRUE)
+    # all <- all %>%
+    #   pivot_longer(-date, names_to = "parameter", values_to = "value") 
+    ggplot(all, aes(x = as.POSIXct(date))) +
+      labs(title = input$comp_mt, x = "") + theme2() + 
+      geom_line(aes(y = `Site 1`, colour = "Site 1"), size = 0.6) + 
+      geom_line(aes(y = (`Site 2` / scaleFactor), colour = "Site 2"), size = 0.6) + 
+      scale_colour_manual(name = "", values = cols) + scale_y_continuous(
+        name = input$comp_y,
+        sec.axis = sec_axis(~.*scaleFactor, name = input$comp_ytr)) 
   })
   data_da <- eventReactive(input$da, {
     data <- mess(input$avg_hour3, "daily3")
@@ -1489,7 +1497,7 @@ server <- function(input, output, session) {
     if (is.null(input$file1)) {
       data <- CPCB_f()
     } else {
-      data <- data_joined()
+      data <- CPCB_f()
     }
     data <- data %>%
       dplyr::select(day, everything(), - date)

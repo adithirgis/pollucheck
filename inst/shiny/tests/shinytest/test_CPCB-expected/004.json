@@ -17,7 +17,8 @@
     "box_yt": "Parameter",
     "boxt": 1,
     "comp_mt": "Title",
-    "comp_y": "Parameter",
+    "comp_y": "Site 2",
+    "comp_ytr": "Site 1",
     "cp": 1,
     "cp_mt": "Title",
     "da": 1,
@@ -58,10 +59,7 @@
     "high_number": 9999,
     "hourly": 1,
     "InDepVar": "PM10",
-    "InDepVar1": [
-      "PM10",
-      "ratio"
-    ],
+    "InDepVar1": "PM10",
     "log_op": false,
     "mbox": 1,
     "mk": 1,
@@ -69,7 +67,7 @@
     "normality": "ad",
     "palleInp": "PM2.5",
     "palleInp1": "PM2.5",
-    "palleInp2": "PM2.5",
+    "palleInp2": "SO2",
     "Para": "PM2.5",
     "Para1": "PM2.5",
     "per": 75,
@@ -86,10 +84,10 @@
     "reg_mt1": "Title",
     "reg_mx": "Fitted",
     "reg_mx1": "Site 2",
-    "reg_my": "Parameter",
+    "reg_my": "Dependent variable",
     "reg_my1": "Site 1",
-    "reg_x": "Parameter",
-    "reg_y": "Parameter",
+    "reg_x": "Independent variable",
+    "reg_y": "Dependent variable",
     "remove_9": true,
     "repeated": true,
     "stat_tv": "median",
@@ -10233,9 +10231,9 @@
   },
   "output": {
     "DepPrint": "[1] \"Dependent variable: PM2.5\"",
-    "IndPrint": "[1] \"Independent variables: PM10\"  \"Independent variables: ratio\"",
-    "kendal_test": "\n\tMann-Kendall trend test\n\ndata:  y\nz = 13.635, n = 419, p-value < 2.2e-16\nalternative hypothesis: true S is not equal to 0\nsample estimates:\n           S         varS          tau \n3.905200e+04 8.202150e+06 4.461786e-01 ",
-    "normality_test": "\n\tAnderson-Darling normality test\n\ndata:  y\nA = 7.9571, p-value < 2.2e-16",
+    "IndPrint": "[1] \"Independent variables: PM10\"",
+    "kendal_test": "\n\tMann-Kendall trend test\n\ndata:  y\nz = -12.346, n = 419, p-value < 2.2e-16\nalternative hypothesis: true S is not equal to 0\nsample estimates:\n            S          varS           tau \n-3.536000e+04  8.202150e+06 -4.039966e-01 ",
+    "normality_test": "\n\tAnderson-Darling normality test\n\ndata:  y\nA = 11.482, p-value < 2.2e-16",
     "plot1": {
       "src": "[image data sha1: b661271ab4d3cb5fe1094380e5a32545d347cedf]",
       "width": 800,
@@ -10339,7 +10337,7 @@
       }
     },
     "plot11": {
-      "src": "[image data sha1: 714f543ef8b3760fb9d8a5ec5a1d7cf15a7f38e8]",
+      "src": "[image data sha1: 3a48aa011e7392559c4d6fe4cfbab6b6cf562697]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10357,10 +10355,10 @@
               "y": null
             },
             "domain": {
-              "left": -30.0762020468344,
-              "right": 197.727235424949,
-              "bottom": -30.0762020468345,
-              "top": 197.727235424949
+              "left": 4.71852164274901,
+              "right": 195.403649391894,
+              "bottom": -8.71730717925575,
+              "top": 196.043450764371
             },
             "mapping": {
               "x": ".fitted",
@@ -10381,7 +10379,7 @@
       }
     },
     "plot13": {
-      "src": "[image data sha1: e35db9d4d488d37e17cf109849cd059fab1ce8ac]",
+      "src": "[image data sha1: 8f6b31e51b30a7b95d028f25b7de1962f5fc9ff2]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10416,7 +10414,7 @@
       }
     },
     "plot16": {
-      "src": "[image data sha1: 91506c2a4881ae8feac27bb9dea6faa2c28b8384]",
+      "src": "[image data sha1: c6d00b26f7dae24316ef520eb7c1eca9b518ab71]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10443,7 +10441,7 @@
                   "NH3",
                   "PM10",
                   "PM2.5",
-                  "ratio",
+                  "ratio_PM",
                   "SO2"
                 ]
               }
@@ -10456,7 +10454,7 @@
               "colour": "Parameter"
             },
             "range": {
-              "left": 89.1506849315069,
+              "left": 115.150684931507,
               "right": 794.520547945205,
               "bottom": 349.849315068493,
               "top": 24.958904109589
@@ -10470,7 +10468,7 @@
       }
     },
     "plot18": {
-      "src": "[image data sha1: deb6a3c1575364c296e9b96301fd4ef958dcd9dc]",
+      "src": "[image data sha1: f57e5669fefca3c966ea8428d8950992d28a6318]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10679,7 +10677,7 @@
       }
     },
     "plot6": {
-      "src": "[image data sha1: ea19b7dfa3232859097fa309debc2edbb6bd876b]",
+      "src": "[image data sha1: af1f585f4eba37ed8bfb034df39fe5bc160e98db]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10697,10 +10695,10 @@
               "y": null
             },
             "domain": {
-              "left": -0.626179166666651,
-              "right": 156.4467625,
-              "bottom": -0.00130369427231263,
-              "top": 0.0273775797185651
+              "left": -1.60219474637681,
+              "right": 43.1443505434783,
+              "bottom": -0.00800520123185524,
+              "top": 0.16810922586896
             },
             "mapping": {
               "y": null,
@@ -10721,7 +10719,7 @@
       }
     },
     "plot7": {
-      "src": "[image data sha1: a72164c191ef790bc4621a40dd9ba599b40cbfed]",
+      "src": "[image data sha1: fc984a63995378f40e65f10ede2af91c840443f8]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10739,10 +10737,10 @@
               "y": null
             },
             "domain": {
-              "left": -3.22643575819418,
-              "right": 3.22643575819418,
-              "bottom": 0.201946755888637,
-              "top": 2.6304139039844
+              "left": -3.24317043991437,
+              "right": 3.24317043991438,
+              "bottom": -0.463715110823835,
+              "top": 1.7128884018119
             },
             "mapping": {
               "x": null,
@@ -10764,7 +10762,7 @@
       }
     },
     "plot8": {
-      "src": "[image data sha1: 78acf5ebf65d5c822df2848411547133e4e1d7a4]",
+      "src": "[image data sha1: defb46376d26c70a1eaedcb92d13c4500d50ce91]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10863,11 +10861,11 @@
         }
       }
     },
-    "RegOut": "\nCall:\nlm(formula = as.formula(paste(input$DepVar1, \" ~ \", paste(input$InDepVar1, \n    collapse = \"+\"))), data = data)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-143.433   -1.361    0.757    3.331   39.568 \n\nCoefficients:\n              Estimate Std. Error t value Pr(>|t|)    \n(Intercept) -34.376333   0.699985  -49.11   <2e-16 ***\nPM10          0.378138   0.004076   92.77   <2e-16 ***\nratio        89.204282   1.036776   86.04   <2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 9.068 on 2747 degrees of freedom\n  (7306 observations deleted due to missingness)\nMultiple R-squared:  0.8292,\tAdjusted R-squared:  0.8291 \nF-statistic:  6669 on 2 and 2747 DF,  p-value: < 2.2e-16",
+    "RegOut": "\nCall:\nlm(formula = as.formula(paste(input$DepVar1, \" ~ \", paste(input$InDepVar1, \n    collapse = \"+\"))), data = data)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-142.796  -10.487   -1.015    9.762   82.550 \n\nCoefficients:\n             Estimate Std. Error t value Pr(>|t|)    \n(Intercept) 11.977327   0.858911   13.95   <2e-16 ***\nPM10         0.307577   0.007673   40.08   <2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 17.43 on 2748 degrees of freedom\n  (7306 observations deleted due to missingness)\nMultiple R-squared:  0.369,\tAdjusted R-squared:  0.3687 \nF-statistic:  1607 on 1 and 2748 DF,  p-value: < 2.2e-16",
     "table": {
       "x": {
         "filter": "none",
-        "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>PM2.5<\/th>\n      <th>PM10<\/th>\n      <th>NH3<\/th>\n      <th>SO2<\/th>\n      <th>ratio<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>",
+        "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>PM2.5<\/th>\n      <th>PM10<\/th>\n      <th>NH3<\/th>\n      <th>SO2<\/th>\n      <th>ratio_PM<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>",
         "options": {
           "pageLength": 13,
           "columnDefs": [
@@ -10967,7 +10965,7 @@
     "table1": {
       "x": {
         "filter": "none",
-        "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>date<\/th>\n      <th>day<\/th>\n      <th>PM2.5<\/th>\n      <th>PM10<\/th>\n      <th>NH3<\/th>\n      <th>SO2<\/th>\n      <th>ratio<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>",
+        "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>date<\/th>\n      <th>day<\/th>\n      <th>Location<\/th>\n      <th>PM2.5<\/th>\n      <th>PM10<\/th>\n      <th>NH3<\/th>\n      <th>SO2<\/th>\n      <th>ratio_PM<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>",
         "options": {
           "pageLength": 15,
           "columnDefs": [
@@ -10978,11 +10976,11 @@
             {
               "className": "dt-right",
               "targets": [
-                3,
                 4,
                 5,
                 6,
-                7
+                7,
+                8
               ]
             },
             {

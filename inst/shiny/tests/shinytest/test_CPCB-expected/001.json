@@ -17,7 +17,8 @@
     "box_yt": "Parameter",
     "boxt": 1,
     "comp_mt": "Title",
-    "comp_y": "Parameter",
+    "comp_y": "Site 2",
+    "comp_ytr": "Site 1",
     "cp": 0,
     "cp_mt": "Title",
     "da": 1,
@@ -83,10 +84,10 @@
     "reg_mt1": "Title",
     "reg_mx": "Fitted",
     "reg_mx1": "Site 2",
-    "reg_my": "Parameter",
+    "reg_my": "Dependent variable",
     "reg_my1": "Site 1",
-    "reg_x": "Parameter",
-    "reg_y": "Parameter",
+    "reg_x": "Independent variable",
+    "reg_y": "Dependent variable",
     "remove_9": true,
     "repeated": true,
     "stat_tv": "mean",
@@ -10332,7 +10333,7 @@
       }
     },
     "plot16": {
-      "src": "[image data sha1: 91506c2a4881ae8feac27bb9dea6faa2c28b8384]",
+      "src": "[image data sha1: c6d00b26f7dae24316ef520eb7c1eca9b518ab71]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10359,7 +10360,7 @@
                   "NH3",
                   "PM10",
                   "PM2.5",
-                  "ratio",
+                  "ratio_PM",
                   "SO2"
                 ]
               }
@@ -10372,7 +10373,7 @@
               "colour": "Parameter"
             },
             "range": {
-              "left": 89.1506849315069,
+              "left": 115.150684931507,
               "right": 794.520547945205,
               "bottom": 349.849315068493,
               "top": 24.958904109589
@@ -10550,7 +10551,7 @@
     "table": {
       "x": {
         "filter": "none",
-        "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>PM2.5<\/th>\n      <th>PM10<\/th>\n      <th>NH3<\/th>\n      <th>SO2<\/th>\n      <th>ratio<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>",
+        "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>PM2.5<\/th>\n      <th>PM10<\/th>\n      <th>NH3<\/th>\n      <th>SO2<\/th>\n      <th>ratio_PM<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>",
         "options": {
           "pageLength": 13,
           "columnDefs": [
@@ -10650,7 +10651,7 @@
     "table1": {
       "x": {
         "filter": "none",
-        "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>date<\/th>\n      <th>day<\/th>\n      <th>PM2.5<\/th>\n      <th>PM10<\/th>\n      <th>NH3<\/th>\n      <th>SO2<\/th>\n      <th>ratio<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>",
+        "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>date<\/th>\n      <th>day<\/th>\n      <th>Location<\/th>\n      <th>PM2.5<\/th>\n      <th>PM10<\/th>\n      <th>NH3<\/th>\n      <th>SO2<\/th>\n      <th>ratio_PM<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>",
         "options": {
           "pageLength": 15,
           "columnDefs": [
@@ -10661,11 +10662,11 @@
             {
               "className": "dt-right",
               "targets": [
-                3,
                 4,
                 5,
                 6,
-                7
+                7,
+                8
               ]
             },
             {

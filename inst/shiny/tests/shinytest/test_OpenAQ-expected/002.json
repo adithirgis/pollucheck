@@ -17,7 +17,8 @@
     "box_yt": "Parameter",
     "boxt": 0,
     "comp_mt": "Title",
-    "comp_y": "Parameter",
+    "comp_y": "Site 2",
+    "comp_ytr": "Site 1",
     "cp": 0,
     "cp_mt": "Title",
     "da": 0,
@@ -83,10 +84,10 @@
     "reg_mt1": "Title",
     "reg_mx": "Fitted",
     "reg_mx1": "Site 2",
-    "reg_my": "Parameter",
+    "reg_my": "Dependent variable",
     "reg_my1": "Site 1",
-    "reg_x": "Parameter",
-    "reg_y": "Parameter",
+    "reg_x": "Independent variable",
+    "reg_y": "Dependent variable",
     "remove_9": true,
     "repeated": false,
     "stat_tv": "mean",
@@ -10442,7 +10443,7 @@
     "table1": {
       "x": {
         "filter": "none",
-        "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>date<\/th>\n      <th>day<\/th>\n      <th>PM2.5<\/th>\n      <th>PM10<\/th>\n      <th>NH3<\/th>\n      <th>SO2<\/th>\n      <th>ratio<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>",
+        "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>date<\/th>\n      <th>day<\/th>\n      <th>Location<\/th>\n      <th>PM2.5<\/th>\n      <th>PM10<\/th>\n      <th>NH3<\/th>\n      <th>SO2<\/th>\n      <th>ratio_PM<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>",
         "options": {
           "pageLength": 15,
           "columnDefs": [
@@ -10453,11 +10454,11 @@
             {
               "className": "dt-right",
               "targets": [
-                3,
                 4,
                 5,
                 6,
-                7
+                7,
+                8
               ]
             },
             {

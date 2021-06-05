@@ -17,7 +17,8 @@
     "box_yt": "Parameter",
     "boxt": 1,
     "comp_mt": "Title",
-    "comp_y": "Parameter",
+    "comp_y": "Site 2",
+    "comp_ytr": "Site 1",
     "cp": 1,
     "cp_mt": "Title",
     "da": 1,
@@ -96,10 +97,10 @@
     "reg_mt1": "Title",
     "reg_mx": "Fitted",
     "reg_mx1": "Site 2",
-    "reg_my": "Parameter",
+    "reg_my": "Dependent variable",
     "reg_my1": "Site 1",
-    "reg_x": "Parameter",
-    "reg_y": "Parameter",
+    "reg_x": "Independent variable",
+    "reg_y": "Dependent variable",
     "remove_9": true,
     "repeated": false,
     "stat_tv": "median",
@@ -586,7 +587,7 @@
       }
     },
     "plot12": {
-      "src": "[image data sha1: 55839014f2aff28423a47b53c511dd7e9327c560]",
+      "src": "[image data sha1: 963e692da6bbb8cefd7e1c32a5993ce0b0e95bd8]",
       "width": 631,
       "height": 600,
       "alt": "Plot object",
@@ -610,13 +611,13 @@
               "top": 162.217045454545
             },
             "mapping": {
-              "x": "as.POSIXct(date)",
-              "y": "value",
-              "colour": "parameter"
+              "y": "Site 1",
+              "colour": "\"Site 1\"",
+              "x": "as.POSIXct(date)"
             },
             "range": {
               "left": 65.1506849315068,
-              "right": 531.843287671233,
+              "right": 472.172054794521,
               "bottom": 549.849315068493,
               "top": 24.958904109589
             }
@@ -754,7 +755,7 @@
       }
     },
     "plot17": {
-      "src": "[image data sha1: d9d9ad3c508dc11508b9eb702a5f1f150c7aeb44]",
+      "src": "[image data sha1: 3333152ba9125f76590d3b694585963f4afd50cd]",
       "width": 631,
       "height": 600,
       "alt": "Plot object",
@@ -780,13 +781,14 @@
             "mapping": {
               "ymin": "site1_p25",
               "ymax": "site1_p75",
+              "colour": "\"Site 1\"",
               "x": "as.numeric(hour)",
               "y": "site1_median",
               "panelvar1": "month"
             },
             "range": {
               "left": 46.1506849315069,
-              "right": 186.883561643836,
+              "right": 163.464246575342,
               "bottom": 196.269406392694,
               "top": 42.7260273972603
             }
@@ -811,13 +813,14 @@
             "mapping": {
               "ymin": "site1_p25",
               "ymax": "site1_p75",
+              "colour": "\"Site 1\"",
               "x": "as.numeric(hour)",
               "y": "site1_median",
               "panelvar1": "month"
             },
             "range": {
-              "left": 192.36301369863,
-              "right": 333.095890410959,
+              "left": 168.943698630137,
+              "right": 286.257260273973,
               "bottom": 196.269406392694,
               "top": 42.7260273972603
             }
@@ -842,13 +845,14 @@
             "mapping": {
               "ymin": "site1_p25",
               "ymax": "site1_p75",
+              "colour": "\"Site 1\"",
               "x": "as.numeric(hour)",
               "y": "site1_median",
               "panelvar1": "month"
             },
             "range": {
-              "left": 338.575342465753,
-              "right": 479.308219178082,
+              "left": 291.736712328767,
+              "right": 409.050273972603,
               "bottom": 196.269406392694,
               "top": 42.7260273972603
             }
@@ -873,13 +877,14 @@
             "mapping": {
               "ymin": "site1_p25",
               "ymax": "site1_p75",
+              "colour": "\"Site 1\"",
               "x": "as.numeric(hour)",
               "y": "site1_median",
               "panelvar1": "month"
             },
             "range": {
-              "left": 484.787671232877,
-              "right": 625.520547945205,
+              "left": 414.529726027397,
+              "right": 531.843287671233,
               "bottom": 196.269406392694,
               "top": 42.7260273972603
             }
@@ -904,13 +909,14 @@
             "mapping": {
               "ymin": "site1_p25",
               "ymax": "site1_p75",
+              "colour": "\"Site 1\"",
               "x": "as.numeric(hour)",
               "y": "site1_median",
               "panelvar1": "month"
             },
             "range": {
               "left": 46.1506849315069,
-              "right": 186.883561643836,
+              "right": 163.464246575342,
               "bottom": 373.059360730594,
               "top": 219.51598173516
             }
@@ -935,13 +941,14 @@
             "mapping": {
               "ymin": "site1_p25",
               "ymax": "site1_p75",
+              "colour": "\"Site 1\"",
               "x": "as.numeric(hour)",
               "y": "site1_median",
               "panelvar1": "month"
             },
             "range": {
-              "left": 192.36301369863,
-              "right": 333.095890410959,
+              "left": 168.943698630137,
+              "right": 286.257260273973,
               "bottom": 373.059360730594,
               "top": 219.51598173516
             }
@@ -966,13 +973,14 @@
             "mapping": {
               "ymin": "site1_p25",
               "ymax": "site1_p75",
+              "colour": "\"Site 1\"",
               "x": "as.numeric(hour)",
               "y": "site1_median",
               "panelvar1": "month"
             },
             "range": {
-              "left": 338.575342465753,
-              "right": 479.308219178082,
+              "left": 291.736712328767,
+              "right": 409.050273972603,
               "bottom": 373.059360730594,
               "top": 219.51598173516
             }
@@ -997,13 +1005,14 @@
             "mapping": {
               "ymin": "site1_p25",
               "ymax": "site1_p75",
+              "colour": "\"Site 1\"",
               "x": "as.numeric(hour)",
               "y": "site1_median",
               "panelvar1": "month"
             },
             "range": {
-              "left": 484.787671232877,
-              "right": 625.520547945205,
+              "left": 414.529726027397,
+              "right": 531.843287671233,
               "bottom": 373.059360730594,
               "top": 219.51598173516
             }
@@ -1028,13 +1037,14 @@
             "mapping": {
               "ymin": "site1_p25",
               "ymax": "site1_p75",
+              "colour": "\"Site 1\"",
               "x": "as.numeric(hour)",
               "y": "site1_median",
               "panelvar1": "month"
             },
             "range": {
               "left": 46.1506849315069,
-              "right": 186.883561643836,
+              "right": 163.464246575342,
               "bottom": 549.849315068493,
               "top": 396.305936073059
             }
@@ -1059,13 +1069,14 @@
             "mapping": {
               "ymin": "site1_p25",
               "ymax": "site1_p75",
+              "colour": "\"Site 1\"",
               "x": "as.numeric(hour)",
               "y": "site1_median",
               "panelvar1": "month"
             },
             "range": {
-              "left": 192.36301369863,
-              "right": 333.095890410959,
+              "left": 168.943698630137,
+              "right": 286.257260273973,
               "bottom": 549.849315068493,
               "top": 396.305936073059
             }
@@ -1814,7 +1825,7 @@
     "table1": {
       "x": {
         "filter": "none",
-        "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>date<\/th>\n      <th>PM2.5<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>",
+        "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>date<\/th>\n      <th>Location<\/th>\n      <th>PM2.5<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>",
         "options": {
           "pageLength": 15,
           "columnDefs": [
@@ -1824,7 +1835,7 @@
             },
             {
               "className": "dt-right",
-              "targets": 2
+              "targets": 3
             },
             {
               "orderable": false,

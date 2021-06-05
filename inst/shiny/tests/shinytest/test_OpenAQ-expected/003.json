@@ -17,7 +17,8 @@
     "box_yt": "Parameter",
     "boxt": 0,
     "comp_mt": "Title",
-    "comp_y": "Parameter",
+    "comp_y": "Site 2",
+    "comp_ytr": "Site 1",
     "cp": 0,
     "cp_mt": "Title",
     "da": 0,
@@ -96,10 +97,10 @@
     "reg_mt1": "Title",
     "reg_mx": "Fitted",
     "reg_mx1": "Site 2",
-    "reg_my": "Parameter",
+    "reg_my": "Dependent variable",
     "reg_my1": "Site 1",
-    "reg_x": "Parameter",
-    "reg_y": "Parameter",
+    "reg_x": "Independent variable",
+    "reg_y": "Dependent variable",
     "remove_9": true,
     "repeated": false,
     "stat_tv": "mean",
@@ -10252,7 +10253,7 @@
     },
     "normality_test": "\n\tAnderson-Darling normality test\n\ndata:  y\nA = 0.46031, p-value = 0.2528",
     "plot12": {
-      "src": "[image data sha1: 82400253049430cacc1bd9e270a2321f515485f9]",
+      "src": "[image data sha1: cd973235bcc65b6af659685d39846384af3d984e]",
       "width": 631,
       "height": 600,
       "alt": "Plot object",
@@ -10272,17 +10273,17 @@
             "domain": {
               "left": 1604151720,
               "right": 1604531880,
-              "bottom": -36.1713333333333,
-              "top": 1161.34942857143
+              "bottom": 843.590744914897,
+              "top": 1119.45599627389
             },
             "mapping": {
-              "x": "as.POSIXct(date)",
-              "y": "value",
-              "colour": "parameter"
+              "y": "Site 1",
+              "colour": "\"Site 1\"",
+              "x": "as.POSIXct(date)"
             },
             "range": {
-              "left": 65.1506849315068,
-              "right": 531.843287671233,
+              "left": 76.1506849315068,
+              "right": 483.172054794521,
               "bottom": 549.849315068493,
               "top": 24.958904109589
             }
@@ -10345,7 +10346,7 @@
       }
     },
     "plot17": {
-      "src": "[image data sha1: 912e5398eee8ff18f33eaa136c1ffa834c53a27f]",
+      "src": "[image data sha1: 85e75450eb539ad7210b1eba690ac08eed09d30f]",
       "width": 631,
       "height": 600,
       "alt": "Plot object",
@@ -10371,12 +10372,13 @@
             "mapping": {
               "ymin": "site1_mean - site1_sd",
               "ymax": "site1_mean + site1_sd",
+              "colour": "\"Site 1\"",
               "x": "hour",
               "y": "site1_mean"
             },
             "range": {
               "left": 76.1506849315068,
-              "right": 625.520547945205,
+              "right": 531.843287671233,
               "bottom": 549.849315068493,
               "top": 24.958904109589
             }
@@ -10584,7 +10586,7 @@
     "table1": {
       "x": {
         "filter": "none",
-        "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>date<\/th>\n      <th>day<\/th>\n      <th>PM2.5<\/th>\n      <th>PM10<\/th>\n      <th>NH3<\/th>\n      <th>SO2<\/th>\n      <th>ratio<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>",
+        "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>date<\/th>\n      <th>day<\/th>\n      <th>Location<\/th>\n      <th>PM2.5<\/th>\n      <th>PM10<\/th>\n      <th>NH3<\/th>\n      <th>SO2<\/th>\n      <th>ratio_PM<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>",
         "options": {
           "pageLength": 15,
           "columnDefs": [
@@ -10595,11 +10597,11 @@
             {
               "className": "dt-right",
               "targets": [
-                3,
                 4,
                 5,
                 6,
-                7
+                7,
+                8
               ]
             },
             {
