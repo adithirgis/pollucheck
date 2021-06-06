@@ -279,7 +279,7 @@ ui <- fluidPage(
                                                         value = "Site 2"),
                                               tags$hr(),
                                               tags$hr(),
-                                              actionButton("plot_val", "Linear regression"),
+                                              actionButton("plot_val", "Scatter plot"),
                                               tags$br(),
                                               tags$br(),
                                               textInput("reg_mt1", label = "Edit title of scatter plot", 
