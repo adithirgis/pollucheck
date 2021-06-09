@@ -932,16 +932,15 @@ server <- function(input, output, session) {
     else {
       all <- data_joined_comp()
     }
-    cols <- c("Site 1" = "#F8766D", "Site 2" = "#2596BE")
+    y_site1 <- as.character(input$comp_ytr)
+    y_site2 <- as.character(input$comp_y)
     scaleFactor <- max(all$`Site 2`, na.rm = TRUE) / max(all$`Site 1`, na.rm = TRUE)
-    # all <- all %>%
-    #   pivot_longer(-date, names_to = "parameter", values_to = "value") 
     ggplot(all, aes(x = as.POSIXct(date))) +
       labs(title = input$comp_mt, x = "") + theme2() + 
       geom_line(aes(y = `Site 1`, colour = "Site 1"), size = 0.6) + 
       geom_line(aes(y = (`Site 2` / scaleFactor), colour = "Site 2"), size = 0.6) + 
-      scale_colour_manual(name = "", values = cols) + scale_y_continuous(
-        name = input$comp_y,
+      scale_colour_manual(name = "", labels = c(y_site1, y_site2), values = c("#F8766D", "#2596BE")) + 
+      scale_y_continuous(name = input$comp_y,
         sec.axis = sec_axis(~.*scaleFactor, name = input$comp_ytr)) 
   })
   data_da <- eventReactive(input$da, {
@@ -1585,53 +1584,3 @@ server <- function(input, output, session) {
 #### Run app
 shinyApp(ui, server)
 
-
-# runApp(display.mode = "showcase")
-
-# fft(data_op$PM10)
-# 
-# x <- zoo(data_op$PM10, data_op$date)
-# x <- as.ts(x)
-# x <- na.interp(x)
-# y_date <- julian(data_op$date, data_op$date[1])
-# data <- cbind(as.numeric(y_date), as.numeric(x))
-# ## Continuous wavelet transform
-# cwt_data <- spectrum(data, log = "no")
-# delta <- 1/365
-# specx <- cwt_data$freq / delta
-# specy <- 2 * cwt_data$spec[,2]
-# plot(specx, specy, xlab = "Period (days)", ylab = "Spectral Density", type = "l")
-# write.csv(data_op, "data.csv")
-
-# output$plot14 <- renderPlot({
-#   data <- data.frame(
-#     pollutant = c("Sulphur dioxide", "Nitrogen dioxide", "PM10", "PM2.5", 
-#                   "Ozone", "Ammonia", "Benzene"),
-#     levels = c(50, 40, 60, 40, 100, 100, 5)
-#   )
-#   ggplot(data, aes(pollutant, levels)) +
-#     geom_hline(yintercept = 50, colour = "black") +
-#     geom_hline(yintercept = 40, colour = "black") +
-#     geom_hline(yintercept = 60, colour = "black") +
-#     geom_hline(yintercept = 40, colour = "black") +
-#     geom_hline(yintercept = 100, colour = "black") +
-#     geom_hline(yintercept = 100, colour = "black") +
-#     geom_hline(yintercept = 5, colour = "black") +
-#     labs(y = "Major Pollutants", title = expression(paste("National Ambient Air Quality Annual Standards in India" , " (", "ug", ~m^{-3}, ")")),
-#          x = "") + geom_text(aes(label = paste(pollutant, "=", levels)), 
-#                              nudge_x = 0, nudge_y = 3, size = 6) + theme2() +
-#     theme(axis.text.x = element_blank(), 
-#           plot.title = element_text(size = 22, colour = "black")) 
-# })
-# zlim = c(0, as.integer(log2(nrow(data)))), 
-
-
-# data_diurnal <- eventReactive(input$diurnal, {
-#   data <- CPCB_f()
-#   if(input$avg_hour3 == "daily3") {
-#     data <- openair::timeAverage(data, avg.time = "day")
-#   } else { 
-#     data <- CPCB_f() 
-#   }
-#   return(data)
-# })
