@@ -11,7 +11,7 @@ authors:
   orcid: 0000-0003-0400-6584
 - affiliation: '1'
   name: Meenakshi Kushwaha
-date: "31 May 2021"
+date: "12 June 2021"
 bibliography: paper.bib
 tags:
 - R
@@ -27,36 +27,63 @@ affiliations:
 
 # Summary
 
-R has been an efficient tool to handle air quality data. With ever increasing open source data providers, there is a need for quality check and ease of handling this data. With `pollucheck` we aim to provide a simple workflow to air quality researchers to analyse the available open-source air quality data.
+Air pollution is one of the major environmental threats impacting human health, quality of living, climate and economy [@Hystad:2020]. Quantification of the pollution is needed to assess its impact on the above said aspects and device mitigation actions. Measurements are the most accurate way of quantification of air pollution. Many countries conduct regulatory measurements of various air pollutants (e.g. fine and respirable particulate matter, nitrogen dioxide, sulfur dioxide, surface ozone etc.) and make the data available publicly.
 
-Open-Source air quality data can be downloaded from 3 sources - [CPCB, specific to India](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing), [OpenAQ](https://openaq.org/#/countries/IN?_k=5ecycz), and
-[AirNow](https://www.airnow.gov/international/us-embassies-and-consulates/#India). The data can be uploaded only in .csv or .xlsx format. Data from sources specified here, sometimes contains fill values which can be due to instrument malfunction or unavailability of data. The data will be as it is except that it will remove fill values from the data. This app is currently designed to read the preset format of the input file. Any alterations in the input file may lead to unpredictable results. The title and axis label of the plots generated can be modified as per user input. 
+Air quality datasets typically span several seasons, years and the data is recorded typically every hour or a higher frequency. With ever increasing quantum of data and number of data providers, there is a clear need for tools to handle, analyse and visualise large datasets. `Shiny` is a package in R which helps in building interactive applications [@Shiny:2021]. `pollucheck` aims at a simple workflow to generate a suite of statistical plots and summary statistics; users do not need any programming background to be able to analyse time-series data and generate a variety of plots.
 
-The package `pollucheck` analyses, visualises data downloaded from three different open-source data providers, the app generates: summary statistics, time-series plots and performs simple statistical tests. It also helps check the quality of the data. This app will provide a workflow for air quality researchers interested in working with open source datasets. This app can process all parameters except Wind Direction which when downloaded at 1 hour is processed correctly, any other time-resolution is used then the app will not process wind direction correctly. 
+`pollucheck` can handle real-time pollution and colocated meteorological (if available) data from three most popular open source air pollution databases. The data sources include [OpenAQ](openaq.org), [Airnow](airnow.gov) and [Indian Central Pollution Control Board (CPCB) dashboard](app.cpcbccr.com). While CPCB data is specific to Indian regulatory monitoring stations, OpenAQ hosts the global open source pollution databases and Airnow hosts the global PM2.5 (mass concentration of particulate matter with aerodynamic diameter less than or equal to 2.5 microns) data being collected under the United States Embassy and Consulates' air quality monitoring program.
 
-We have implemented two functions from a widely used package in air quality `openair` called `calendarPlot` and `timeVariation`.
+Pollution data from the above sources is typically in different file formats and templates requiring customised codes/programs for analysis. Also a rigorous quality check of these data is preferred before visualization (plotting) and/or reporting. `pollucheck` offers a single stop solution for
 
+(i) handling the pollution data from the above said open source databases,
+(ii) offers a suite of quality check options,
+(iii) generates a variety of summary statistics at various averaging intervals,
+(iv) performs time-series analysis,
+(v) generates a bunch of temporal and statistical plots,
+(vi) compares data from two input files.
 
-## App Display
-
-The output is displayed in five different tabs.
-
-1) `File` displays cleaned data.
-2) `Summary` displays summary statistics for all parameters and an option of daily and monthly summary statistics is also available.
-3) `Summary Plots` generates data availability plot for all parameters, time series, monthly box-plots, vertical bar plots and diurnal plots for the selected parameter.
-4) `Statistical Plots` checks for normality, generates density, Q-Q plot along with checks for trends in the time series for the selected parameter.
-5) `Linear Regression` implements linear or multilinear regression using the selected parameters.
-6) `Compare` allows users to upload another set of data to compare selected parameters and generate plots.
-7) `openair` allows users to use the package's widely used functions for the selected parameters.
-8) `FAQ's` helps users to understand this software.
-9) `Disclaimer` contains a disclaimer to use this package.
+To the author's knowledge, currently there is no application that can work with these available open source data to provide the above mentioned analysis platform, though there are a few apps that deal with cleaning, and visualisation from a single / multiple air quality instruments used for mobile monitoring of air quality data [@Salmon:2017; @Upadhya:2020]. 
 
 
-## Limitations
+# App Display
 
-1) Data cannot be pulled from the cloud, it has to be downloaded.
-2) Multiple files cannot be uploaded at a single time. 
-3) Only data downloaded from the specified sources can be analysed.
+The output of `pollucheck` is displayed in seven tabs. Different packages used for building the `pollucheck` include tidyverse, ggplot2, openair, lubridate, shiny, bslib, forecast, biwavelet, readxl, DT, data.table, nortest, janitor, and zoo.
+
+i)  The `File` tab is used to upload the input file and to specify the source and time-resolution of the input data. The default time zone is set to 'Asia/Kolkata'. For OpenAQ and Airnow datasets, appropriate time zones need to be selected based on the input file. For the CPCB dataset, the time zone option is default and inactive. A set quality check options, which include
+-   removal of negative values,
+-   removal of duplicate consecutive values,
+-   detection of outliers are provided. 
+Data completeness criteria (minimum percent data required) for computing daily mean values can be specified. If the input file contains simultaneous PM2.5 and PM10 (mass concentration of particulate matter with aerodynamic diameter less than or equal to 10 microns) data, the app computes the PM2.5/PM10 ratio (a useful metric in the air pollution field). The selected quality check / completeness criteria will be applied to all the parameters of the input file. Hourly or daily mean values of all the parameters can be displayed and downloaded (as `.csv`) from this tab.
+
+ii) `Summary` tab provides various statistics (central tendencies, percentiles, minimum, maximum, standard deviation, interquartile range etc.) for all the parameters in the input file at three different averaging intervals. The averaging interval can be selected using the drop down menu. The displayed statistics can be downloaded.
+
+iii) `Summary Plots` tab generates 
+- data availability plot for all the parameters (based on daily mean values), 
+- time-series plot 
+- box and whisker plots 
+- vertical bar plot and 
+- diurnal variability plots. 
+Except for data availability plot, the parameter of interest to plot needs to be selected from the dropdown menu. Plots can be generated either using hourly or daily mean data. Diurnal variability plot can be plotted either by aggregating the whole data in the input file or month wise. Considering the general log normal nature of the pollution data, an option is provided for the diurnal variability plot to be plotted either using mean and standard deviation or median and interquartile range. The title and Y-axis labels of all the plots are editable. 
+
+
+iv) `Statistical Plots` tab can be used to conduct normality tests (Anderson-Darling and Shiparo-Wilk), generate density and Quantile-Quantile (QQ) plots, generate autocorrelogram, conduct trends and periodicity analysis on the parameter selected. While the autocorrelogram is generated based on monthly mean values, trend (Mann-Kendall test) and periodicity (wavelet analysis using biwavelet package) analysis are conducted on daily mean values of the selected parameter. For trend and periodicity analysis and generating autocorrelogram, the missing daily mean values are imputed using `forecast` package [@Hyndman:2008].
+
+v)  `Linear Regression` tab offers to perform univariable and multiple linear regression analysis among the parameters of choice. For univariable linear regression, a scatter plot will be generated with least squares linear fit. For multiple linear regression, multiple independent parameters can be selected. A scatter plot between the dependent variable and fitted data (using regression coefficients) will be generated. Relevant statistical coefficients are provided along with the plots. Editable title and axis labels are provided.
+
+vi) `Compare` tab allows users to upload a second data file to compare data between the selected parameters from the two input files. Time series, scatter and diurnal variability plots of the two parameters of interest will be generated. Editable title and axis labels are provided.
+
+vii) Some features of the widely used `openair` package [@Carslaw:2021] are integrated in `pollucheck` with permission. Calendar and time variation plots of the selected parameter are generated in this tab. For calendar plots daily data will be used and for time variation plots hourly data will be used.
+
+An extensive list of FAQs (frequently asked questions) is provided as a separate tab for better understanding of the `pollucheck` functioning and detailed features of the plots and analysis.
+
+# Limitations
+
+1)  `pollucheck` cannot download data itself from the cloud. Downloaded files need to be provided as input.
+2)  Multiple files cannot be uploaded to `pollucheck` at a given time.
+3)  The current version of `pollucheck` is limited to accepting real time data files from only three data sources.
+4)  Few analyses (e.g. periodicity analysis) can be performed using daily mean values only.
+5)  A caution needs to be exercised when using the averaged wind direction data.
+6)  Any manipulation or alteration to the downloaded file before giving it as input to the app can lead to erroneous results.
 
 ## Installation
 
@@ -64,16 +91,16 @@ The output is displayed in five different tabs.
 
 Load and run `pollucheck` as follows:
 
-``` r
+``` {.r}
 devtools::install_github("adithirgis/pollucheck")
 library(pollucheck)
 pollucheck::pollucheck_run()
 ```
-A pre-loaded dataset appears which is a file downloaded from Central Pollution control Board, Bangalore, India.
 
+`pollucheck` is furnished with a pre-loaded dataset for a quick user tour of the analysis, plotting options and functions available. In the `Compare` tab, the pre-loaded data acts as the second input file, if no second file is uploaded.
 
 # Acknowledgements
 
-We wish to thank Prof. Julian Marshall (University of Washington, Seattle), Prof. Joshua Apte (University of California, Berkeley), Dr. Jai Asundi (CSTEP), Dr. Saumya Singh (University of California, Berkeley) and R Ladies community for their help and support.
+We wish to thank Prof. Julian D Marshall (University of Washington, Seattle), Prof. Joshua Apte (University of California, Berkeley), Dr. Jai Asundi (Center for Study of Science, Technology & Policy, Bengaluru), Dr. Saumya Singh (University of California, Berkeley) and R Ladies community for their help and support.
 
 # References
