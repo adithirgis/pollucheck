@@ -47,23 +47,13 @@ To the author's knowledge, currently there is no application that can work with 
 
 # App Display
 
-The output of `pollucheck` is displayed in seven tabs. Different packages used for building the `pollucheck` include tidyverse, ggplot2, openair, lubridate, shiny, bslib, forecast, biwavelet, readxl, DT, data.table, nortest, janitor, and zoo.
+The output of `pollucheck` is displayed in seven tabs. Different packages used for building the `pollucheck` include `tidyverse`, `openair`, `shiny`, `bslib`, `forecast`, `biwavelet`, `readxl`, `DT`, `data.table`, `nortest`, and `zoo`.
 
-i)  The `File` tab is used to upload the input file and to specify the source and time-resolution of the input data. The default time zone is set to 'Asia/Kolkata'. For OpenAQ and Airnow datasets, appropriate time zones need to be selected based on the input file. For the CPCB dataset, the time zone option is default and inactive. A set quality check options, which include
--   removal of negative values,
--   removal of duplicate consecutive values,
--   detection of outliers are provided. 
-Data completeness criteria (minimum percent data required) for computing daily mean values can be specified. If the input file contains simultaneous PM2.5 and PM10 (mass concentration of particulate matter with aerodynamic diameter less than or equal to 10 microns) data, the app computes the PM2.5/PM10 ratio (a useful metric in the air pollution field). The selected quality check / completeness criteria will be applied to all the parameters of the input file. Hourly or daily mean values of all the parameters can be displayed and downloaded (as `.csv`) from this tab.
+i)  The `File` tab is used to upload the input file and to specify the source and time-resolution of the input data. The default time zone is set to *Asia/Kolkata*. For OpenAQ and Airnow datasets, appropriate time zones need to be selected based on the input file. For the CPCB dataset, the time zone option is default and inactive. A set quality check options, which include (i) removal of negative values, (ii) removal of duplicate consecutive values, (iii) detection of outliers are provided. Data completeness criteria (minimum percent data required) for computing daily mean values can be specified. If the input file contains simultaneous PM2.5 and PM10 (mass concentration of particulate matter with aerodynamic diameter less than or equal to 10 microns) data, the app computes the PM~2.5~/PM~10~ ratio (a useful metric in the air pollution field). The selected quality check / completeness criteria will be applied to all the parameters of the input file. Hourly or daily mean values of all the parameters can be displayed and downloaded (as `.csv`) from this tab.
 
 ii) `Summary` tab provides various statistics (central tendencies, percentiles, minimum, maximum, standard deviation, interquartile range etc.) for all the parameters in the input file at three different averaging intervals. The averaging interval can be selected using the drop down menu. The displayed statistics can be downloaded.
 
-iii) `Summary Plots` tab generates 
-- data availability plot for all the parameters (based on daily mean values), 
-- time-series plot 
-- box and whisker plots 
-- vertical bar plot and 
-- diurnal variability plots. 
-Except for data availability plot, the parameter of interest to plot needs to be selected from the dropdown menu. Plots can be generated either using hourly or daily mean data. Diurnal variability plot can be plotted either by aggregating the whole data in the input file or month wise. Considering the general log normal nature of the pollution data, an option is provided for the diurnal variability plot to be plotted either using mean and standard deviation or median and interquartile range. The title and Y-axis labels of all the plots are editable. 
+iii) `Summary Plots` tab generates (i) data availability plot for all the parameters (based on daily mean values), (ii) time-series plot (iii) box and whisker plots (iv) vertical bar plot and (v) diurnal variability plots. Except for data availability plot, the parameter of interest to plot needs to be selected from the dropdown menu. Plots can be generated either using hourly or daily mean data. Diurnal variability plot can be plotted either by aggregating the whole data in the input file or month wise. Considering the general log normal nature of the pollution data, an option is provided for the diurnal variability plot to be plotted either using mean and standard deviation or median and interquartile range. The title and Y-axis labels of all the plots are editable. 
 
 
 iv) `Statistical Plots` tab can be used to conduct normality tests (Anderson-Darling and Shiparo-Wilk), generate density and Quantile-Quantile (QQ) plots, generate autocorrelogram, conduct trends and periodicity analysis on the parameter selected. While the autocorrelogram is generated based on monthly mean values, trend (Mann-Kendall test) and periodicity (wavelet analysis using biwavelet package) analysis are conducted on daily mean values of the selected parameter. For trend and periodicity analysis and generating autocorrelogram, the missing daily mean values are imputed using `forecast` package [@Hyndman:2008].
