@@ -31,27 +31,27 @@ BugReports: https://github.com/adithirgis/OpenSourceAirQualityApp/issues
 Depends: 
     R (>= 3.6.0)
 Imports: 
-    biwavelet,
-    bslib,
-    Cairo,
-    data.table,
-    dplyr,
-    DT,
-    forecast,
-    ggplot2,
-    janitor,
-    nortest,
-    openair,
-    readxl,
-    shiny,
-    shinyjs,
-    tidyverse,
-    zoo
+    biwavelet (>= 0.20.19),
+    bslib (>= 0.2.4),
+    Cairo (>= 1.5.12.2),
+    data.table (>= 1.14.0),
+    dplyr (>= 1.0.5),
+    DT (>= 0.17),
+    forecast (>= 8.14),
+    ggplot2 (>= 3.3.3),
+    janitor (>= 2.1.0),
+    nortest (>= 1.0.4),
+    openair (>= 2.8.3),
+    readxl (>= 1.3.1),
+    shiny (>= 1.6.0),
+    shinyjs (>= 2.0.0),
+    tidyverse (>= 1.3.0),
+    zoo (>= 1.8.9)
 Suggests:
-    devtools,
-    shinytest,
+    devtools (>= 2.4.0),
+    shinytest (>= 1.5.0),
     testthat (>= 3.0.0),
-    usethis
+    usethis (>= 2.0.1)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
