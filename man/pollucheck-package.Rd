@@ -4,10 +4,10 @@
 \name{pollucheck-package}
 \alias{pollucheck}
 \alias{pollucheck-package}
-\title{pollucheck: Explore Open-Source Air-Quality Data}
+\title{pollucheck: Explore Open-Source Air-Pollution Data}
 \description{
-This app helps to analyze and visualize open source air
-    quality data available.  An example dataset is already loaded to help
+This app helps to analyze and visualize open-source air
+    pollution data available.  An example dataset is already loaded to help
     you walk through all the features of the app.  If you need help with
     downloading your own, check the ReadMe file on github.  This app can
     process all parameters except Wind Direction which when downloaded at
