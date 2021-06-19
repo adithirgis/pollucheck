@@ -62,7 +62,7 @@ v)  `Linear Regression` tab offers to perform univariable and multiple linear re
 
 vi) `Compare` tab allows users to upload a second data file to compare data between the selected parameters from the two input files. The selected quality check criteria conditions applied on the parameters of the first input file will be automatically applied on the parameters in the second input file. Time series, scatter and diurnal variability plots of the two parameters of interest will be generated.
 
-vii) Some features of the widely used `openair` package [@Carslaw:2021] are integrated in `pollucheck` with permission. Calendar and time variation plots of the selected parameter are generated in this tab. For calendar plots daily data will be used and for time variation plots hourly data will be used.
+vii) Some features of the widely used `openair` package [@Carslaw:2012] are integrated in `pollucheck` with permission. Calendar and time variation plots of the selected parameter are generated in this tab. For calendar plots daily data will be used and for time variation plots hourly data will be used.
 
 An extensive list of FAQs (frequently asked questions) is provided as a separate tab for better understanding of the `pollucheck` functioning, detailed features of the plots, analysis and the various packages used to build 'pollucheck'.
 
