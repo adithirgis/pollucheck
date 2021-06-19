@@ -38,12 +38,11 @@ Pollution data from the above sources is typically in different file formats and
 (i) handling the pollution data from the above said open source databases,
 (ii) applying a suite of quality check options,
 (iii) generating a variety of summary statistics at various averaging intervals,
-iv) performing time-series analysis,
+(iv) performing time-series analysis,
 (v) generating a bunch of temporal and statistical plots,
 (vi) comparing data from two input files.
 
-To our knowledge, currently there is no application that can generate utilisable summary statistics and plots using the data from the above mentioned pollution databases. Though there are a few shiny apps that deal with data cleaning and visualisation for pollution data collected from single/multiple air quality instruments [@Salmon:2017; @Upadhya:2020]. 
-
+To our knowledge, currently there is no application that can generate utilisable summary statistics and plots using the data from the above mentioned pollution databases. Though there are a few shiny apps that deal with data cleaning and visualisation for pollution data collected from single/multiple air quality instruments [@Salmon:2017; @Upadhya:2020].
 
 # App Display
 
@@ -53,12 +52,11 @@ i)  The `File` tab is used to upload the input file and to specify the source an
 
 ii) `Summary` tab provides various statistics (central tendencies, percentiles, minimum, maximum, standard deviation, interquartile range, etc.) for all the parameters in the input file at three different averaging intervals. The averaging interval can be selected using the drop-down menu. The displayed statistics can be downloaded.
 
-iii) `Summary Plots` tab generates (i) data availability plot for all the parameters (based on daily mean values), (ii) time-series plot (iii) box and whisker plots (iv) vertical bar plot and (v) diurnal variability plots. Except for data availability plot, the parameter of interest to plot needs to be selected from the drop-down menu. Plots can be generated either using hourly or daily mean data. Diurnal variability plot can be plotted either by aggregating the whole data in the input file or month wise. Considering the general log normal nature of the pollution data, an option is provided for the diurnal variability plot to be plotted either using mean and standard deviation or median and interquartile range. The title and Y-axis labels of all the plots are editable. 
-
+iii) `Summary Plots` tab generates (i) data availability plot for all the parameters (based on daily mean values), (ii) time-series plot (iii) box and whisker plots (iv) vertical bar plot and (v) diurnal variability plots. Except for data availability plot, the parameter of interest to plot needs to be selected from the drop-down menu. Plots can be generated either using hourly or daily mean data. Diurnal variability plot can be plotted either by aggregating the whole data in the input file or month wise. Considering the general log normal nature of the pollution data, an option is provided for the diurnal variability plot to be plotted either using mean and standard deviation or median and interquartile range. The title and Y-axis labels of all the plots are editable.
 
 iv) `Statistical Plots` tab can be used to conduct normality tests (Anderson-Darling and Shiparo-Wilk), generate density and Quantile-Quantile (QQ) plots, generate autocorrelogram, conduct trends and periodicity analysis on the parameter selected. While the autocorrelogram is generated based on monthly mean values, trend (Mann-Kendall test) and periodicity (wavelet analysis) analysis are conducted on daily mean values of the selected parameter. For trend and periodicity analysis and generating autocorrelogram, the missing daily mean values are imputed using the `forecast` package [@Hyndman:2008].
 
-v)  `Linear Regression` tab offers to perform univariable and multiple linear regression analysis among the parameters of choice. For univariable linear regression, a scatter plot will be generated with least squares linear fit. For multiple linear regression, multiple independent parameters can be selected. A scatter plot between the dependent variable and fitted data (using regression coefficients) will be generated. Relevant statistical coefficients are provided along with the plots. 
+v)  `Linear Regression` tab offers to perform univariable and multiple linear regression analysis among the parameters of choice. For univariable linear regression, a scatter plot will be generated with least squares linear fit. For multiple linear regression, multiple independent parameters can be selected. A scatter plot between the dependent variable and fitted data (using regression coefficients) will be generated. Relevant statistical coefficients are provided along with the plots.
 
 vi) `Compare` tab allows users to upload a second data file to compare data between the selected parameters from the two input files. The selected quality check criteria conditions applied on the parameters of the first input file will be automatically applied on the parameters in the second input file. Time series, scatter and diurnal variability plots of the two parameters of interest will be generated.
 
@@ -92,6 +90,5 @@ pollucheck::pollucheck_run()
 # Acknowledgements
 
 We wish to thank Prof. Julian D Marshall (University of Washington, Seattle), Prof. Joshua Apte (University of California, Berkeley), Dr. Jai Asundi (Center for Study of Science, Technology & Policy, Bengaluru), Dr. Saumya Singh (University of California, Berkeley) and R Ladies community for their help and support.
-
 
 # References
