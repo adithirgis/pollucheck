@@ -243,6 +243,6 @@ A walk through to use this app for everyone -
 
 -   Please open an issue in the issue tracker of the project that describes the changes you would like to make to the software and open a pull request with the changes.
 
-1.  Report issues or problems with the software / Seek Support
+2.  Report issues or problems with the software / Seek Support
 
 -   Please open an issue in the [issue tracker of the project.](https://github.com/adithirgis/OpenSourceAirQualityApp/issues)
