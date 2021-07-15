@@ -748,7 +748,7 @@ server <- function(input, output, session) {
         "value" = value,
         "Location" = location
       ) %>%
-      dplyr::mutate(date  = as.POSIXct(date, format = '%Y-%m-%dT%H:%M:%S+05:30', tz = input$timezone))
+      dplyr::mutate(date  = as.POSIXct(date, format = '%Y-%m-%dT%H:%M:%S', tz = input$timezone))
     site_name <- as.character(trial[1, "Location"])
     trial <- trial[order(trial$date),]
     date <- date_ts(trial, "1 min")
@@ -759,7 +759,7 @@ server <- function(input, output, session) {
         names_from = parameter,
         values_from = value
       )
-    all <- left_join(tseries_df, trial, by = "date")
+    all <- full_join(tseries_df, trial, by = "date")
     all$hour <- lubridate::ceiling_date(all$date, "hour")
     all <- all %>%
       group_by(hour) %>%
@@ -1004,7 +1004,7 @@ server <- function(input, output, session) {
         }
         
         name <- site1_join_f1 %>%
-          dplyr::select(everything(),-day,-date,-Location)
+          dplyr::select(everything(),-day, -date, -Location)
         site1_join_f1 <- site1_join_f1 %>%
           dplyr::mutate(ratio_PM = NA) %>%
           dplyr::select(date, day, Location, everything())
@@ -1848,7 +1848,7 @@ server <- function(input, output, session) {
     ggplot(no_na_df, aes(x = day, y = Parameter, color = Parameter)) +
       geom_errorbarh(aes(xmax = day, xmin = day), size = 0.25) +
       labs(y = "", title = "Data availability plot", x = "") +
-      scale_x_date(date_breaks = "60 days", date_labels = "%b-%y") +
+      scale_x_date(date_labels = "%b-%y") +
       theme2() + theme(legend.position = "none")
   })
   # Diurnal for two sites
