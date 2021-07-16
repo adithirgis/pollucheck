@@ -12,7 +12,7 @@ Authors@R:
              email = "pratyush@ilklabs.com"),
       person(given = "Sreekanth",
              family = "Vakacherla",
-             role = c("aui", "ctb"),
+             role = c("aui", "rev"),
              email = "sree.hcu@gmail.com"),
       person(given = "Meenakshi",
              family = "Kushwaha",

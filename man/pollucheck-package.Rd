@@ -33,7 +33,7 @@ Authors:
 Other contributors:
 \itemize{
   \item Pratyush Agrawal \email{pratyush@ilklabs.com} [data contributor]
-  \item Sreekanth Vakacherla \email{sree.hcu@gmail.com} [author of introduction, etc., contributor]
+  \item Sreekanth Vakacherla \email{sree.hcu@gmail.com} [author of introduction, etc., reviewer]
 }
 
 }
