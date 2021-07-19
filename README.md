@@ -247,3 +247,7 @@ A walk through to use this app for everyone -
 2.  Report issues or problems with the software / Seek Support
 
 -   Please open an issue in the [issue tracker of the project.](https://github.com/adithirgis/OpenSourceAirQualityApp/issues)
+
+## Author credit statement
+
+Adithi R. Upadhya created the package and contributed to the manuscript and she will maintain the package with Meenakshi Kushwaha who also supervised and contributed to the manuscript, Pratyush Agrawal contributed to designing, testing the application and data collection while Sreekanth Vakacherla designed, contributed to the manuscript and supervised the project.
