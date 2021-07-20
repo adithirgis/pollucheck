@@ -1607,7 +1607,8 @@ server <- function(input, output, session) {
       data <- data_mbox()
     }
     y <- as.numeric(as.character(data[[input$palleInp]]))
-    ggplot(data, aes(x = reorder(format(date, '%b'), date), y)) +
+    month.abb.loc  <- format(ISOdate(2004, 1:12, 1), "%b")
+    ggplot(data, aes(x = factor(reorder(format(date, '%b'), date), levels = month.abb.loc), y)) +
       stat_summary(
         fun.data = f(),
         colour = "seagreen",
