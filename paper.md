@@ -93,36 +93,36 @@ For better understanding of the major functionalities of pollucheck, we present 
 
 
 
-![](inst/shiny/WWW/figure1a.png){ width=95% }
+![](inst/shiny/WWW/figure1a.png){ width=100% }
 
 
-![Hourly time series of raw (top panel) and cleaned (bottom panel) PM~2.5~.](inst/shiny/WWW/figure1b.png){ width=95% }
+![Hourly time series of raw (top panel) and cleaned (bottom panel) PM~2.5~.](inst/shiny/WWW/figure1b.png){ width=100% }
   
 
 Figure 2 depicts the difference between **Month and year box plot** and ***Monthly box plot**. These plots are highly useful if the dataset length is more than a year. **Monthly box plot** (bottom panel) partitions all the data points into the calendar month bins irrespective of the year. While **Month and year box plot** (top panel) accounts for the entire timeline i.e. including the year.
 
-![](inst/shiny/WWW/figure2a.png){ width=95% }
+![](inst/shiny/WWW/figure2a.png){ width=100% }
 
 
-![Box plots depicting the monthly variations in hourly PM~2.5~.](inst/shiny/WWW/figure2b.png){ width=95% }
+![Box plots depicting the monthly variations in hourly PM~2.5~.](inst/shiny/WWW/figure2b.png){ width=100% }
 
 
 Diurnal variation in PM~2.5~ based on mean (and standard deviation) and median (and interquartile range) are shown in the top and bottom panels of figure 3, respectively. The choice between mean and median is useful when the distribution of the data deviates from normal. In the top panel, the line depicts the mean and the vertical bars depict standard deviation.  In the bottom panel, the line depicts the median and the vertical bars depict the Interquartile range.
 
 
-![](inst/shiny/WWW/figure3a.png){ width=95% }
+![](inst/shiny/WWW/figure3a.png){ width=100% }
 
 
-![Diurnal variations in PM~2.5~.](inst/shiny/WWW/figure3b.png){ width=95% }
+![Diurnal variations in PM~2.5~.](inst/shiny/WWW/figure3b.png){ width=100% }
 
 In figure 4, a linear regression is shown between PM~2.5~ and the PM~2.5~/PM~10~ ratio.  The app computes the ratio using the individual PM~2.5~ and PM~19~ data sets. The blue line depicts the least square linear fit. The R-square and the equation of the linear fit are also provided on the panel.
 
-![Linear regression analysis.](inst/shiny/WWW/figure4.png){ width=95% }
+![Linear regression analysis.](inst/shiny/WWW/figure4.png){ width=100% }
 
 
 The periodicity in PM~2.5~ is shown as a wavelet periodogram (figure 5). Wavelet analysis is useful in analysing non-stationary time series data. Only daily averaged data will be used for this analysis and missing data is imputed to perform the wavelet analysis. 
 
-![PM~2.5~ periodicity analysis based on wavelet transform.](inst/shiny/WWW/figure5.png){ width=95% }
+![PM~2.5~ periodicity analysis based on wavelet transform.](inst/shiny/WWW/figure5.png){ width=100% }
 
 
 # Acknowledgements
