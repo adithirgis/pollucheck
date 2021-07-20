@@ -87,6 +87,33 @@ pollucheck::pollucheck_run()
 
 `pollucheck` is furnished with a preloaded data set for a quick user tour of the analysis and, plotting options and the functions available. In the `Compare` tab, the preloaded data set act as the second input file if no second file is uploaded.
 
+# Case Study
+
+For better understanding of the major functionalities of pollucheck, we present a case study based on 18 months of pollution data set. Only plots related to PM~2.5~ data generated through the app are showcased here. Figure 1 depicts the efficiency of the app in detecting the outliers. Top panel of figure 1 shows the hourly time series of the raw PM~2.5~ (few outliers were synthetically added to the data), while the bottom panel depicts the quality checked data. Almost all the sporadically high values were detected by the app as outliers and removed.
+
+
+
+![Figure 1: Hourly time series of raw (top panel) and cleaned (bottom panel) PM~2.5~.](inst/shiny/WWW/figure1a.png){ width=20% }
+
+  
+
+Figure 2 depicts the difference between **Month and year box plot** and ***Monthly box plot**. These plots are highly useful if the dataset length is more than a year. **Monthly box plot** (bottom panel) partitions all the data points into the calendar month bins irrespective of the year. While **Month and year box plot** (top panel) accounts for the entire timeline i.e. including the year.
+
+Figure 2: Box plots depicting the monthly variations in hourly PM~2.5~.
+
+Diurnal variation in PM~2.5~ based on mean (and standard deviation) and median (and interquartile range) are shown in the top and bottom panels of figure 3, respectively. The choice between mean and median is useful when the distribution of the data deviates from normal. In the top panel, the line depicts the mean and the vertical bars depict standard deviation.  In the bottom panel, the line depicts the median and the vertical bars depict the Interquartile range.
+
+Figure 3: Diurnal variations in PM~2.5~. 
+
+In figure 4, a linear regression is shown between PM~2.5~ and the PM~2.5~/PM~10~ ratio.  The app computes the ratio using the individual PM~2.5~ and PM~19~ data sets. The blue line depicts the least square linear fit. The R-square and the equation of the linear fit are also provided on the panel.
+
+Figure 4: Linear regression analysis.
+
+The periodicity in PM~2.5~ is shown as a wavelet periodogram (figure 5). Wavelet analysis is useful in analysing non-stationary time series data. Only daily averaged data will be used for this analysis and missing data is imputed to perform the wavelet analysis. 
+
+Figure 5: PM~2.5~ periodicity analysis based on wavelet transform.
+
+
 # Acknowledgements
 
 We wish to thank Prof. Julian D Marshall (University of Washington, Seattle), Prof. Joshua Apte (University of California, Berkeley), Dr. Jai Asundi (Center for Study of Science, Technology and Policy, Bengaluru), Dr Saumya Singh (University of California, Berkeley) and R Ladies community for their help and support.
