@@ -115,7 +115,7 @@ Diurnal variation in PM~2.5~ based on mean (and standard deviation) and median (
 
 ![Diurnal variations in PM~2.5~.](inst/shiny/WWW/figure3b.png){ width=100% }
 
-In figure 4, a linear regression is shown between PM~2.5~ and the PM~2.5~/PM~10~ ratio.  The app computes the ratio using the individual PM~2.5~ and PM~19~ data sets. The blue line depicts the least square linear fit. The R-square and the equation of the linear fit are also provided on the panel.
+In figure 4, a linear regression is shown between PM~2.5~ and the PM~2.5~/PM~10~ ratio.  The app computes the ratio using the individual PM~2.5~ and PM~10~ data sets. The blue line depicts the least square linear fit. The R-square and the equation of the linear fit are also provided on the panel.
 
 ![Linear regression analysis.](inst/shiny/WWW/figure4.png){ width=100% }
 
