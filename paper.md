@@ -99,7 +99,7 @@ For better understanding of the major functionalities of pollucheck, we present 
 ![Hourly time series of raw (top panel) and cleaned (bottom panel) PM~2.5~.](inst/shiny/WWW/figure1b.png){ width=100% }
   
 
-Figure 2 depicts the difference between **Month and year box plot** and ***Monthly box plot**. These plots are highly useful if the dataset length is more than a year. **Monthly box plot** (bottom panel) partitions all the data points into the calendar month bins irrespective of the year. While **Month and year box plot** (top panel) accounts for the entire timeline i.e. including the year.
+Figure 2 depicts the difference between **Month and year box plot** and **Monthly box plot**. These plots are highly useful if the dataset length is more than a year. **Monthly box plot** (bottom panel) partitions all the data points into the calendar month bins irrespective of the year. While **Month and year box plot** (top panel) accounts for the entire timeline i.e. including the year.
 
 ![](inst/shiny/WWW/figure2a.png){ width=100% }
 
