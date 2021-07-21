@@ -127,6 +127,6 @@ The periodicity in PM~2.5~ is shown as a wavelet periodogram (figure 5). Wavelet
 
 # Acknowledgements
 
-We wish to thank Prof. Julian D Marshall (University of Washington, Seattle), Prof. Joshua Apte (University of California, Berkeley), Dr. Jai Asundi (Center for Study of Science, Technology and Policy, Bengaluru), Dr Saumya Singh (University of California, Berkeley) and R Ladies community for their help and support.
+We wish to thank Prof. Julian D Marshall (University of Washington, Seattle), Prof. Joshua Apte (University of California, Berkeley), Dr. Jai Asundi (Center for Study of Science, Technology and Policy, Bengaluru), Dr Saumya Singh (University of California, Berkeley) and R community for their help and support.
 
 # References
