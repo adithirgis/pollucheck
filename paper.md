@@ -62,7 +62,7 @@ vi) The `Compare` tab allows users to upload a second data file to compare data 
 
 vii) Some features of the widely used `openair` package [@Carslaw:2012] are integrated into  `pollucheck` with permission. Calendar and time variation plots of the selected parameter are generated in this tab. Daily data will be used for Calendar plots and hourly data will be used for time variation plots.
 
-An extensive list of frequently asked questions (FAQs)) is provided as a separate tab for a better understanding of the `pollucheck` functioning, detailed features of the plots,  and analysis and the various packages used to build 'pollucheck'.
+An extensive list of frequently asked questions (FAQs) is provided as a separate tab for a better understanding of the `pollucheck` functioning, detailed features of the plots,  and analysis and the various packages used to build 'pollucheck'.
 
 # Limitations
 
