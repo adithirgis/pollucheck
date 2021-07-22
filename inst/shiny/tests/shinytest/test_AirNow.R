@@ -1,6 +1,7 @@
 app <- ShinyDriver$new("../../", loadTimeout = 1e+05)
 app$snapshotInit("test_AirNow")
 
+app$setInputs(switch_tab = "click")
 app$setInputs(type = "an")
 app$uploadFile(file1 = "AirNow.csv")
 app$setInputs(remove_9 = TRUE)

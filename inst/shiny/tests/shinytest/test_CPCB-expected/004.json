@@ -10414,7 +10414,7 @@
       }
     },
     "plot16": {
-      "src": "[image data sha1: c6d00b26f7dae24316ef520eb7c1eca9b518ab71]",
+      "src": "[image data sha1: da22a5fffaa6d3d9cf5203e69a199968f0059eee]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10804,7 +10804,7 @@
       }
     },
     "plot9": {
-      "src": "[image data sha1: 0d9ed1fefb64496ec3c08b41eec27a850d427f4d]",
+      "src": "[image data sha1: 1f362c02f6d0a260058207702b75bf2d5eab7ba6]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10828,23 +10828,23 @@
               "top": 131.63475,
               "discrete_limits": {
                 "x": [
+                  "Jan",
+                  "Feb",
+                  "Mar",
+                  "Apr",
+                  "May",
                   "Jun",
                   "Jul",
                   "Aug",
                   "Sep",
-                  "Apr",
                   "Oct",
-                  "May",
                   "Nov",
-                  "Dec",
-                  "Jan",
-                  "Feb",
-                  "Mar"
+                  "Dec"
                 ]
               }
             },
             "mapping": {
-              "x": "reorder(format(date, \"%b\"), date)",
+              "x": "factor(reorder(format(date, \"%b\"), date), levels = month.abb.loc)",
               "y": "y"
             },
             "range": {

@@ -25,11 +25,11 @@ A walk through to use this app for everyone -
 
 ![](inst/shiny/WWW/CPCB_data_down_S.jpeg)
 
--   Select the Indian state from the "State Name" dropdown.
+-   Select the Indian state from the "State Name" drop-down.
 
 ![](inst/shiny/WWW/CPCB_Station.jpeg)
 
--   Now select the city for which the data needs to be downloaded using the "City Name" dropdown menu.
+-   Now select the city for which the data needs to be downloaded using the "City Name" drop-down menu.
 
 ![](inst/shiny/WWW/CPCB_Station_city.jpeg)
 
@@ -51,56 +51,56 @@ A walk through to use this app for everyone -
 
 #### Download data - OpenAQ 
 
--   Click on [OpenAQ](https://openaq.org/#/countries/IN?_k=5ecycz) in the app to download the OpenAQ data set.
+- Click on [OpenAQ](https://openaq.org/#/countries/IN?_k=5ecycz) in the app to download the OpenAQ data set.
 
-    <img src="inst/shiny/WWW/oaq_1.jpg" width="286"/>
+<img src="inst/shiny/WWW/oaq_1.jpg" width="286"/>
 
--   Now, click on the "*Download*" option on your browser.
+- Now, click on the "*Download*" option on your browser.
 
-    <img src="inst/shiny/WWW/oaq_2.jpg" width="517"/>
+<img src="inst/shiny/WWW/oaq_2.jpg" width="517"/>
 
--   In data download, you can download the data by *Locations* or by *Datasets*.
+- In data download, you can download the data by *Locations* or by *Datasets*.
 
-    <img src="inst/shiny/WWW/oaq_3.jpg" width="484"/>
+<img src="inst/shiny/WWW/oaq_3.jpg" width="484"/>
 
--   Now select the desired, "*Country*", "*City/Region*" and "*Location*" using the dropdown.
+- Now select the desired, "*Country*", "*City/Region*" and "*Location*" using the drop-down.
 
-    <img src="inst/shiny/WWW/oaq_4.jpg" width="306"/><img src="inst/shiny/WWW/oaq_5.jpg" width="103"/><img src="inst/shiny/WWW/oaq_6.jpg" width="215"/>
+<img src="inst/shiny/WWW/oaq_4.jpg" width="306"/><img src="inst/shiny/WWW/oaq_5.jpg" width="103"/><img src="inst/shiny/WWW/oaq_6.jpg" width="215"/>
 
--   To proceed further select the "*Start Date***"** and the "*End Date***"** for the data.
+- To proceed further select the "*Start Date***"** and the "*End Date***"** for the data.
 
-    <img src="inst/shiny/WWW/oaq_7.jpg" width="525"/>
+<img src="inst/shiny/WWW/oaq_7.jpg" width="525"/>
 
--   Now select which type of sensor is available at that location. Is it a "*Low-cost Sensor*" or "*Reference Grade*" monitor?
+- Now select which type of sensor is available at that location. Is it a "*Low-cost Sensor*" or "*Reference Grade*" monitor?
 
-    ![](inst/shiny/WWW/oaq_8.jpg)
+![](inst/shiny/WWW/oaq_8.jpg)
 
--   Finally, select the parameters from the list of "*Core"* and "*Additional Parameters"* which you wish to download from that particular location and click on "*Download Selection*". The file will be saved in your local disk in .csv format.
+- Finally, select the parameters from the list of "*Core"* and "*Additional Parameters"* which you wish to download from that particular location and click on "*Download Selection*". The file will be saved in your local disk in .csv format.
 
-    <img src="inst/shiny/WWW/oaq_9.jpg" width="519"/>
+<img src="inst/shiny/WWW/oaq_9.jpg" width="519"/>
 
 #### Download data - AirNow 
 
--   Click on [AirNow-US Embassies](https://www.airnow.gov/international/us-embassies-and-consulates/) to visit official website to download the data.
+- Click on [AirNow-US Embassies](https://www.airnow.gov/international/us-embassies-and-consulates/) to visit official website to download the data.
 
-    <img src="inst/shiny/WWW/a_1.JPG" width="557"/>
+<img src="inst/shiny/WWW/a_1.JPG" width="557"/>
 
--   Select the desired city and the parameters.
+- Select the desired city and the parameters.
 
-    <img src="inst/shiny/WWW/a_2.JPG" width="554"/>
+<img src="inst/shiny/WWW/a_2.JPG" width="554"/>
 
--   Now Go to the **"***Historical***"** sub-menu on the Homepage and download the desired file.
+- Now Go to the **"***Historical***"** sub-menu on the Homepage and download the desired file.
 
-    <img src="inst/shiny/WWW/a_3.JPG" width="557"/>
+<img src="inst/shiny/WWW/a_3.JPG" width="557"/>
 
 ### App usage
 
--   Select the source from where the data was downloaded.
--   Now select the time resolution at which the data was downloaded.
+- Select the source from where the data was downloaded.
+- Now select the time resolution at which the data was downloaded.
 
 <img src="inst/shiny/WWW/image_1.JPG" width="315"/>
 
--   Select the check box according to your need.
+- Select the check box according to your need.
 
     -   Remove Negative values- Negative values do not represent concentration,they represent missing values, so it is always advised to remove them.This option helps you to remove all the negative values from your entire data set.
 
@@ -112,19 +112,19 @@ A walk through to use this app for everyone -
 
     -   Remove PM2.5 and PM10 above- Usually, values above 9999 are incorrect, also because the instruments usually measure only to 999 values in PM instruments. This can be removed using this filter option.
 
-    <img src="inst/shiny/WWW/image_2.JPG" width="410"/>
+<img src="inst/shiny/WWW/image_2.JPG" width="410"/>
 
--   Output aggregation- The uploaded data can be converted into daily or hourly mean values.
+- Output aggregation- The uploaded data can be converted into daily or hourly mean values.
 
--   "Download as csv" or click on "Show Data" to see the data in the app.
+- "Download as csv" or click on "Show Data" to see the data in the app.
 
 ![](inst/shiny/WWW/image_3.JPG)
 
--   Look at the time series of pollutant concentrations in the **Plots** tab (time series are plots with x axis representing time). Do you see patterns? Are there times of the month or times of the day where concentrations are particularly higher or lower? Are there particular months in a year that are more polluted than others?
--   Think about sources in the particular location: traffic, industries, garbage burning, etc.
--   What more do you want to learn? Talk to the Humans of ILK.
--   What more do you want to learn about the data? We are happy to incorporate more features based one what users need. Write to us at [contact\@ilklabs.com](mailto:contact@ilklabs.com).
--   If you have feature request - open an issue [here](https://github.com/adithirgis/pollucheck).
+- Look at the time series of pollutant concentrations in the **Plots** tab (time series are plots with x axis representing time). Do you see patterns? Are there times of the month or times of the day where concentrations are particularly higher or lower? Are there particular months in a year that are more polluted than others?
+- Think about sources in the particular location: traffic, industries, garbage burning, etc.
+- What more do you want to learn? Talk to the Humans of ILK.
+- What more do you want to learn about the data? We are happy to incorporate more features based one what users need. Write to us at [contact\@ilklabs.com](mailto:contact@ilklabs.com).
+- If you have feature request - open an issue [here](https://github.com/adithirgis/pollucheck).
 
 ### App tabs
 
@@ -272,4 +272,4 @@ pollucheck::pollucheck_run()
 
 ## Author credit statement
 
-Adithi R. Upadhya created the package, Meenakshi Kushwaha supervised and will maintain, Pratyush Agrawal contributed to designing, testing the app and data collection while Sreekanth Vakacherla designed and supervised. All the authors contributed to the manuscript. 
+Adithi R. Upadhya created the package, Meenakshi Kushwaha supervised and will maintain. Pratyush Agrawal contributed to designing, testing the app and data collection while Sreekanth Vakacherla designed and supervised. All the authors contributed to the manuscript. 

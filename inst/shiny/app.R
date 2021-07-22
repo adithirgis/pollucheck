@@ -1152,7 +1152,7 @@ server <- function(input, output, session) {
     ),
     footer = tagList(
       actionButton("help_link", "Read Me",
-                   onclick = "window.open('https://github.com/adithirgis/OpenSourceAirQualityApp#have-a-look-at-the-app',
+                   onclick = "window.open('https://github.com/adithirgis/pollucheck#have-a-look-at-the-app',
                    '_blank')"),
       actionButton("switch_tab", "FAQ's"),
       modalButton("Close")
@@ -2014,9 +2014,9 @@ server <- function(input, output, session) {
   # MLR plot
   output$plot11 <- renderPlot({
     if (is.null(input$file1)) {
-      data <- broom::tidy(lm_reg()) 
+      data <- broom::augment(lm_reg()) 
     } else {
-      data <- broom::tidy(lm_reg()) 
+      data <- broom::augment(lm_reg()) 
     }
     y <- as.numeric(as.character(data[[input$DepVar1]]))
     ggplot(data = data, aes(x = .fitted, y = y)) +
