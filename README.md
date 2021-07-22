@@ -6,7 +6,7 @@
 
 pollucheck helps exploring the open-source Indian air quality data.
 
--   pollucheck is specific to India, and allows users to handle open-source air quality data sets available from OpenAQ (<https://openaq.org/#/countries/IN?_k=5ecycz>), Central Pollution Control Board [CPCB](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing), and AirNow (<https://www.airnow.gov/international/us-embassies-and-consulates/#India>).
+-   pollucheck allows users to handle open-source air quality data sets available from OpenAQ (<https://openaq.org/#/countries/IN?_k=5ecycz>), Central Pollution Control Board [CPCB](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing), and AirNow (<https://www.airnow.gov/international/us-embassies-and-consulates/#India>).
 -   Users can visualize data, analyze data, perform basic statistical operations, and generate a variety of publication-ready plots.
 -   We have also included the popular [openair](https://cran.r-project.org/web/packages/openair/index.html) package in this app.
 -   We have hosted this app here - https://aruapps.shinyapps.io/OpenSourceAirQualityApp/ 
