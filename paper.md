@@ -99,7 +99,8 @@ For better understanding of the major functionalities of pollucheck, we present 
 ![Hourly time series of raw (top panel) and cleaned (bottom panel) PM~2.5~.](inst/shiny/WWW/figure1b.png){ width=100% }
   
 
-Figure 2 depicts the difference between **Month and year box plot** and **Monthly box plot**. These plots are highly useful if the data set length is more than a year. **Monthly box plot** (bottom panel) partitions all the data points into the calendar month bins irrespective of the year. While **Month and year box plot** (top panel) accounts for the entire timeline i.e. including the year.
+
+Figure 2 depicts the difference between **Month and year box plot** and **Monthly box plot**. These plots are highly useful if the dataset length is more than a year. **Monthly box plot** (bottom panel) partitions all the data points into the calendar month bins irrespective of the year. While **Month and year box plot** (top panel) accounts for the entire timeline i.e. including the year.
 
 ![](inst/shiny/WWW/figure2a.png){ width=100% }
 
@@ -115,7 +116,7 @@ Diurnal variation in PM~2.5~ based on mean (and standard deviation) and median (
 
 ![Diurnal variations in PM~2.5~.](inst/shiny/WWW/figure3b.png){ width=100% }
 
-In figure 4, a linear regression is shown between PM~2.5~ and the PM~2.5~/PM~10~ ratio.  The app computes the ratio using the individual PM~2.5~ and PM~19~ data sets. The blue line depicts the least square linear fit. The R-square and the equation of the linear fit are also provided on the panel.
+In figure 4, a linear regression is shown between PM~2.5~ and the PM~2.5~/PM~10~ ratio.  The app computes the ratio using the individual PM~2.5~ and PM~10~ data sets. The blue line depicts the least square linear fit. The R-square and the equation of the linear fit are also provided on the panel.
 
 ![Linear regression analysis.](inst/shiny/WWW/figure4.png){ width=100% }
 
@@ -127,6 +128,6 @@ The periodicity in PM~2.5~ is shown as a wavelet periodogram (figure 5). Wavelet
 
 # Acknowledgements
 
-We wish to thank Prof. Julian D Marshall (University of Washington, Seattle), Prof. Joshua Apte (University of California, Berkeley), Dr. Jai Asundi (Center for Study of Science, Technology and Policy, Bengaluru), Dr Saumya Singh (University of California, Berkeley) and R Ladies community for their help and support.
+We wish to thank Prof. Julian D Marshall (University of Washington, Seattle), Prof. Joshua Apte (University of California, Berkeley), Dr. Jai Asundi (Center for Study of Science, Technology and Policy, Bengaluru), Dr Saumya Singh (University of California, Berkeley) and R community for their help and support.
 
 # References
