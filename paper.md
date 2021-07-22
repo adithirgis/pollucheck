@@ -27,13 +27,15 @@ affiliations:
 
 # Summary
 
-Air pollution impacts human health, quality of living, climate and the economy [@Hystad:2020]. To assess its impact and facilitate mitigation actions quantification of air pollution is vital. Measurements are the most accurate way of quantifying air pollution. Many countries conduct regulatory measurements of various air pollutants (e.g, fine and respirable particulate matter, nitrogen dioxide, sulfur dioxide and surface ozone) and make the data available publicly.
+Air pollution impacts human health, quality of living, climate and the economy [@Hystad:2020]. To assess its impact and facilitate mitigation actions, quantification of air pollution is vital. Measurements are the most accurate way of quantifying air pollution. Many countries conduct regulatory measurements of various air pollutants (e.g, fine and respirable particulate matter, nitrogen dioxide, sulfur dioxide and surface ozone) and make the data available publicly.
 
-Air pollution data sets typically span several seasons or years and real-time data are recorded typically every hour or at a higher frequency. With the ever increasing amount of data and number of data providers, there is a clear need for tools to handle, analyse, and visualise large data sets. `Shiny` is a package in R that helps build interactive applications [@Shiny:2021]. The current Shiny app `pollucheck` aims at a simple workflow to generate a suite of statistical plots and summary statistics. Users do not need any programming background to analyse time-series data and generate a variety of plots.
+Air pollution data sets typically span several seasons or years and real-time data are recorded typically every hour or at a higher frequency. With the ever increasing amount of data and number of data providers, there is a clear need for tools to handle, analyze, and visualise large data sets. The current Shiny app `pollucheck` aims at a simple workflow to generate a suite of statistical plots and summary statistics [@Shiny:2021].  Users do  not need any programming background to analyze time-series data and generate a variety of plots.
 
-`pollucheck` can handle real-time pollution and co-located meteorological data (if available) from the three most popular open-source air pollution databases: [OpenAQ](openaq.org), [AirNow](airnow.gov) and [Indian Central Pollution Control Board (CPCB) dashboard](app.cpcbccr.com). While CPCB data are specific to Indian regulatory monitoring stations, OpenAQ hosts the global open source pollution databases and AirNow hosts the global PM~2.5~ (mass concentration of particulate matter with an aerodynamic diameter less than or equal to 2.5 microns) data, collected under the United States Embassy and Consulates' air quality monitoring programmes.
+`pollucheck` can handle real-time pollution and co-located meteorological data (if available) from the three most popular open-source air pollution databases: [OpenAQ](openaq.org), [AirNow](airnow.gov) and [Indian Central Pollution Control Board (CPCB) dashboard](app.cpcbccr.com). While CPCB data are specific to Indian regulatory monitoring stations, OpenAQ hosts the global open-source pollution databases and AirNow hosts the global PM~2.5~ (mass concentration of particulate matter with an aerodynamic diameter less than or equal to 2.5 microns) data, collected under the United States Embassy and Consulates' air quality monitoring programmes.
 
-Pollution data from these sources are typically in different file formats and templates that require customised codes or programmes for analysis. Also, a rigorous quality check of the data is preferred before visualisation (plotting) and reporting. `pollucheck` offers a single-stop solution for
+The output of `pollucheck` is displayed in seven tabs. Different packages used for building `pollucheck` include `tidyverse`, `openair`, `shiny`, `bslib`, `forecast`, `biwavelet`, `readxl`, `DT`, `data.table`, `nortest`, and `zoo`.
+
+Pollution data from these sources are typically in different file formats and templates that require customised codes or programmes for analysis. Also, a rigorous quality check of the data is preferred before visualization (plotting) and reporting. `pollucheck` offers a single-stop solution for
 
 (i) handling the pollution data from the open-source databases,
 (ii) applying a suite of quality-check options,
@@ -42,11 +44,9 @@ Pollution data from these sources are typically in different file formats and te
 (v) generating a bunch of temporal and statistical plots, and 
 (vi) comparing data from two input files.
 
-To our knowledge, currently, there is no application that can generate utilisable summary statistics and plots using the data from the pollution databases. However, there are a few Shiny apps that deal with data cleaning and visualisation of pollution data collected from single/multiple air quality instruments [@Salmon:2017; @Upadhya:2020].
+To our knowledge, currently, there is no application that can generate utilisable summary statistics and plots using the data from the pollution databases. However, there are a few Shiny apps that deal with data cleaning and visualization of pollution data collected from single/multiple air quality instruments [@Salmon:2017; @Upadhya:2020].
 
 # App Display
-
-The output of `pollucheck` is displayed in seven tabs. Different packages used for building `pollucheck` include `tidyverse`, `openair`, `shiny`, `bslib`, `forecast`, `biwavelet`, `readxl`, `DT`, `data.table`, `nortest`, and `zoo`.
 
 i) The `File` tab is used to upload the input file and to specify the source and time resolution of the input data. The default time zone is set to *Asia/Kolkata*. For OpenAQ and AirNow data sets, appropriate time zones need to be selected based on the input file. For the CPCB data set, the time zone option is default and inactive. A set of quality check options (a) removal of negative values, (b) removal of consecutive duplicate values, and (c) detection of outliers are provided. Data completeness criteria (minimum percentage of data required) for computing daily mean values can be specified. If the input file contains simultaneous PM~2.5~ and PM~10~ (mass concentration of particulate matter with an aerodynamic diameter less than or equal to 10 microns) data, the app computes the PM~2.5~/PM~10~ ratio, a useful metric in the air pollution field to identify sources of PM and to estimate PM~2.5~ when only PM~10~ is available [@Chan:2008; @Chu:2015; @Spandana:2021]. The selected quality check or completeness criteria will be applied to all the parameters of the input file. Hourly or daily mean values of all the parameters can be displayed and downloaded (as `.csv`) from this tab.
 
@@ -62,7 +62,7 @@ vi) The `Compare` tab allows users to upload a second data file to compare data 
 
 vii) Some features of the widely used `openair` package [@Carslaw:2012] are integrated into  `pollucheck` with permission. Calendar and time variation plots of the selected parameter are generated in this tab. Daily data will be used for Calendar plots and hourly data will be used for time variation plots.
 
-An extensive list of frequently asked questions (FAQs)) is provided as a separate tab for a better understanding of the `pollucheck` functioning, detailed features of the plots,  and analysis and the various packages used to build 'pollucheck'.
+An extensive list of frequently asked questions (FAQs) is provided as a separate tab for a better understanding of the `pollucheck` functioning, detailed features of the plots,  and analysis and the various packages used to build 'pollucheck'.
 
 # Limitations
 
@@ -70,26 +70,26 @@ An extensive list of frequently asked questions (FAQs)) is provided as a separat
 2)  Multiple files cannot be uploaded to `pollucheck` at a given time.
 3)  The current version of `pollucheck` is limited to accepting real-time data files from only three data sources.
 4)  Some analyses (e.g. periodicity analysis) can be performed using daily mean values only.
-5)  Caution needs to be exercised when using the averaged wind direction data.
+5)  Caution needs to be exercised when using the averaged wind direction data, since wind direction is a vector quantity hence needs to be processed in a different way which has not been implemented here. 
 6)  Any manipulation or alteration to the downloaded file before giving it as input to the app can lead to erroneous results.
 
 ## Installation
 
-`pollucheck` can be installed from [GitHub](https://github.com/).
+`pollucheck` is hosted online on *shinyapps.io* and can be installed to serve locally from [GitHub](https://github.com/).
 
 Load and run `pollucheck` as follows:
 
 ``` {.r}
+install.packages("devtools")
 devtools::install_github("adithirgis/pollucheck")
-library(pollucheck)
 pollucheck::pollucheck_run()
 ```
 
-`pollucheck` is furnished with a preloaded data set for a quick user tour of the analysis and, plotting options and the functions available. In the `Compare` tab, the preloaded data set act as the second input file if no second file is uploaded.
+`pollucheck` is furnished with a preloaded data set for a quick user tour of the analysis, plotting options and the functions available. In the `Compare` tab, the preloaded data set acts as the second input file if no second file is uploaded.
 
 # Case Study
 
-For better understanding of the major functionalities of pollucheck, we present a case study based on 18 months of pollution data set. Only plots related to PM~2.5~ data generated through the app are showcased here. Figure 1 depicts the efficiency of the app in detecting the outliers. Top panel of figure 1 shows the hourly time series of the raw PM~2.5~ (few outliers were synthetically added to the data), while the bottom panel depicts the quality checked data. Almost all the sporadically high values were detected by the app as outliers and removed.
+For better understanding of the major functionalities of pollucheck, we present a case study based on 18 months of pollution data set. This data is downloaded from Central Pollution Control Board located at Hebbal, Bengaluru, India at a time resolution of 60 minutes. Only plots related to PM~2.5~ data generated through the app are showcased here. Figure 1 depicts the efficiency of the app in detecting the outliers. Top panel of figure 1 shows the hourly time series of the raw PM~2.5~ (few outliers were synthetically added to the data), while the bottom panel depicts the quality checked data. Almost all the sporadically high values were detected by the app as outliers and removed.
 
 
 
@@ -99,7 +99,7 @@ For better understanding of the major functionalities of pollucheck, we present 
 ![Hourly time series of raw (top panel) and cleaned (bottom panel) PM~2.5~.](inst/shiny/WWW/figure1b.png){ width=100% }
   
 
-Figure 2 depicts the difference between **Month and year box plot** and ***Monthly box plot**. These plots are highly useful if the dataset length is more than a year. **Monthly box plot** (bottom panel) partitions all the data points into the calendar month bins irrespective of the year. While **Month and year box plot** (top panel) accounts for the entire timeline i.e. including the year.
+Figure 2 depicts the difference between **Month and year box plot** and **Monthly box plot**. These plots are highly useful if the data set length is more than a year. **Monthly box plot** (bottom panel) partitions all the data points into the calendar month bins irrespective of the year. While **Month and year box plot** (top panel) accounts for the entire timeline i.e. including the year.
 
 ![](inst/shiny/WWW/figure2a.png){ width=100% }
 
@@ -107,7 +107,7 @@ Figure 2 depicts the difference between **Month and year box plot** and ***Month
 ![Box plots depicting the monthly variations in hourly PM~2.5~.](inst/shiny/WWW/figure2b.png){ width=100% }
 
 
-Diurnal variation in PM~2.5~ based on mean (and standard deviation) and median (and interquartile range) are shown in the top and bottom panels of figure 3, respectively. The choice between mean and median is useful when the distribution of the data deviates from normal. In the top panel, the line depicts the mean and the vertical bars depict standard deviation.  In the bottom panel, the line depicts the median and the vertical bars depict the Interquartile range.
+Diurnal variation in PM~2.5~ based on mean (and standard deviation) and median (and interquartile range) are shown in the top and bottom panels of figure 3, respectively. The choice between mean and median is useful when the distribution of the data deviates from normal. In the top panel, the line depicts the mean and the vertical bars depict standard deviation.  In the bottom panel, the line depicts the median and the vertical bars depict the interquartile range.
 
 
 ![](inst/shiny/WWW/figure3a.png){ width=100% }

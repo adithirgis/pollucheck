@@ -1,23 +1,21 @@
-# pollucheck: Open Source Air Quality App!
+# pollucheck: Open-Source Air Quality App!
 
 
 [![R-CMD-check](https://github.com/adithirgis/pollucheck/workflows/R-CMD-check/badge.svg)](https://github.com/adithirgis/pollucheck/actions)
  
 
-pollucheck helps exploring the open source Indian air quality data.
+pollucheck helps exploring the open-source Indian air quality data.
 
--   pollucheck is specific to India, and allows users to handle open-source air-quality datasets available from OpenAQ (<https://openaq.org/#/countries/IN?_k=5ecycz>), CPCB (<https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing>), and AirNow (<https://www.airnow.gov/international/us-embassies-and-consulates/#India>).
--   Users can visualize data, analyse data, perform basic statistical operations, and generate a variety of publication-ready plots.
--   We have also included the popular openair package in this application.
+-   pollucheck is specific to India, and allows users to handle open-source air quality data sets available from OpenAQ (<https://openaq.org/#/countries/IN?_k=5ecycz>), Central Pollution Control Board [CPCB](https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing), and AirNow (<https://www.airnow.gov/international/us-embassies-and-consulates/#India>).
+-   Users can visualize data, analyze data, perform basic statistical operations, and generate a variety of publication-ready plots.
+-   We have also included the popular [openair](https://cran.r-project.org/web/packages/openair/index.html) package in this app.
 -   We have hosted this app here - https://aruapps.shinyapps.io/OpenSourceAirQualityApp/ 
-
-# Have a look at the app!
 
 ### We are in this together!
 
 A walk through to use this app for everyone -
 
-#### How to download data from the CPCB website?
+#### Download data - CPCB website
 
 -   Example - Where do you live in India?
 
@@ -41,9 +39,9 @@ A walk through to use this app for everyone -
 
 ![](inst/shiny/WWW/CPCB_Station_parameters.jpeg)
 
--   Report Format- To use the PolluCheck app, Please keep the format as "tabular".
+-   Report Format- To use the pollucheck app, Please keep the format as "tabular".
 
--   Criteria- This drop-down will help you to select between different time averaging of data. Note- Pollucheck app only supports 15 min, 30 min, and 60 min average data.
+-   Criteria- This drop-down will help you to select between different time averaging of data. Note- pollucheck app only supports 15 min, 30 min, and 60 min average data.
 
 -   Select the Start Date and End date of the data and click on "Submit".
 
@@ -51,9 +49,9 @@ A walk through to use this app for everyone -
 
 ![](inst/shiny/WWW/CPCB_Station_TA.jpeg)
 
-#### How to download data from the OpenAQ website?
+#### Download data - OpenAQ 
 
--   Click on [OpenAQ](https://openaq.org/#/countries/IN?_k=5ecycz) in the app to download the OpenAQ dataset.
+-   Click on [OpenAQ](https://openaq.org/#/countries/IN?_k=5ecycz) in the app to download the OpenAQ data set.
 
     <img src="inst/shiny/WWW/oaq_1.jpg" width="286"/>
 
@@ -61,7 +59,7 @@ A walk through to use this app for everyone -
 
     <img src="inst/shiny/WWW/oaq_2.jpg" width="517"/>
 
--   In data download, you can download the data by "Locations" or by "*Datasets*".
+-   In data download, you can download the data by *Locations* or by *Datasets*.
 
     <img src="inst/shiny/WWW/oaq_3.jpg" width="484"/>
 
@@ -81,7 +79,7 @@ A walk through to use this app for everyone -
 
     <img src="inst/shiny/WWW/oaq_9.jpg" width="519"/>
 
-#### How to download data from the AirNow website?
+#### Download data - AirNow 
 
 -   Click on [AirNow-US Embassies](https://www.airnow.gov/international/us-embassies-and-consulates/) to visit official website to download the data.
 
@@ -95,7 +93,7 @@ A walk through to use this app for everyone -
 
     <img src="inst/shiny/WWW/a_3.JPG" width="557"/>
 
-### Have a look at the app usage
+### App usage
 
 -   Select the source from where the data was downloaded.
 -   Now select the time resolution at which the data was downloaded.
@@ -104,13 +102,13 @@ A walk through to use this app for everyone -
 
 -   Select the check box according to your need.
 
-    -   Remove Negative values- Negative values do not represent concentration,they represent missing values, so it is always advised to remove them.This option helps you to remove all the negative values from your entire dataset.
+    -   Remove Negative values- Negative values do not represent concentration,they represent missing values, so it is always advised to remove them.This option helps you to remove all the negative values from your entire data set.
 
-    -   Remove duplicate consecutive values- Sometimes when the instrument breaks down, it tends to show exactly same consecutive values, it is advised to remove these as well. This feature removes consecutive repetitive values in your dataset.
+    -   Remove duplicate consecutive values- Sometimes when the instrument breaks down, it tends to show exactly same consecutive values, it is advised to remove these as well. This feature removes consecutive repetitive values in your data set.
 
-    -   Specify a multiple (X) to remove outliers based on Mean and SD- If you want to clean your dataset based on outliers, not usually necessary, use only if you want to remove outiliers based on Mean and Standard Deviation values.
+    -   Specify a multiple (X) to remove outliers based on Mean and SD- If you want to clean your data set based on outliers, not usually necessary, use only if you want to remove outiliers based on Mean and Standard Deviation values.
 
-    -   Specify % of data completeness for computing daily mean values- If you are looking for entire/complete dataset to be present for analysis and not less, you can use this to select the desired level of completeness in a day using the scroll bar.
+    -   Specify % of data completeness for computing daily mean values- If you are looking for entire/complete data set to be present for analysis and not less, you can use this to select the desired level of completeness in a day using the scroll bar.
 
     -   Remove PM2.5 and PM10 above- Usually, values above 9999 are incorrect, also because the instruments usually measure only to 999 values in PM instruments. This can be removed using this filter option.
 
@@ -126,128 +124,152 @@ A walk through to use this app for everyone -
 -   Think about sources in the particular location: traffic, industries, garbage burning, etc.
 -   What more do you want to learn? Talk to the Humans of ILK.
 -   What more do you want to learn about the data? We are happy to incorporate more features based one what users need. Write to us at [contact\@ilklabs.com](mailto:contact@ilklabs.com).
--   If you have feature request - open an issue [here](https://github.com/adithirgis/OpenSourceAirQualityApp).
+-   If you have feature request - open an issue [here](https://github.com/adithirgis/pollucheck).
 
-### The application has various tabs - look at each of them and their usage.
+### App tabs
 
-##### File tab displays the data after cleaning process.
+##### File tab 
+
+- Displays the data after cleaning process.
 
 ![](inst/shiny/WWW/image_4.JPG)
 
-##### Summary tab displays the summary statistics for daily, monthly or for the entire dataset.
+##### Summary tab 
+
+- Displays the summary statistics for daily, monthly or for the entire data set.
 
 ![](inst/shiny/WWW/image_5.JPG)
 
-##### Summary Plots tab generates time series, box plot, and diurnal plot of the selected parameter.
+##### Summary Plots tab 
 
--   Data availability plot of all the pollutants after the cleaning process can be generated.
+- generates time series, box plot, and diurnal plot of the selected parameter.
 
-    ![](inst/shiny/WWW/DA_plot.JPG)
+- Data availability plot of all the pollutants after the cleaning process can be generated.
 
--   The parameter to plot and the data aggregation options are available.
+![](inst/shiny/WWW/DA_plot.JPG)
+
+- The parameter to plot and the data aggregation options are available.
 
 ![](inst/shiny/WWW/image_6.JPG)
 
--   Options to edit the Title and axis labels are available.
+- Options to edit the Title and axis labels are available.
 
--   Time-series plot
+- Time-series plot
 
-    ![](inst/shiny/WWW/image_7.JPG)
+![](inst/shiny/WWW/image_7.JPG)
 
-    ![](inst/shiny/WWW/image_8.JPG)
+![](inst/shiny/WWW/image_8.JPG)
 
--   Month and year box plot
+- Month and year box plot
 
-    ![](inst/shiny/WWW/image_9.JPG)
+![](inst/shiny/WWW/image_9.JPG)
 
--   Monthly box plot
+- Monthly box plot
 
-    ![](inst/shiny/WWW/image_10.JPG)
+![](inst/shiny/WWW/image_10.JPG)
 
--   Vertical bar plot
+- Vertical bar plot
 
-    ![](inst/shiny/WWW/image_11.JPG)
+![](inst/shiny/WWW/image_11.JPG)
 
--   Diurnal pot using hourly values - has two types using all data or distributed month wise. There is an option to plot point and bars as Median and IQR respectively or Mean and Standard Deviation. The data used for plotting can be downloaded as csv file.
+- Diurnal pot using hourly values - has two types using all data or distributed month wise. There is an option to plot point and bars as Median and IQR respectively or Mean and Standard Deviation. The data used for plotting can be downloaded as csv file.
 
-    ![](inst/shiny/WWW/image_12.JPG)
+![](inst/shiny/WWW/image_12.JPG)
 
-    ![](inst/shiny/WWW/image_13.JPG)
+![](inst/shiny/WWW/image_13.JPG)
 
-##### Statistical Plots tab tests for normality, pattern and generates density plot, qq plot of the selected parameter.
+##### Statistical Plots tab 
 
--   Using a selected parameter and aggregation methos, normality test using the Anderson Darling test (for N \> 500) or Shapiro-Wilk test can be conducted.
+- Tests for normality, pattern and generates density plot, qq plot of the selected parameter.
 
--   Density plot
+- Using a selected parameter and aggregation methods, normality test using the Anderson Darling test (for N \> 500) or Shapiro-Wilk test can be conducted.
 
-    ![](inst/shiny/WWW/image_14.JPG)
+- Density plot
 
-    ![](inst/shiny/WWW/image_15.JPG)
+![](inst/shiny/WWW/image_14.JPG)
 
--   Q-Q plot
+![](inst/shiny/WWW/image_15.JPG)
 
-    ![](inst/shiny/WWW/image_16.JPG)
+- Q-Q plot
 
-    ![](inst/shiny/WWW/image_17.JPG)
+![](inst/shiny/WWW/image_16.JPG)
 
--   Trend Analysis is also available for daily values. For trend analysis using Mann-Kendall test we use [mk.test](https://www.rdocumentation.org/packages/trend/versions/1.1.4/topics/mk.test). For imputing values in the discontinuous data set we use [forecast package](https://cran.r-project.org/web/packages/forecast/forecast.pdf). For continuous wavelet transform we use [biwavelet package](https://cran.r-project.org/web/packages/biwavelet/biwavelet.pdf). In periodicity analysis, the contours covered by black lines represent the significant periodicity at 95% significant 519 level.\\
+![](inst/shiny/WWW/image_17.JPG)
 
--   Autocorrelogram plot can also be generated using the
+- Trend Analysis is also available for daily values. For trend analysis using Mann-Kendall test we use [mk.test](https://www.rdocumentation.org/packages/trend/versions/1.1.4/topics/mk.test). For imputing values in the discontinuous data set we use [forecast package](https://cran.r-project.org/web/packages/forecast/forecast.pdf). For continuous wavelet transform we use [biwavelet package](https://cran.r-project.org/web/packages/biwavelet/biwavelet.pdf). In periodicity analysis, the contours covered by black lines represent the significant periodicity at 95% significant 519 level.
 
-    ![](inst/shiny/WWW/image_30.JPG)
+- Autocorrelogram plot can also be generated using the
 
-    <img src="inst/shiny/WWW/image_31.JPG" width="590"/>
+![](inst/shiny/WWW/image_30.JPG)
 
-    <img src="inst/shiny/WWW/image_18.JPG" width="590"/>
+<img src="inst/shiny/WWW/image_31.JPG" width="590"/>
 
-##### Linear Regression tab does linear and multi linear regression for selected parameter(s).
+<img src="inst/shiny/WWW/image_18.JPG" width="590"/>
 
--   There is an option of plotting linear regression plots between various parameters available.
+##### Linear Regression tab 
 
-    ![](inst/shiny/WWW/image_20.JPG)
+- There is an option of plotting linear regression plots between various parameters available.
 
-    ![](inst/shiny/WWW/image_21.JPG)
+![](inst/shiny/WWW/image_20.JPG)
 
--   Also multi linear regression can be performed.
+![](inst/shiny/WWW/image_21.JPG)
 
-    ![](inst/shiny/WWW/image_22.JPG)
+- Also multi linear regression can be performed.
 
-    ![](inst/shiny/WWW/image_23.JPG)
+![](inst/shiny/WWW/image_22.JPG)
 
-##### Compare tab allows users to upload another file for comparision with the loaded data.
+![](inst/shiny/WWW/image_23.JPG)
 
--   The Compare tab allows user to upload data from another site for comparison and generate time series and a scatter plot between parameters selected from different sites.
+##### Compare tab 
 
--   There are options to generate time series, scatter plot / linear regression and diurnal plots for both the sites.
+- Allows user to upload data from another site for comparison and generate time series and a scatter plot between parameters selected from different sites.
 
-    ![](inst/shiny/WWW/image_24.JPG)
+- There are options to generate time series, scatter plot / linear regression and diurnal plots for both the sites.
 
-    <img src="inst/shiny/WWW/image_32.JPG" width="397"/>
+![](inst/shiny/WWW/image_24.JPG)
 
-    ![](inst/shiny/WWW/image_26.JPG)
+<img src="inst/shiny/WWW/image_32.JPG" width="397"/>
 
-##### `openair` tab allows users use the package's widely used functions for the selected parameter.
+![](inst/shiny/WWW/image_26.JPG)
 
--   Calendar plot
+##### `openair` tab 
 
-    ![](inst/shiny/WWW/image_27.JPG)
+- allows users use the package's widely used functions for the selected parameter.
 
-    ![](inst/shiny/WWW/image_28.JPG)
+- Calendar plot
 
--   Time variation plot
+![](inst/shiny/WWW/image_27.JPG)
 
-    ![](inst/shiny/WWW/image_29.JPG)
+![](inst/shiny/WWW/image_28.JPG)
+
+- Time variation plot
+
+![](inst/shiny/WWW/image_29.JPG)
+
+## Installation
+
+`pollucheck` is hosted online on *shinyapps.io* and can be installed to serve locally from [GitHub](https://github.com/).
+
+Load and run `pollucheck` as follows:
+
+``` {.r}
+install.packages("devtools")
+devtools::install_github("adithirgis/pollucheck")
+pollucheck::pollucheck_run()
+```
+
+`pollucheck` is furnished with a preloaded data set for a quick user tour of the analysis, plotting options and the functions available. In the `Compare` tab, the preloaded data set acts as the second input file if no second file is uploaded.
 
 ## Community guidelines
 
-1.  Contribute to the software
+1. [Contribute to the software](.github/CONTRIBUTING.md)
 
--   Please open an issue in the issue tracker of the project that describes the changes you would like to make to the software and open a pull request with the changes.
+2. Report issues or problems with the software / Seek Support
 
-2.  Report issues or problems with the software / Seek Support
+- Please open an issue in the [issue tracker of the project.](https://github.com/adithirgis/pollucheck/issues)
 
--   Please open an issue in the [issue tracker of the project.](https://github.com/adithirgis/OpenSourceAirQualityApp/issues)
+3. Contributors must adhere to the [Code of Conduct](.github/CODE_OF_CONDUCT.md).
 
 ## Author credit statement
 
-Adithi R. Upadhya created the package and contributed to the manuscript and she will maintain the package with Meenakshi Kushwaha who also supervised and contributed to the manuscript, Pratyush Agrawal contributed to designing, testing the application and data collection while Sreekanth Vakacherla designed, contributed to the manuscript and supervised the project.
+Adithi R. Upadhya created the package, Meenakshi Kushwaha supervised and will maintain, Pratyush Agrawal contributed to designing, testing the app and data collection while Sreekanth Vakacherla designed and supervised. All the authors contributed to the manuscript. 

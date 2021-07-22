@@ -10,6 +10,7 @@ library(biwavelet)
 library(readxl)
 library(DT)
 library(ggplot2)
+library(broom)
 library(data.table)
 library(janitor)
 library(nortest)
@@ -930,11 +931,11 @@ server <- function(input, output, session) {
       old_no <- paste0(i, "_no_hour")
       names(data_list)[names(data_list) == old_no] <- 'no_hour'
       if (fi == "15 min") {
-        time_avg = 96
+        time_avg <- 96
       } else if (fi == "30 min") {
-        time_avg = 48
+        time_avg <- 48
       } else if (fi == "60 min") {
-        time_avg = 24
+        time_avg <- 24
       }
       data_list[[i]] <-
         ifelse(data_list$no_hour >= ((per1 / 100) * time_avg), data_list[[i]], NA)
@@ -947,7 +948,6 @@ server <- function(input, output, session) {
   
   #### Regression equation function
   reg_eqn <- function(x) {
-    R_sq <- round(as.numeric(x$adj.r.squared), digits = 2)
     int <- round(coef(x)[1], digits = 2)
     slope <- round(coef(x)[2], digits = 2)
     eqn <- paste("y = ", slope, "x + (", int, ")")
@@ -2014,9 +2014,9 @@ server <- function(input, output, session) {
   # MLR plot
   output$plot11 <- renderPlot({
     if (is.null(input$file1)) {
-      data <- fortify(lm_reg())
+      data <- broom::tidy(lm_reg()) 
     } else {
-      data <- fortify(lm_reg())
+      data <- broom::tidy(lm_reg()) 
     }
     y <- as.numeric(as.character(data[[input$DepVar1]]))
     ggplot(data = data, aes(x = .fitted, y = y)) +

@@ -4,21 +4,22 @@
 \name{pollucheck-package}
 \alias{pollucheck}
 \alias{pollucheck-package}
-\title{pollucheck: Explore Open-Source Air-Pollution Data}
+\title{pollucheck: Explore Open-Source Air Pollution Data}
 \description{
 This app helps to analyze and visualize open-source air
-    pollution data available.  An example dataset is already loaded to help
+    pollution data available. An example dataset is already loaded to help
     you walk through all the features of the app.  If you need help with
-    downloading your own, check the ReadMe file on github.  This app can
-    process all parameters except Wind Direction which when downloaded at
-    1 hour is processed correctly, any other time-resolution is used then
-    the app will not be process wind direction correctly.
+    downloading your own, check the README file on GitHub. This app can
+    process all parameters except wind direction which when downloaded at
+    1 hour is processed correctly. When wind direction any other time resolution 
+    (e.g. - daily average) is not averaged correctly as it is a vector data and 
+    cannot be averaged using simple arithmatic mean.
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/adithirgis/OpenSourceAirQualityApp}
-  \item Report bugs at \url{https://github.com/adithirgis/OpenSourceAirQualityApp/issues}
+  \item \url{https://github.com/adithirgis/pollucheck}
+  \item Report bugs at \url{https://github.com/adithirgis/pollucheck/issues}
 }
 
 }
