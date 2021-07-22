@@ -8,12 +8,12 @@
 \description{
 This app helps to analyze and visualize open-source air
     pollution data available. An example dataset is already loaded to help
-    you walk through all the features of the app.  If you need help with
+    you walk through all the features of the app. If you need help with
     downloading your own, check the README file on GitHub. This app can
     process all parameters except wind direction which when downloaded at
     1 hour is processed correctly. When wind direction any other time resolution 
-    (e.g. - daily average) is not averaged correctly as it is a vector data and 
-    cannot be averaged using simple arithmatic mean.
+    (e.g. - daily average) is not averaged correctly as it is a vector and 
+    cannot be averaged using simple arithmetic mean.
 }
 \seealso{
 Useful links:

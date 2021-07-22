@@ -2,7 +2,7 @@
 % Please edit documentation in R/pollucheck_run.R
 \name{pollucheck_run}
 \alias{pollucheck_run}
-\title{pollucheck: Explore Open-Source Air-Quality Data}
+\title{pollucheck: Explore Open-Source Air Quality Data}
 \usage{
 pollucheck_run()
 }
@@ -10,10 +10,11 @@ pollucheck_run()
 Helps to analyze and visualize open source air quality data available
 online which are - Central Pollution Control Board (India), OpenAQ, AirNow.
 An example dataset is already loaded for user to walk through all the features of the app.
-If any assistance is required with downloading dataset, check the ReadMe file on github.
-This app can process all parameters except Wind Direction which when downloaded at
-1 hour is processed correctly, and if any other time-resolution is used then
-the app will not process wind direction correctly.
+If any assistance is required with downloading dataset, check the README file on GitHub
+This app can process all parameters except wind direction which when downloaded at
+1 hour is processed correctly. When wind direction any other time resolution
+(e.g. - daily average) is not averaged correctly as it is a vector and
+cannot be averaged using simple arithmetic mean.
 }
 \examples{
 if(interactive()){
