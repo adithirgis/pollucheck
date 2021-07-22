@@ -23,7 +23,7 @@ Description: This app helps to analyze and visualize open-source air
     you walk through all the features of the app. If you need help with
     downloading your own, check the README file on GitHub. This app can
     process all parameters except wind direction which when downloaded at
-    1 hour is processed correctly. When wind direction any other time resolution 
+    1 hour is processed correctly. Wind direction at any other time resolution 
     (e.g. - daily average) is not averaged correctly as it is a vector and 
     cannot be averaged using simple arithmetic mean.
 License: MIT + file LICENSE

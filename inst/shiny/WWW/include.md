@@ -31,15 +31,14 @@ parameters.*
 
 **Can I use this app to analyze app work for data from countries other
 than India?**  
-*Yes, two of the sources mentioned above OpenAQ, and AirNow have
-datasets from many other countries. CPCB is specific to India. Make sure
-you specify the correct timezone in the app when analyzing data from
+*Yes, two of the sources mentioned above OpenAQ, and AirNow have data
+sets from many other countries. CPCB is specific to India. Make sure you
+specify the correct timezone in the app when analyzing data from
 different countries.*
 
 **How to use the app?**  
-*Please check
-[here](https://github.com/adithirgis/OpenSourceAirQualityApp) for a walk
-through.*
+*Please check [here](https://github.com/adithirgis/pollucheck) for a
+walk through.*
 
 **Will this application read data from a reference monitor which is not
 from the sources mentioned in the app?**  
@@ -98,7 +97,7 @@ time resolution.*
 *To save the image right click on the plot and select save image as. You
 can save it on your local computer in .png or .jpeg format.*
 
-**Can we upload datasets of different timezone?**  
+**Can we upload data sets of different timezone?**  
 *Yes, for data from OpenAQ and AirNow, different time formats are
 supported, just select the right timezone.*
 
@@ -108,13 +107,13 @@ supported, just select the right timezone.*
 **Whom to contact for doubts or suggestions?**  
 *We are happy to incorporate more features based on what users need.
 Write to us at <contact@ilklabs.com>. For reporting any bug/issue click
-[here](https://github.com/adithirgis/OpenSourceAirQualityApp/issues).*
+[here](https://github.com/adithirgis/pollucheck/issues).*
 
-**Can the plots generated using PolluCheck be used for publications?**  
+**Can the plots generated using pollucheck be used for publications?**  
 *Depends on the user. If you find the resolution and everything usable,
 please go ahead. Remember to cite us!*
 
-**How to cite PolluCheck?**  
+**How to cite pollucheck?**  
 *We will update this soon!*
 
 **Is the theme of the application customizable?**  
@@ -141,9 +140,9 @@ middle portion of the data is: the interquartile range. At the ends of
 the box, you’ll find the first
 [quartile](https://www.statisticshowto.com/what-are-quartiles/)(the 25%
 mark) and the third quartile (the 75% mark). The whiskers on the far
-most of the box plots show the minimum and maximum values in the
-datasets. Finally, the median is represented by a vertical bar in the
-center of the box.
+most of the box plots show the minimum and maximum values in the data
+sets. Finally, the median is represented by a vertical bar in the center
+of the box.
 [source](https://www.statisticshowto.com/probability-and-statistics/descriptive-statistics/box-plot/)*
 
 **What do the bars in the vertical bar plots indicate?**  
@@ -266,27 +265,27 @@ can vary in an analysis without breaking any constraints.
 tab will be applied example - remove negative values, or averaging
 period of hourly or daily.*
 
-**Can I compare two datasets of different timezone?**  
+**Can I compare two data sets of different timezone?**  
 *No, right now the app allows for comparison with data from the same
 time zone.*
 
-**Can I compare two datasets of different time periods?**  
-*Yes, you can compare the time-series of both the datasets, but the
+**Can I compare two data sets of different time periods?**  
+*Yes, you can compare the time series of both the data sets, but the
 scatter plot will not be generated as they belong to different time
 series.*
 
-**Can I compare datasets from different downloading sources (different
+**Can I compare data sets from different downloading sources (different
 websites)?**  
 *Yes, you can definitely compare from different available sources.*
 
-**How many datasets can be compared at a time in the app?**  
+**How many data sets can be compared at a time in the app?**  
 *As of now, only one single file can be compared with the uploaded
 dataset.*
 
-**Is it possible to compare two datasets with different time
+**Is it possible to compare two data sets with different time
 resolutions?**  
-*Yes! It is possible to compare datasets with different time resolutions
-since the application averages to 1 hour or daily average.*
+*Yes! It is possible to compare data sets with different time
+resolutions since the application averages to 1 hour or daily average.*
 
 ### openair
 

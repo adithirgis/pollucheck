@@ -764,7 +764,7 @@ server <- function(input, output, session) {
     all$hour <- lubridate::ceiling_date(all$date, "hour")
     all <- all %>%
       group_by(hour) %>%
-      summarise_all(funs(mean), na.rm = TRUE) %>%
+      summarise_all(list(~ mean(., na.rm = TRUE))) %>%
       dplyr::select(everything(),-date) %>%
       dplyr::select("date" = hour, everything())
     names(all) <- toupper(names(all))
@@ -865,7 +865,7 @@ server <- function(input, output, session) {
   outlier <- function(site1_join_f1, name, date, eq) {
     site1_join_f1 <- site1_join_f1 %>%
       group_by(day, Location) %>%
-      dplyr::mutate_all(funs(mean, sd), na.rm = TRUE) %>%
+      dplyr::mutate_all(list(~ mean(., na.rm = TRUE), ~ sd(., na.rm = TRUE))) %>%
       ungroup() %>%
       dplyr::select(date, day, Location, everything(),-date_mean,-date_sd)
     tseries_df <- site1_join_f1 %>%
@@ -1152,7 +1152,7 @@ server <- function(input, output, session) {
     ),
     footer = tagList(
       actionButton("help_link", "Read Me",
-                   onclick = "window.open('https://github.com/adithirgis/pollucheck#have-a-look-at-the-app',
+                   onclick = "window.open('https://github.com/adithirgis/pollucheck#app-usage',
                    '_blank')"),
       actionButton("switch_tab", "FAQ's"),
       modalButton("Close")
@@ -1460,7 +1460,7 @@ server <- function(input, output, session) {
           )
         ) %>%
         group_by(date, Location) %>%
-        summarise_all(funs(mean), na.rm = TRUE)
+        summarise_all(list(~ mean(., na.rm = TRUE)))
       x <- zoo(data[[input$palleInp2]], data$date)
       x <- na.interp(x)
     } else {
@@ -1507,7 +1507,7 @@ server <- function(input, output, session) {
       data <- data %>%
         dplyr::select(hour, y) %>%
         group_by(hour) %>%
-        summarise_all(funs(mean, sd), na.rm = TRUE)
+        summarise_all(list(~ mean(., na.rm = TRUE), ~ sd(., na.rm = TRUE)))
       ggplot(data, aes(hour, mean)) + geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd),
                                                     color = "seagreen") +
         scale_x_continuous(limits = c(-1, 24),
@@ -1522,7 +1522,8 @@ server <- function(input, output, session) {
       data <- data %>%
         dplyr::select(hour, y) %>%
         group_by(hour) %>%
-        summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
+        summarise_all(list(median = ~ median(.x, na.rm = TRUE), p25 = ~ quantile(.x, .25, na.rm = TRUE), 
+                           p75 = ~ quantile(.x, .75, na.rm = TRUE)))
       ggplot(data, aes(hour, median)) + geom_errorbar(aes(ymin = p25, ymax = p75),
                                                       color = "seagreen") +
         scale_x_continuous(limits = c(-1, 24),
@@ -1536,7 +1537,8 @@ server <- function(input, output, session) {
     } else if (input$diur == "mediq" && input$diurn == "mon") {
       data <- data %>%
         group_by(month, hour) %>%
-        summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
+        summarise_all(list(median = ~ median(.x, na.rm = TRUE), p25 = ~ quantile(.x, .25, na.rm = TRUE), 
+                           p75 = ~ quantile(.x, .75, na.rm = TRUE)))
       ggplot(data, aes(hour, median)) + geom_errorbar(aes(ymin = p25, ymax = p75),
                                                       color = "seagreen") +
         scale_x_continuous(limits = c(-1, 24),
@@ -1552,7 +1554,7 @@ server <- function(input, output, session) {
     } else if (input$diur == "mesd" && input$diurn == "mon") {
       data <- data %>%
         group_by(month, hour) %>%
-        summarise_all(funs(mean, sd), na.rm = TRUE)
+        summarise_all(list(~ mean(., na.rm = TRUE), ~ sd(., na.rm = TRUE)))
       ggplot(data, aes(hour, mean)) + geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd),
                                                     color = "seagreen") +
         scale_x_continuous(limits = c(-1, 24),
@@ -1775,7 +1777,7 @@ server <- function(input, output, session) {
       ) %>%
       dplyr::select(date, "y" = input$palleInp) %>%
       group_by(date) %>%
-      summarise_all(funs(mean, sd), na.rm = TRUE)
+      summarise_all(list(~ mean(., na.rm = TRUE), ~ sd(., na.rm = TRUE)))
     ggplot(data, aes(x = reorder(format(date, '%b %Y'), date), mean)) +
       geom_bar(
         position = position_dodge(),
@@ -1842,7 +1844,7 @@ server <- function(input, output, session) {
     data_avail <- data %>%
       dplyr::select(day, everything(),-date) %>%
       group_by(day) %>%
-      summarise_all(funs(mean), na.rm = TRUE) %>%
+      summarise_all(list(~ mean(., na.rm = TRUE))) %>%
       pivot_longer(-day, names_to = "Parameter", values_to = "Value")
     no_na_df <- data_avail
     no_na_df <- no_na_df[complete.cases(no_na_df),]
@@ -1870,7 +1872,7 @@ server <- function(input, output, session) {
       data <- data %>%
         dplyr::select(hour, site1, site2) %>%
         group_by(hour) %>%
-        summarise_all(funs(mean, sd), na.rm = TRUE)
+        summarise_all(list(~ mean(., na.rm = TRUE), ~ sd(., na.rm = TRUE)))
       ggplot(data, aes(hour, site1_mean)) +
         geom_errorbar(aes(
           ymin = site1_mean - site1_sd,
@@ -1896,7 +1898,8 @@ server <- function(input, output, session) {
       data <- data %>%
         dplyr::select(hour, site1, site2) %>%
         group_by(hour) %>%
-        summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
+        summarise_all(list(median = ~ median(.x, na.rm = TRUE), p25 = ~ quantile(.x, .25, na.rm = TRUE), 
+                           p75 = ~ quantile(.x, .75, na.rm = TRUE)))
       ggplot(data, aes(as.numeric(hour), site1_median)) +
         geom_errorbar(aes(
           ymin = site1_p25,
@@ -1921,7 +1924,8 @@ server <- function(input, output, session) {
     } else if (input$diur1 == "mediq" && input$diurn1 == "mon") {
       data <- data %>%
         group_by(month, hour) %>%
-        summarise_all(funs(median, p25 = quantile(., .25), p75 = quantile(., .75)), na.rm = TRUE)
+        summarise_all(list(median = ~ median(.x, na.rm = TRUE), p25 = ~ quantile(.x, .25, na.rm = TRUE), 
+                           p75 = ~ quantile(.x, .75, na.rm = TRUE)))
       ggplot(data, aes(as.numeric(hour), site1_median)) +
         geom_errorbar(aes(
           ymin = site1_p25,
@@ -1948,7 +1952,7 @@ server <- function(input, output, session) {
     } else if (input$diur1 == "mesd" && input$diurn1 == "mon") {
       data <- data %>%
         group_by(month, hour) %>%
-        summarise_all(funs(mean, sd), na.rm = TRUE)
+        summarise_all(list(~ mean(., na.rm = TRUE), ~ sd(., na.rm = TRUE)))
       ggplot(data, aes(hour, site1_mean)) +
         geom_errorbar(aes(
           ymin = site1_mean - site1_sd,
@@ -1993,7 +1997,7 @@ server <- function(input, output, session) {
       mutate(month = format(date, "%Y-%m")) %>%
       select(month, Parameter) %>%
       group_by(month) %>%
-      summarise_all(funs(mean), na.rm = TRUE) %>%
+      summarise_all(list(~ mean(., na.rm = TRUE))) %>%
       select(Parameter)
     plot_acf <-
       acf(data,
@@ -2161,22 +2165,21 @@ server <- function(input, output, session) {
         group_by(group) %>%
         summarise_if(
           is.numeric,
-          funs(
-            Mean = mean,
-            SD = sd,
-            Median = median,
-            IQR = IQR,
-            Min = min,
-            Max = max,
-            p1 = quantile(., .01),
-            p10 = quantile(., .1),
-            p25 = quantile(., .25),
-            p75 = quantile(., .75),
-            p90 = quantile(., .9),
-            p99 = quantile(., .99),
-            non_NA = sum(!is.na(.))
-          ),
-          na.rm = TRUE
+          list(
+            Mean = ~ mean(.x, na.rm = TRUE),
+            SD = ~ sd(.x, na.rm = TRUE),
+            Median = ~ median(.x, na.rm = TRUE),
+            IQR = ~ IQR(.x, na.rm = TRUE),
+            Min = ~ min(.x, na.rm = TRUE),
+            Max = ~ max(.x, na.rm = TRUE),
+            p1 = ~ quantile(.x, .01, na.rm = TRUE),
+            p10 = ~ quantile(.x, .1, na.rm = TRUE),
+            p25 = ~ quantile(.x, .25, na.rm = TRUE),
+            p75 = ~ quantile(.x, .75, na.rm = TRUE),
+            p90 = ~ quantile(.x, .9, na.rm = TRUE),
+            p99 = ~ quantile(.x, .99, na.rm = TRUE),
+            non_NA = ~ sum(!is.na(.))
+          )
         )
       columns <- 2:ncol(data)
       data[, columns] <-

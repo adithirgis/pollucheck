@@ -55,7 +55,7 @@ A walk through to use this app for everyone -
 
 <img src="inst/shiny/WWW/oaq_1.jpg" width="286"/>
 
-- Now, click on the "*Download*" option on your browser.
+- Now, click on the *Download* option on your browser.
 
 <img src="inst/shiny/WWW/oaq_2.jpg" width="517"/>
 
@@ -63,19 +63,19 @@ A walk through to use this app for everyone -
 
 <img src="inst/shiny/WWW/oaq_3.jpg" width="484"/>
 
-- Now select the desired, "*Country*", "*City/Region*" and "*Location*" using the drop-down.
+- Now select the desired, *Country*, *City/Region* and *Location* using the drop-down.
 
 <img src="inst/shiny/WWW/oaq_4.jpg" width="306"/><img src="inst/shiny/WWW/oaq_5.jpg" width="103"/><img src="inst/shiny/WWW/oaq_6.jpg" width="215"/>
 
-- To proceed further select the "*Start Date***"** and the "*End Date***"** for the data.
+- To proceed further select the *Start Date* and the *End Date* for the data.
 
 <img src="inst/shiny/WWW/oaq_7.jpg" width="525"/>
 
-- Now select which type of sensor is available at that location. Is it a "*Low-cost Sensor*" or "*Reference Grade*" monitor?
+- Now select which type of sensor is available at that location. Is it a *Low-cost Sensor* or *Reference Grade* monitor?
 
 ![](inst/shiny/WWW/oaq_8.jpg)
 
-- Finally, select the parameters from the list of "*Core"* and "*Additional Parameters"* which you wish to download from that particular location and click on "*Download Selection*". The file will be saved in your local disk in .csv format.
+- Finally, select the parameters from the list of *Core* and *Additional Parameters* which you wish to download from that particular location and click on *Download Selection*. The file will be saved in your local disk in .csv format.
 
 <img src="inst/shiny/WWW/oaq_9.jpg" width="519"/>
 
@@ -89,13 +89,14 @@ A walk through to use this app for everyone -
 
 <img src="inst/shiny/WWW/a_2.JPG" width="554"/>
 
-- Now Go to the **"***Historical***"** sub-menu on the Homepage and download the desired file.
+- Now go to the *Historical* sub-menu on the Homepage and download the desired file.
 
 <img src="inst/shiny/WWW/a_3.JPG" width="557"/>
 
 ### App usage
 
 - Select the source from where the data was downloaded.
+
 - Now select the time resolution at which the data was downloaded.
 
 <img src="inst/shiny/WWW/image_1.JPG" width="315"/>
@@ -123,8 +124,6 @@ A walk through to use this app for everyone -
 - Look at the time series of pollutant concentrations in the **Plots** tab (time series are plots with x axis representing time). Do you see patterns? Are there times of the month or times of the day where concentrations are particularly higher or lower? Are there particular months in a year that are more polluted than others?
 - Think about sources in the particular location: traffic, industries, garbage burning, etc.
 - What more do you want to learn? Talk to the Humans of ILK.
-- What more do you want to learn about the data? We are happy to incorporate more features based one what users need. Write to us at [contact\@ilklabs.com](mailto:contact@ilklabs.com).
-- If you have feature request - open an issue [here](https://github.com/adithirgis/pollucheck).
 
 ### App tabs
 
@@ -198,7 +197,6 @@ A walk through to use this app for everyone -
 
 - Trend Analysis is also available for daily values. For trend analysis using Mann-Kendall test we use [mk.test](https://www.rdocumentation.org/packages/trend/versions/1.1.4/topics/mk.test). For imputing values in the discontinuous data set we use [forecast package](https://cran.r-project.org/web/packages/forecast/forecast.pdf). For continuous wavelet transform we use [biwavelet package](https://cran.r-project.org/web/packages/biwavelet/biwavelet.pdf). In periodicity analysis, the contours covered by black lines represent the significant periodicity at 95% significant 519 level.
 
-- Autocorrelogram plot can also be generated using the
 
 ![](inst/shiny/WWW/image_30.JPG)
 
@@ -269,6 +267,8 @@ pollucheck::pollucheck_run()
 - Please open an issue in the [issue tracker of the project.](https://github.com/adithirgis/pollucheck/issues)
 
 3. Contributors must adhere to the [Code of Conduct](.github/CODE_OF_CONDUCT.md).
+
+4. We are happy to incorporate more features based one what users need. Write to us at [contact\@ilklabs.com](mailto:contact@ilklabs.com).
 
 ## Author credit statement
 
