@@ -214,10 +214,10 @@ ui <- fluidPage(
           "Data Source",
           choiceNames = list(
             HTML(
-              "<a href = 'https://openaq.org/#/countries/IN?_k=5ecycz' target = '_blank'>OpenAQ</a>"
+              "<a href = 'https://openaq.org/#/countries' target = '_blank'>OpenAQ</a>"
             ),
             HTML(
-              "<a href = 'https://www.airnow.gov/international/us-embassies-and-consulates/#India' target = '_blank'>AirNow - US Embassies</a>"
+              "<a href = 'https://www.airnow.gov/international/us-embassies-and-consulates/' target = '_blank'>AirNow - US Embassies</a>"
             ),
             HTML(
               "<a href = 'https://app.cpcbccr.com/ccr/#/caaqm-dashboard-all/caaqm-landing' target = '_blank'>Pollution Control Board (India)</a>"
@@ -948,8 +948,8 @@ server <- function(input, output, session) {
   
   #### Regression equation function
   reg_eqn <- function(x) {
-    int <- round(coef(x)[1], digits = 2)
-    slope <- round(coef(x)[2], digits = 2)
+    int <- round(coef(x)[1], digits = 3)
+    slope <- round(coef(x)[2], digits = 3)
     eqn <- paste("y = ", slope, "x + (", int, ")")
     return(eqn)
   }

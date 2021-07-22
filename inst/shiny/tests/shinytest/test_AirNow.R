@@ -42,5 +42,5 @@ app$setInputs(cp = "click")
 app$setInputs(tv = "click")
 app$setInputs(stat_tv = "median")
 app$snapshot()
-app$setInputs(tabs1 = "FAQ's")
+
 

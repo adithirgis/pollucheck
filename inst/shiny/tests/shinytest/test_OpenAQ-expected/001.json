@@ -52,7 +52,7 @@
     },
     "file12": "60 min",
     "file2": null,
-    "freq": 0,
+    "freq": 1,
     "freq_mt": "Title",
     "freq_x": "Parameter",
     "help_link": 1,
@@ -75,7 +75,7 @@
     "plot_val": 0,
     "plot_val_di": 0,
     "plot_values": 0,
-    "qq": 0,
+    "qq": 1,
     "qq_mt": "Title",
     "qq_y": "Parameter",
     "reg": 0,
@@ -10218,7 +10218,7 @@
     "table1_rows_selected": null,
     "table1_search": "",
     "table1_state": null,
-    "tabs1": "2",
+    "tabs1": "5",
     "timezone": "Asia/Kolkata",
     "timezone1": "Asia/Kolkata",
     "title_bi": "Title",
@@ -10230,6 +10230,116 @@
     "type2": "cpcb"
   },
   "output": {
+    "kendal_test": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "normality_test": "\n\tAnderson-Darling normality test\n\ndata:  y\nA = 0.46031, p-value = 0.2528",
+    "plot13": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "plot18": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "plot6": {
+      "src": "[image data sha1: 3bca516179ba2f67915f7be3a35eaab343d2e91c]",
+      "width": 800,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "panel": 1,
+            "row": 1,
+            "col": 1,
+            "panel_vars": {
+
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": 14.4826666666667,
+              "right": 33.124,
+              "bottom": -0.00470968295045988,
+              "top": 0.0989033419596574
+            },
+            "mapping": {
+              "y": null,
+              "x": "y"
+            },
+            "range": {
+              "left": 81.1506849315069,
+              "right": 794.520547945205,
+              "bottom": 349.849315068493,
+              "top": 24.958904109589
+            }
+          }
+        ],
+        "dims": {
+          "width": 800,
+          "height": 400
+        }
+      }
+    },
+    "plot7": {
+      "src": "[image data sha1: c080f0f0a6d36c605ed458bacaa0cb33f27f871b]",
+      "width": 800,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "panel": 1,
+            "row": 1,
+            "col": 1,
+            "panel_vars": {
+
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": -2.6655158145094,
+              "right": 2.6655158145094,
+              "bottom": 1.13184147268268,
+              "top": 1.52684330591698
+            },
+            "mapping": {
+              "x": null,
+              "y": null,
+              "sample": "log10(y)"
+            },
+            "range": {
+              "left": 59.1506849315069,
+              "right": 794.520547945205,
+              "bottom": 349.849315068493,
+              "top": 24.958904109589
+            }
+          }
+        ],
+        "dims": {
+          "width": 800,
+          "height": 400
+        }
+      }
+    },
     "table": {
       "x": {
         "filter": "none",

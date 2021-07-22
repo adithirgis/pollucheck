@@ -51,7 +51,20 @@
       ]
     },
     "file12": "60 min",
-    "file2": null,
+    "file2": {
+      "name": [
+        "OpenAQ.csv"
+      ],
+      "size": [
+        139468
+      ],
+      "type": [
+        "text/csv"
+      ],
+      "datapath": [
+        "0.csv"
+      ]
+    },
     "freq": 1,
     "freq_mt": "Title",
     "freq_x": "Parameter",
@@ -68,13 +81,13 @@
     "palleInp": "PM2.5",
     "palleInp1": "PM2.5",
     "palleInp2": "PM2.5",
-    "Para": "PM2.5",
+    "Para": "CO",
     "Para1": "PM2.5",
     "per": 75,
     "percent": false,
-    "plot_val": 0,
-    "plot_val_di": 0,
-    "plot_values": 0,
+    "plot_val": 1,
+    "plot_val_di": 1,
+    "plot_values": 1,
     "qq": 1,
     "qq_mt": "Title",
     "qq_y": "Parameter",
@@ -10218,7 +10231,7 @@
     "table1_rows_selected": null,
     "table1_search": "",
     "table1_state": null,
-    "tabs1": "5",
+    "tabs1": "7",
     "timezone": "Asia/Kolkata",
     "timezone1": "Asia/Kolkata",
     "title_bi": "Title",
@@ -10227,7 +10240,7 @@
     "ts_y": "Parameter",
     "tv": 0,
     "type": "oaq",
-    "type2": "cpcb"
+    "type2": "oaq"
   },
   "output": {
     "kendal_test": {
@@ -10239,6 +10252,49 @@
       ]
     },
     "normality_test": "\n\tAnderson-Darling normality test\n\ndata:  y\nA = 0.46031, p-value = 0.2528",
+    "plot12": {
+      "src": "[image data sha1: cd973235bcc65b6af659685d39846384af3d984e]",
+      "width": 631,
+      "height": 600,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "panel": 1,
+            "row": 1,
+            "col": 1,
+            "panel_vars": {
+
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": 1604151720,
+              "right": 1604531880,
+              "bottom": 843.590744914897,
+              "top": 1119.45599627389
+            },
+            "mapping": {
+              "y": "Site 1",
+              "colour": "\"Site 1\"",
+              "x": "as.POSIXct(date)"
+            },
+            "range": {
+              "left": 76.1506849315068,
+              "right": 483.172054794521,
+              "bottom": 549.849315068493,
+              "top": 24.958904109589
+            }
+          }
+        ],
+        "dims": {
+          "width": 631,
+          "height": 600
+        }
+      }
+    },
     "plot13": {
       "message": "",
       "call": "NULL",
@@ -10246,6 +10302,93 @@
         "shiny.silent.error",
         "validation"
       ]
+    },
+    "plot15": {
+      "src": "[image data sha1: e6e8261d9794ae70559dfee35dd6f30676cdfa29]",
+      "width": 631,
+      "height": 600,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "panel": 1,
+            "row": 1,
+            "col": 1,
+            "panel_vars": {
+
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": 17.9939621212121,
+              "right": 23.878224025974,
+              "bottom": 856.654166666667,
+              "top": 1118.83392857143
+            },
+            "mapping": {
+              "x": "x",
+              "y": "y"
+            },
+            "range": {
+              "left": 76.1506849315068,
+              "right": 625.520547945205,
+              "bottom": 549.849315068493,
+              "top": 41.4383561643836
+            }
+          }
+        ],
+        "dims": {
+          "width": 631,
+          "height": 600
+        }
+      }
+    },
+    "plot17": {
+      "src": "[image data sha1: 85e75450eb539ad7210b1eba690ac08eed09d30f]",
+      "width": 631,
+      "height": 600,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "panel": 1,
+            "row": 1,
+            "col": 1,
+            "panel_vars": {
+
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "domain": {
+              "left": -2.25,
+              "right": 25.25,
+              "bottom": -153.792733979958,
+              "top": 3562.05854844066
+            },
+            "mapping": {
+              "ymin": "site1_mean - site1_sd",
+              "ymax": "site1_mean + site1_sd",
+              "colour": "\"Site 1\"",
+              "x": "hour",
+              "y": "site1_mean"
+            },
+            "range": {
+              "left": 76.1506849315068,
+              "right": 531.843287671233,
+              "bottom": 549.849315068493,
+              "top": 24.958904109589
+            }
+          }
+        ],
+        "dims": {
+          "width": 631,
+          "height": 600
+        }
+      }
     },
     "plot18": {
       "message": "",

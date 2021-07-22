@@ -89,7 +89,7 @@ pollucheck::pollucheck_run()
 
 # Case Study
 
-For better understanding of the major functionalities of pollucheck, we present a case study based on 18 months of pollution data set. This data is downloaded from Central Pollution Control Board located at Hebbal, Bengaluru, India at a time resolution of 60 minutes. Only plots related to PM~2.5~ data generated through the app are showcased here. Figure 1 depicts the efficiency of the app in detecting the outliers. Top panel of figure 1 shows the hourly time series of the raw PM~2.5~ (few outliers were synthetically added to the data), while the bottom panel depicts the quality checked data. Almost all the sporadically high values were detected by the app as outliers and removed.
+For better understanding of the major functionalities of pollucheck, we present a case study based on 18 months of pollution data set. This data is downloaded from Central Pollution Control Board dashboard for the monitoring station located at Hebbal, Bengaluru, India at a time resolution of 60 minutes. Only plots related to PM~2.5~ data generated through the app are showcased here. Figure 1 depicts the efficiency of the app in detecting the outliers. Top panel of figure 1 shows the hourly time series of the raw PM~2.5~ (few outliers were synthetically added to the data), while the bottom panel depicts the quality checked data. Almost all the sporadically high values were detected by the app as outliers and removed.
 
 
 

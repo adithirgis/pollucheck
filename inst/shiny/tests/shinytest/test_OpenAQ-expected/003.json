@@ -19,7 +19,7 @@
     "comp_mt": "Title",
     "comp_y": "Site 2",
     "comp_ytr": "Site 1",
-    "cp": 0,
+    "cp": 1,
     "cp_mt": "Title",
     "da": 0,
     "DepVar": "PM2.5",
@@ -103,7 +103,7 @@
     "reg_y": "Dependent variable",
     "remove_9": true,
     "repeated": false,
-    "stat_tv": "mean",
+    "stat_tv": "median",
     "switch_tab": 1,
     "ta": 0,
     "table_cell_clicked": {
@@ -10231,14 +10231,14 @@
     "table1_rows_selected": null,
     "table1_search": "",
     "table1_state": null,
-    "tabs1": "7",
+    "tabs1": "4",
     "timezone": "Asia/Kolkata",
     "timezone1": "Asia/Kolkata",
     "title_bi": "Title",
     "ts": 0,
     "ts_mt": "Title",
     "ts_y": "Parameter",
-    "tv": 0,
+    "tv": 1,
     "type": "oaq",
     "type2": "oaq"
   },
@@ -10304,7 +10304,7 @@
       ]
     },
     "plot15": {
-      "src": "[image data sha1: 2a931db02c62ca61623b2af33d908aa009a5e415]",
+      "src": "[image data sha1: e6e8261d9794ae70559dfee35dd6f30676cdfa29]",
       "width": 631,
       "height": 600,
       "alt": "Plot object",
@@ -10397,6 +10397,76 @@
         "shiny.silent.error",
         "validation"
       ]
+    },
+    "plot4": {
+      "src": "[image data sha1: 0d035204a60163dad1bde3d02d988d6016512f3d]",
+      "width": 631,
+      "height": 600,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 631,
+              "bottom": 599,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 631,
+          "height": 600
+        }
+      }
+    },
+    "plot5": {
+      "src": "[image data sha1: 9bce956185f199f9da75df1c6adf39aa16535783]",
+      "width": 631,
+      "height": 600,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 631,
+              "bottom": 599,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 631,
+          "height": 600
+        }
+      }
     },
     "plot6": {
       "src": "[image data sha1: 3bca516179ba2f67915f7be3a35eaab343d2e91c]",
