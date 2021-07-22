@@ -70,7 +70,7 @@ An extensive list of frequently asked questions (FAQs) is provided as a separate
 2)  Multiple files cannot be uploaded to `pollucheck` at a given time.
 3)  The current version of `pollucheck` is limited to accepting real-time data files from only three data sources.
 4)  Some analyses (e.g. periodicity analysis) can be performed using daily mean values only.
-5)  Caution needs to be exercised when using the averaged wind direction data, since wind direction is a vector quantity hence needs to be processed in a different way which has not been implemented here. 
+5)  Caution needs to be exercised when using the averaged wind direction data, since wind direction is a vector quantity hence needs to be processed in a different way which has not been implemented here. Only wind direction data at one hour resolution is processed correctly.
 6)  Any manipulation or alteration to the downloaded file before giving it as input to the app can lead to erroneous results.
 
 ## Installation
