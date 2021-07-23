@@ -6,11 +6,12 @@
 \alias{pollucheck-package}
 \title{pollucheck: Explore Open-Source Air Pollution Data}
 \description{
-pollucheck helps to analyze and visualize open-source air
-    pollution data available. An example data set is already loaded to help
-    you walk through all the features of the app. If you need help with
-    downloading your own, check the README file on GitHub. This app can
-    process all parameters except wind direction which when downloaded at
+Air pollution leads to various health hazards, hence there is a need to process 
+    and effectively work with the available open-source data. pollucheck helps 
+    to analyze and visualize open-source air pollution data available. An example 
+    data set is already loaded to help you walk through all the features of the 
+    app. If you need help with downloading your own, check the README file on GitHub. 
+    This app can process all parameters except wind direction which when downloaded at
     1 hour is processed correctly. Wind direction at any other time resolution 
     (e.g. - daily average) is not averaged correctly as it is a vector and 
     cannot be averaged using simple arithmetic mean.
