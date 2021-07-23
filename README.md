@@ -107,7 +107,7 @@ A walk through to use this app for everyone -
 
     -   Remove duplicate consecutive values- Sometimes when the instrument breaks down, it tends to show exactly same consecutive values, it is advised to remove these as well. This feature removes consecutive repetitive values in your data set.
 
-    -   Specify a multiple (X) to remove outliers based on Mean and SD- If you want to clean your data set based on outliers, not usually necessary, use only if you want to remove outiliers based on Mean and Standard Deviation values.
+    -   Specify a multiple (X) to remove outliers based on Mean and SD- If you want to clean your data set based on outliers, not usually necessary, use only if you want to remove outliers based on Mean and Standard Deviation values.
 
     -   Specify % of data completeness for computing daily mean values- If you are looking for entire/complete data set to be present for analysis and not less, you can use this to select the desired level of completeness in a day using the scroll bar.
 
