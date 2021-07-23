@@ -10253,7 +10253,7 @@
     },
     "normality_test": "\n\tAnderson-Darling normality test\n\ndata:  y\nA = 0.46031, p-value = 0.2528",
     "plot12": {
-      "src": "[image data sha1: 247dd8a46d6b38d1d3974551a91c4255970be97c]",
+      "src": "[image data sha1: cd973235bcc65b6af659685d39846384af3d984e]",
       "width": 631,
       "height": 600,
       "alt": "Plot object",
@@ -10304,7 +10304,7 @@
       ]
     },
     "plot15": {
-      "src": "[image data sha1: f18d1706ffddd42dafc0aaaa8e98b007119a6280]",
+      "src": "[image data sha1: e6e8261d9794ae70559dfee35dd6f30676cdfa29]",
       "width": 631,
       "height": 600,
       "alt": "Plot object",
@@ -10346,7 +10346,7 @@
       }
     },
     "plot17": {
-      "src": "[image data sha1: 873d1d23b7849791c8af7c1a3b7d9d789b844cea]",
+      "src": "[image data sha1: 85e75450eb539ad7210b1eba690ac08eed09d30f]",
       "width": 631,
       "height": 600,
       "alt": "Plot object",
@@ -10399,7 +10399,7 @@
       ]
     },
     "plot6": {
-      "src": "[image data sha1: 4c419aa2ae08ea13f8d0588c6c5ebe8d2fcb094a]",
+      "src": "[image data sha1: 3bca516179ba2f67915f7be3a35eaab343d2e91c]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
@@ -10441,7 +10441,7 @@
       }
     },
     "plot7": {
-      "src": "[image data sha1: d65c3204b3463664e39afe0236704c6b8d353c67]",
+      "src": "[image data sha1: c080f0f0a6d36c605ed458bacaa0cb33f27f871b]",
       "width": 800,
       "height": 400,
       "alt": "Plot object",
