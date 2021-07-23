@@ -1,8 +1,7 @@
 # pollucheck: Open-Source Air Quality App!
 
 
-[![R-CMD-check](https://github.com/adithirgis/pollucheck/workflows/R-CMD-check/badge.svg)](https://github.com/adithirgis/pollucheck/actions)
- 
+[![R-CMD-check](https://github.com/adithirgis/pollucheck/workflows/R-CMD-check/badge.svg)](https://github.com/adithirgis/pollucheck/actions) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5126939.svg)](https://doi.org/10.5281/zenodo.5126939)
 
 pollucheck helps exploring the open-source air quality data.
 
